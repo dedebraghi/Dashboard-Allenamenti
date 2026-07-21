@@ -338,6 +338,16 @@
                                     <span id="detail-pat-stat" class="text-base font-black text-slate-900">0/0 (0%)</span>
                                 </div>
                             </div>
+
+                            <!-- Dettaglio analitico per tutte le serie/posizioni -->
+                            <div class="mt-6 pt-4 border-t border-slate-100 space-y-4">
+                                <h4 class="text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
+                                    📊 Dettaglio Serie & Posizioni
+                                </h4>
+                                <div id="report-breakdown-container" class="space-y-3 max-h-60 overflow-y-auto pr-1">
+                                    <!-- Popolato dinamicamente -->
+                                </div>
+                            </div>
                         </div>
 
                         <div class="mt-8 pt-5 border-t border-slate-100">
@@ -958,6 +968,7 @@
             document.getElementById('detail-ft-stat').textContent = `${s.liberi.made}/${s.liberi.att} (${sFTP}%)`;
             document.getElementById('detail-pat-stat').textContent = `${sPATMade}/${sPATAtt} (${sPATP}%)`;
 
+            renderReportBreakdown(sessionId);
             generateTechnicalInsight(s, s3ptP, sFTP, sPATP, {angSXP, guaSXP, punP, guaDXP, angDXP}, {gomSXP, gomDXP}, isAverage);
         }
 
@@ -1075,6 +1086,102 @@
 
         function closePositionModal() {
             document.getElementById('position-modal').classList.add('hidden');
+        }
+
+        function renderReportBreakdown(sessionId) {
+            const container = document.getElementById('report-breakdown-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            let targetSessions = sessions;
+            if (sessionId !== 'average') {
+                targetSessions = sessions.filter(s => s.id === sessionId);
+            }
+
+            if (targetSessions.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-400 font-medium">Nessuna serie disponibile.</p>`;
+                return;
+            }
+
+            targetSessions.forEach(session => {
+                const sItem = document.createElement('div');
+                sItem.className = "bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-xs space-y-2.5";
+                
+                let html = `<div class="font-extrabold text-slate-800 border-b border-slate-200 pb-1 flex justify-between items-center">
+                    <span>📅 Allenamento del ${formatDate(session.date)}</span>
+                    <span class="text-[10px] text-slate-500 font-bold">${session.duration} min</span>
+                </div>`;
+
+                // 3PT
+                html += `<div class="space-y-1">
+                    <span class="font-black text-indigo-600 uppercase text-[10px] tracking-wider block">Tiro da 3 Punti (4 serie da 5 per spot)</span>
+                    <div class="space-y-1">`;
+                
+                const pos3ptMap = {
+                    angoloSX: 'Angolo SX',
+                    guardiaSX: 'Guardia SX',
+                    punta: 'Punta',
+                    guardiaDX: 'Guardia DX',
+                    angoloDX: 'Angolo DX'
+                };
+
+                for (const [k, name] of Object.entries(pos3ptMap)) {
+                    const data = session.tri[k];
+                    if (data && data.series) {
+                        const sStr = data.series.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
+                        const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
+                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
+                            <span class="font-bold text-slate-800">${name}:</span>
+                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${data.made}/${data.att} (${pct}%)</strong></span>
+                        </div>`;
+                    }
+                }
+                html += `</div></div>`;
+
+                // PAT
+                html += `<div class="space-y-1 pt-1">
+                    <span class="font-black text-amber-600 uppercase text-[10px] tracking-wider block">Palleggio Arresto e Tiro (3 serie da 5)</span>
+                    <div class="space-y-1">`;
+                
+                const posPatMap = {
+                    gomitoSX: 'Gomito SX',
+                    gomitoDX: 'Gomito DX'
+                };
+
+                for (const [k, name] of Object.entries(posPatMap)) {
+                    const data = session.pat[k];
+                    if (data && data.series) {
+                        const sStr = data.series.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
+                        const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
+                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
+                            <span class="font-bold text-slate-800">${name}:</span>
+                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${data.made}/${data.att} (${pct}%)</strong></span>
+                        </div>`;
+                    }
+                }
+                html += `</div></div>`;
+
+                // Tiri Liberi
+                html += `<div class="space-y-1 pt-1">
+                    <span class="font-black text-emerald-600 uppercase text-[10px] tracking-wider block">Tiri Liberi (2 blocchi da 25)</span>
+                    <div class="space-y-1">`;
+                
+                if (session.liberi && session.liberi.blocks) {
+                    session.liberi.blocks.forEach((block, bIdx) => {
+                        const bMade = block.reduce((a, b) => a + b, 0);
+                        const bPct = Math.round((bMade / 25) * 100);
+                        const sStr = block.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
+                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
+                            <span class="font-bold text-slate-800">Blocco ${bIdx+1}:</span>
+                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${bMade}/25 (${bPct}%)</strong></span>
+                        </div>`;
+                    });
+                }
+                html += `</div></div>`;
+
+                sItem.innerHTML = html;
+                container.appendChild(sItem);
+            });
         }
 
         function updateHotspotStyle(id, percent) {
