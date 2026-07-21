@@ -1,518 +1,511 @@
 <!DOCTYPE html>
-<html lang="it" class="h-full bg-slate-100 text-slate-800">
+<html lang="it" class="h-full bg-slate-900 text-slate-800 antialiased">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ShotTracker - Basket Performance Dashboard</title>
-    <!-- Tailwind CSS per uno stile moderno e reattivo -->
+    <title>ShotTracker • Basketball Performance Analytics</title>
+    <!-- Tailwind CSS per layout e utilities -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js per i grafici dei progressi nel tempo -->
+    <!-- Chart.js per i grafici delle prestazioni -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Font Urbanist per un look premium e sportivo -->
+    <!-- Font Plus Jakarta Sans (UI) & Barlow (Athletic Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,600;0,700;0,800;0,900;1,700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         body {
-            font-family: 'Urbanist', sans-serif;
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: #F8FAFC;
         }
-        /* Custom scrollbar */
+        .font-athletic {
+            font-family: 'Barlow', sans-serif;
+            letter-spacing: -0.01em;
+        }
+        /* Custom scrollbar pro */
         ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 6px;
+            height: 6px;
         }
         ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+            background: #F1F5F9;
         }
         ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 4px;
+            background: #CBD5E1;
+            border-radius: 3px;
         }
         ::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
+            background: #94A3B8;
+        }
+        .court-grid-pattern {
+            background-image: radial-gradient(rgba(255, 255, 255, 0.07) 1px, transparent 1px);
+            background-size: 16px 16px;
         }
     </style>
 </head>
-<body class="h-full flex flex-col bg-gradient-to-br from-amber-50/40 via-slate-100 to-orange-50/30 min-h-screen text-slate-800">
+<body class="h-full flex flex-col min-h-screen bg-slate-100 text-slate-900">
 
-    <!-- Notifiche In-App Customizzate -->
-    <div id="toast" class="fixed top-5 right-5 z-50 transform translate-y-[-100px] opacity-0 transition-all duration-300 ease-out flex items-center p-4 mb-4 w-full max-w-xs text-slate-800 bg-white rounded-2xl border border-slate-200 shadow-2xl" role="alert">
-        <div id="toast-icon-box" class="inline-flex flex-shrink-0 justify-center items-center w-9 h-9 rounded-xl">
+    <!-- Toast Notifications -->
+    <div id="toast" class="fixed top-5 right-5 z-50 transform -translate-y-24 opacity-0 transition-all duration-300 ease-out flex items-center p-4 max-w-sm w-full bg-slate-900 text-white rounded-xl border border-slate-700 shadow-2xl" role="alert">
+        <div id="toast-icon-box" class="inline-flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg">
             <!-- Icona dinamica -->
         </div>
-        <div id="toast-message" class="ml-3 text-sm font-bold">Messaggio</div>
+        <div id="toast-message" class="ml-3 text-xs font-bold tracking-wide">Messaggio</div>
     </div>
 
-    <!-- Modal per la conferma di eliminazione -->
-    <div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-slate-900/40 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-3xl p-6 max-w-sm w-full shadow-2xl transform scale-95 transition-all">
-            <div class="w-12 h-12 rounded-2xl bg-red-100 text-red-600 flex items-center justify-center mb-4 font-bold text-xl">⚠️</div>
-            <h3 class="text-xl font-black text-slate-900 mb-2">Elimina Sessione</h3>
-            <p class="text-slate-600 text-sm mb-6">Sei sicuro di voler eliminare questa sessione di allenamento? Questa azione non può essere annullata.</p>
-            <div class="flex justify-end gap-3">
-                <button onclick="closeConfirmModal()" class="px-4 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-100 rounded-xl transition-colors">Annulla</button>
-                <button id="confirm-delete-btn" class="px-4 py-2.5 text-sm font-bold bg-red-600 hover:bg-red-700 text-white rounded-xl shadow-lg shadow-red-600/20 transition-all">Elimina</button>
+    <!-- Modal Eliminazione Sessione -->
+    <div id="confirm-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-sm w-full shadow-2xl">
+            <div class="w-10 h-10 rounded-xl bg-red-50 text-red-600 flex items-center justify-center mb-4">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+            </div>
+            <h3 class="text-lg font-athletic font-extrabold uppercase text-slate-900 mb-1 tracking-wide">Elimina Sessione</h3>
+            <p class="text-slate-600 text-xs leading-relaxed mb-6 font-medium">Confermi di voler rimuovere questa sessione dallo storico? L'operazione non è reversibile.</p>
+            <div class="flex justify-end gap-2.5">
+                <button onclick="closeConfirmModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Annulla</button>
+                <button id="confirm-delete-btn" class="px-4 py-2 text-xs font-bold bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors">Conferma Eliminazione</button>
             </div>
         </div>
     </div>
 
-    <!-- Modal per Dettaglio Posizione (Serie e Sessioni) -->
-    <div id="position-modal" class="fixed inset-0 z-50 hidden bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4">
-        <div class="bg-white border border-slate-200 rounded-3xl p-6 max-w-lg w-full shadow-2xl transform transition-all max-h-[90vh] flex flex-col">
-            <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+    <!-- Modal Dettaglio Posizione -->
+    <div id="position-modal" class="fixed inset-0 z-50 hidden bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-4 border-b border-slate-200">
                 <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg">🏀</div>
+                    <div class="w-9 h-9 rounded-lg bg-orange-50 text-orange-600 border border-orange-200/80 flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                    </div>
                     <div>
-                        <h3 id="position-modal-title" class="text-xl font-black text-slate-900">Dettaglio Posizione</h3>
-                        <p id="position-modal-subtitle" class="text-xs text-slate-500 font-semibold">Serie e sessioni registrate</p>
+                        <h3 id="position-modal-title" class="text-lg font-athletic font-bold text-slate-900 tracking-wide">Dettaglio Posizione</h3>
+                        <p id="position-modal-subtitle" class="text-[11px] text-slate-500 font-semibold">Breakdown completo delle serie registrate</p>
                     </div>
                 </div>
-                <button onclick="closePositionModal()" class="p-2 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-xl transition-colors font-bold">✕</button>
+                <button onclick="closePositionModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors text-sm font-bold">✕</button>
             </div>
             
             <div id="position-modal-body" class="py-4 overflow-y-auto space-y-4 flex-grow">
-                <!-- Popolato dinamicamente da JS -->
+                <!-- Popolato dinamicamente -->
             </div>
 
-            <div class="pt-3 border-t border-slate-100 flex justify-end">
-                <button onclick="closePositionModal()" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-extrabold rounded-xl text-xs transition-all shadow-md">Chiudi</button>
+            <div class="pt-3 border-t border-slate-200 flex justify-end">
+                <button onclick="closePositionModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs transition-colors">Chiudi</button>
             </div>
         </div>
     </div>
 
-    <!-- Header dell'Applicazione -->
-    <header class="border-b border-slate-200/80 bg-white/80 backdrop-blur-md sticky top-0 z-40 shadow-sm">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3 flex items-center justify-between">
+    <!-- Header Principale Pro Sports -->
+    <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
             <div class="flex items-center gap-3">
-                <div class="bg-gradient-to-tr from-orange-500 to-amber-500 text-white p-2.5 rounded-2xl shadow-lg shadow-orange-500/30 flex items-center justify-center">
-                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <circle cx="12" cy="12" r="9" stroke-width="2.2" />
+                <div class="bg-orange-600 text-white p-2 rounded-lg flex items-center justify-center">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                        <circle cx="12" cy="12" r="9" stroke-width="2" />
                         <path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8" />
-                        <path d="M3 12h18" stroke-width="1.8" stroke-dasharray="1 1" />
-                        <path d="M4.5 6.5c4.5 2 10.5 2 15 0" stroke-width="1.8" />
-                        <path d="M4.5 17.5c4.5-2 10.5-2 15 0" stroke-width="1.8" />
+                        <path d="M3 12h18" stroke-width="1.8" stroke-dasharray="2 2" />
+                        <path d="M4.5 6.5c4.5 2 10.5 2 15 0" stroke-width="1.5" />
+                        <path d="M4.5 17.5c4.5-2 10.5-2 15 0" stroke-width="1.5" />
                     </svg>
                 </div>
                 <div>
-                    <h1 class="text-2xl font-black tracking-tight text-slate-900 flex items-center gap-2">
-                        ShotTracker <span class="text-xs bg-orange-100 text-orange-600 px-2.5 py-0.5 rounded-full font-bold border border-orange-200">BETA</span>
-                    </h1>
-                    <p class="text-[11px] text-slate-500 font-extrabold tracking-wider uppercase">Basketball Analytics Platform</p>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-xl font-athletic font-extrabold tracking-wider text-white uppercase">
+                            ShotTracker
+                        </h1>
+                        <span class="text-[10px] font-mono bg-slate-800 text-orange-400 px-2 py-0.5 rounded border border-slate-700 font-bold uppercase tracking-widest">PRO v2.4</span>
+                    </div>
+                    <p class="text-[10px] text-slate-400 font-semibold uppercase tracking-widest">Performance Analytics Studio</p>
                 </div>
             </div>
             
             <!-- Navigazione Desktop -->
-            <nav class="hidden md:flex items-center gap-2">
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20">
+            <nav class="hidden md:flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
                     Dashboard
                 </button>
-                <button onclick="switchTab('plan')" id="nav-plan" class="px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                <button onclick="switchTab('plan')" id="nav-plan" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                     Piano Allenamento
                 </button>
-                <button onclick="switchTab('history')" id="nav-history" class="px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100">
+                <button onclick="switchTab('history')" id="nav-history" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                     Storico
                 </button>
             </nav>
 
-            <!-- Pulsante Menu Mobile (Punti / Hamburger) -->
-            <div class="flex md:hidden items-center gap-2">
-                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2.5 rounded-xl text-slate-700 hover:bg-slate-100 focus:outline-none border border-slate-200">
-                    <svg id="mobile-menu-icon-open" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
-                    <svg id="mobile-menu-icon-close" class="w-6 h-6 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            <!-- Mobile Menu Toggle -->
+            <div class="flex md:hidden items-center">
+                <button id="mobile-menu-btn" onclick="toggleMobileMenu()" class="p-2 rounded-lg text-slate-300 hover:bg-slate-900 border border-slate-800">
+                    <svg id="mobile-menu-icon-open" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                    <svg id="mobile-menu-icon-close" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
             </div>
         </div>
 
-        <!-- Menu Mobile Dropdown dall'Header -->
-        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-200 bg-white px-4 py-3 space-y-2">
-            <button onclick="switchTab('dashboard'); toggleMobileMenu(false);" id="mobile-nav-dashboard" class="w-full px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
-                Dashboard
+        <!-- Menu Mobile Dropdown -->
+        <div id="mobile-menu" class="hidden md:hidden border-t border-slate-800 bg-slate-900 px-4 py-3 space-y-2">
+            <button onclick="switchTab('dashboard'); toggleMobileMenu(false);" id="mobile-nav-dashboard" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 bg-orange-600 text-white">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
+                Dashboard Analytics
             </button>
-            <button onclick="switchTab('plan'); toggleMobileMenu(false);" id="mobile-nav-plan" class="w-full px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 text-slate-700 hover:bg-slate-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <button onclick="switchTab('plan'); toggleMobileMenu(false);" id="mobile-nav-plan" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 Piano Allenamento
             </button>
-            <button onclick="switchTab('history'); toggleMobileMenu(false);" id="mobile-nav-history" class="w-full px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 text-slate-700 hover:bg-slate-100">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                Storico Allenamenti
+            <button onclick="switchTab('history'); toggleMobileMenu(false);" id="mobile-nav-history" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Storico Sessioni
             </button>
         </div>
     </header>
 
     <!-- Contenuto Principale -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
         
         <!-- ================= TAB: DASHBOARD ================= -->
-        <section id="tab-dashboard" class="space-y-8 animate-fade-in">
-            <!-- Griglia Statistiche Globali -->
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+        <section id="tab-dashboard" class="space-y-6">
+            
+            <!-- KPI Summary Cards -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
                 <!-- Card 3 Punti -->
-                <div class="bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl transition-all">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Tiro da 3 Totale</span>
-                        <span class="w-8 h-8 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">🎯</span>
+                        <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Tiro da 3 Punti</span>
+                        <span class="p-1.5 rounded-lg bg-indigo-50 text-indigo-600 border border-indigo-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                        </span>
                     </div>
-                    <div class="flex items-baseline gap-2 mt-3">
-                        <span id="stat-global-3pt" class="text-4xl font-black text-slate-900">0%</span>
-                        <span id="stat-count-3pt" class="text-xs text-slate-500 font-bold">0/0</span>
+                    <div class="flex items-baseline gap-2 mt-4">
+                        <span id="stat-global-3pt" class="text-3xl font-athletic font-black text-slate-900">0%</span>
+                        <span id="stat-count-3pt" class="text-xs text-slate-500 font-semibold">0/0</span>
                     </div>
-                    <div class="w-full bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden p-0.5 border border-slate-200/50">
-                        <div id="progress-global-3pt" class="bg-gradient-to-r from-indigo-500 to-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="progress-global-3pt" class="bg-indigo-600 h-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
 
                 <!-- Card Tiri Liberi -->
-                <div class="bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl transition-all">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Tiri Liberi Totali</span>
-                        <span class="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">🏀</span>
+                        <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Tiri Liberi</span>
+                        <span class="p-1.5 rounded-lg bg-emerald-50 text-emerald-600 border border-emerald-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
                     </div>
-                    <div class="flex items-baseline gap-2 mt-3">
-                        <span id="stat-global-ft" class="text-4xl font-black text-slate-900">0%</span>
-                        <span id="stat-count-ft" class="text-xs text-slate-500 font-bold">0/0</span>
+                    <div class="flex items-baseline gap-2 mt-4">
+                        <span id="stat-global-ft" class="text-3xl font-athletic font-black text-slate-900">0%</span>
+                        <span id="stat-count-ft" class="text-xs text-slate-500 font-semibold">0/0</span>
                     </div>
-                    <div class="w-full bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden p-0.5 border border-slate-200/50">
-                        <div id="progress-global-ft" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="progress-global-ft" class="bg-emerald-600 h-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
 
                 <!-- Card PAT -->
-                <div class="bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl transition-all">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">P.A.T. Totale</span>
-                        <span class="w-8 h-8 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">⚡</span>
+                        <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">P.A.T. (Mid-Range)</span>
+                        <span class="p-1.5 rounded-lg bg-amber-50 text-amber-600 border border-amber-100">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                        </span>
                     </div>
-                    <div class="flex items-baseline gap-2 mt-3">
-                        <span id="stat-global-pat" class="text-4xl font-black text-slate-900">0%</span>
-                        <span id="stat-count-pat" class="text-xs text-slate-500 font-bold">0/0</span>
+                    <div class="flex items-baseline gap-2 mt-4">
+                        <span id="stat-global-pat" class="text-3xl font-athletic font-black text-slate-900">0%</span>
+                        <span id="stat-count-pat" class="text-xs text-slate-500 font-semibold">0/0</span>
                     </div>
-                    <div class="w-full bg-slate-100 h-2.5 rounded-full mt-4 overflow-hidden p-0.5 border border-slate-200/50">
-                        <div id="progress-global-pat" class="bg-gradient-to-r from-amber-500 to-orange-500 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+                    <div class="w-full bg-slate-100 h-2 rounded-full mt-3 overflow-hidden">
+                        <div id="progress-global-pat" class="bg-amber-500 h-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                 </div>
 
                 <!-- Card Tempo Allenamento -->
-                <div class="bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col justify-between shadow-md hover:shadow-xl transition-all">
+                <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs flex flex-col justify-between">
                     <div class="flex items-center justify-between">
-                        <span class="text-xs font-extrabold text-slate-500 uppercase tracking-wider">Tempo Allenamento</span>
-                        <span class="w-8 h-8 rounded-xl bg-orange-50 text-orange-600 flex items-center justify-center font-bold text-xs">⏱️</span>
+                        <span class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">Volume Ore</span>
+                        <span class="p-1.5 rounded-lg bg-slate-100 text-slate-700 border border-slate-200">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        </span>
                     </div>
-                    <div class="flex items-baseline gap-2 mt-3">
-                        <span id="stat-total-time" class="text-4xl font-black text-slate-900">0 min</span>
+                    <div class="flex items-baseline gap-2 mt-4">
+                        <span id="stat-total-time" class="text-3xl font-athletic font-black text-slate-900">0 min</span>
                     </div>
-                    <span id="stat-total-sessions" class="text-xs text-slate-500 font-bold mt-4">Su 0 sessioni registrate</span>
+                    <span id="stat-total-sessions" class="text-[11px] text-slate-500 font-semibold mt-3">Su 0 sessioni registrate</span>
                 </div>
             </div>
 
-            <!-- Mappa Termica Interattiva del Campo & Dettaglio Selettore Sessione -->
-            <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-                <!-- Sezione Sinistra: Visualizzatore Campetto Basket -->
-                <div class="lg:col-span-7 bg-white border border-slate-200/90 rounded-3xl p-6 flex flex-col shadow-md">
-                    <div class="flex items-center justify-between mb-6">
+            <!-- Main Layout: Court & Session Breakdown -->
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                
+                <!-- Tactical Court Display -->
+                <div class="lg:col-span-7 bg-white border border-slate-200 rounded-xl p-5 flex flex-col shadow-xs">
+                    <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                         <div>
-                            <h3 class="text-xl font-extrabold text-slate-900">Mappa di Calore delle Posizioni</h3>
-                            <p class="text-xs text-slate-500 font-medium mt-0.5">Seleziona una sessione o la media globale per visualizzare l'efficacia sul campo</p>
+                            <h3 class="text-base font-athletic font-extrabold text-slate-900 tracking-wide">Mappa Tattica Posizioni</h3>
+                            <p class="text-xs text-slate-500 font-medium">Seleziona una sessione per aggiornare l'efficacia sul campo</p>
                         </div>
-                        <span class="text-xs font-extrabold text-orange-600 bg-orange-100 border border-orange-200 px-3.5 py-1.5 rounded-full uppercase tracking-wider shadow-sm">Visual 2D</span>
+                        <span class="text-[10px] font-mono font-bold text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-1 rounded uppercase">2D Analytics</span>
                     </div>
 
-                    <!-- Il Campetto Disegnato in SVG -->
-                    <div class="relative w-full aspect-[4/3] bg-gradient-to-b from-slate-900 via-slate-950 to-slate-900 rounded-2xl border-2 border-slate-700/80 overflow-hidden flex items-center justify-center p-4 shadow-2xl">
-                        <!-- Court Lines (SVG) - Linee bianche ad alto contrasto -->
-                        <svg class="absolute inset-0 w-full h-full text-white opacity-90" viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="0.8">
+                    <!-- Diagramma Campo Basket Tactico (Dark Theme Pro) -->
+                    <div class="relative w-full aspect-[4/3] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center p-3 shadow-inner court-grid-pattern">
+                        <!-- Court SVG Vector Lines -->
+                        <svg class="absolute inset-0 w-full h-full text-slate-500 opacity-80" viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="0.7">
                             <!-- Out of Bounds -->
-                            <rect x="2" y="2" width="96" height="76" rx="1" stroke-width="1.2" />
-                            <!-- Canestro e Tabellone -->
-                            <line x1="42" y1="5" x2="58" y2="5" stroke-width="1.5" stroke="#f97316" />
-                            <circle cx="50" cy="7.5" r="2.8" stroke-width="1.2" stroke="#f97316" fill="rgba(249, 115, 22, 0.15)" />
-                            <line x1="50" y1="5" x2="50" y2="6.5" stroke-width="1.2" stroke="#f97316" />
-                            <!-- Area dei tre secondi (Chiave) -->
-                            <rect x="34" y="2" width="32" height="26" stroke-width="1.0" fill="rgba(255, 255, 255, 0.03)" />
+                            <rect x="2" y="2" width="96" height="76" rx="1" stroke-width="1" />
+                            <!-- Canestro & Tabellone -->
+                            <line x1="42" y1="5" x2="58" y2="5" stroke-width="1.4" stroke="#EA580C" />
+                            <circle cx="50" cy="7.5" r="2.5" stroke-width="1.2" stroke="#EA580C" fill="rgba(234, 88, 12, 0.2)" />
+                            <line x1="50" y1="5" x2="50" y2="6.5" stroke-width="1.2" stroke="#EA580C" />
+                            <!-- Area Dei Tre Secondi -->
+                            <rect x="34" y="2" width="32" height="26" stroke-width="0.9" fill="rgba(255, 255, 255, 0.02)" />
                             <!-- Semicherchio lunetta -->
-                            <path d="M 34,28 C 38,35 62,35 66,28" stroke-width="1.0" />
-                            <!-- Linea del Tiro Libero -->
-                            <line x1="34" y1="28" x2="66" y2="28" stroke-width="1.0" stroke-dasharray="1.5 1.5" />
-                            <!-- Arco da Tre Punti -->
-                            <line x1="12" y1="2" x2="12" y2="16" stroke-width="1.0" />
-                            <line x1="88" y1="2" x2="88" y2="16" stroke-width="1.0" />
-                            <path d="M 12,16 A 41 41 0 0 0 88,16" stroke-width="1.2" />
+                            <path d="M 34,28 C 38,35 62,35 66,28" stroke-width="0.9" />
+                            <!-- Linea Tiro Libero -->
+                            <line x1="34" y1="28" x2="66" y2="28" stroke-width="0.9" stroke-dasharray="1.5 1.5" />
+                            <!-- Arco 3 Punti -->
+                            <line x1="12" y1="2" x2="12" y2="16" stroke-width="0.9" />
+                            <line x1="88" y1="2" x2="88" y2="16" stroke-width="0.9" />
+                            <path d="M 12,16 A 41 41 0 0 0 88,16" stroke-width="1.1" stroke="#94A3B8" />
                         </svg>
 
-                        <!-- Hotspots Sovrapposti in HTML -->
-                        <div class="absolute top-[8%] left-[7%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('angoloSX', 'Angolo Sinistro (3PT)')">
-                            <span class="text-[11px] text-slate-100 font-extrabold bg-slate-900/90 border border-slate-700 px-2.5 py-0.5 rounded-md mb-1 shadow-lg">Angolo SX</span>
-                            <div id="hotspot-angoloSX" class="w-12 h-12 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-xs font-black transition-all shadow-2xl">-%</div>
+                        <!-- Hotspot Badges (Interattivi) -->
+                        <div class="absolute top-[7%] left-[6%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloSX', 'Angolo Sinistro (3PT)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Angolo SX</span>
+                            <div id="hotspot-angoloSX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[40%] left-[17%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('guardiaSX', 'Guardia Sinistra (3PT)')">
-                            <span class="text-[11px] text-slate-100 font-extrabold bg-slate-900/90 border border-slate-700 px-2.5 py-0.5 rounded-md mb-1 shadow-lg">Guardia SX</span>
-                            <div id="hotspot-guardiaSX" class="w-12 h-12 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-xs font-black transition-all shadow-2xl">-%</div>
+                        <div class="absolute top-[38%] left-[16%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaSX', 'Guardia Sinistra (3PT)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Guardia SX</span>
+                            <div id="hotspot-guardiaSX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[64%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('punta', 'Punta (3PT)')">
-                            <span class="text-[11px] text-slate-100 font-extrabold bg-slate-900/90 border border-slate-700 px-2.5 py-0.5 rounded-md mb-1 shadow-lg">Punta</span>
-                            <div id="hotspot-punta" class="w-12 h-12 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-xs font-black transition-all shadow-2xl">-%</div>
+                        <div class="absolute top-[62%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('punta', 'Punta (3PT)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Punta</span>
+                            <div id="hotspot-punta" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[40%] right-[17%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('guardiaDX', 'Guardia Destra (3PT)')">
-                            <span class="text-[11px] text-slate-100 font-extrabold bg-slate-900/90 border border-slate-700 px-2.5 py-0.5 rounded-md mb-1 shadow-lg">Guardia DX</span>
-                            <div id="hotspot-guardiaDX" class="w-12 h-12 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-xs font-black transition-all shadow-2xl">-%</div>
+                        <div class="absolute top-[38%] right-[16%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaDX', 'Guardia Destra (3PT)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Guardia DX</span>
+                            <div id="hotspot-guardiaDX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[8%] right-[7%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('angoloDX', 'Angolo Destro (3PT)')">
-                            <span class="text-[11px] text-slate-100 font-extrabold bg-slate-900/90 border border-slate-700 px-2.5 py-0.5 rounded-md mb-1 shadow-lg">Angolo DX</span>
-                            <div id="hotspot-angoloDX" class="w-12 h-12 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-xs font-black transition-all shadow-2xl">-%</div>
+                        <div class="absolute top-[7%] right-[6%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloDX', 'Angolo Destro (3PT)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Angolo DX</span>
+                            <div id="hotspot-angoloDX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[31%] left-[33%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('gomitoSX', 'Gomito Sinistro')">
-                            <span class="text-[10px] text-slate-100 font-bold bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded mb-1 shadow-md">Gomito SX</span>
-                            <div id="hotspot-gomitoSX" class="w-10 h-10 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-[10px] font-black transition-all">-%</div>
+                        <div class="absolute top-[29%] left-[32%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoSX', 'Gomito Sinistro')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Gomito SX</span>
+                            <div id="hotspot-gomitoSX" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <!-- Hotspot Tiro Libero (Lunetta) -->
-                        <div class="absolute top-[32%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('liberi', 'Tiro Libero (Lunetta)')">
-                            <span class="text-[10px] text-slate-100 font-bold bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded mb-1 shadow-md">Tiro Libero</span>
-                            <div id="hotspot-liberi" class="w-10 h-10 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-[10px] font-black transition-all">-%</div>
+                        <div class="absolute top-[30%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('liberi', 'Tiro Libero (Lunetta)')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Lunetta</span>
+                            <div id="hotspot-liberi" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[31%] right-[33%] flex flex-col items-center group cursor-pointer transition-transform duration-300 hover:scale-110 z-10" onclick="openPositionModal('gomitoDX', 'Gomito Destro')">
-                            <span class="text-[10px] text-slate-100 font-bold bg-slate-900/90 border border-slate-700 px-2 py-0.5 rounded mb-1 shadow-md">Gomito DX</span>
-                            <div id="hotspot-gomitoDX" class="w-10 h-10 rounded-full border-2 border-slate-400 bg-slate-900 flex items-center justify-center text-[10px] font-black transition-all">-%</div>
+                        <div class="absolute top-[29%] right-[32%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoDX', 'Gomito Destro')">
+                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Gomito DX</span>
+                            <div id="hotspot-gomitoDX" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
                     </div>
                     
-                    <!-- Legenda Colori -->
-                    <div class="flex flex-wrap items-center justify-center gap-5 mt-5 text-xs font-extrabold text-slate-600">
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-3.5 h-3.5 rounded-full bg-emerald-500 border border-emerald-600 shadow-sm"></span> Elite (≥50%)
+                    <!-- Legenda Tiers Pro -->
+                    <div class="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-100 text-center text-[11px] font-extrabold">
+                        <div class="bg-emerald-50 text-emerald-800 py-1.5 px-2 rounded border border-emerald-200">
+                            ≥ 50% Elite
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-3.5 h-3.5 rounded-full bg-indigo-500 border border-indigo-600 shadow-sm"></span> Ottimo (40-49%)
+                        <div class="bg-indigo-50 text-indigo-800 py-1.5 px-2 rounded border border-indigo-200">
+                            40-49% Ottimo
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-3.5 h-3.5 rounded-full bg-amber-500 border border-amber-600 shadow-sm"></span> Discreto (30-39%)
+                        <div class="bg-amber-50 text-amber-800 py-1.5 px-2 rounded border border-amber-200">
+                            30-39% Media
                         </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="w-3.5 h-3.5 rounded-full bg-red-500 border border-red-600 shadow-sm"></span> Da Allenare (&lt;30%)
+                        <div class="bg-red-50 text-red-800 py-1.5 px-2 rounded border border-red-200">
+                            &lt; 30% Focus
                         </div>
                     </div>
                 </div>
 
-                <!-- Sezione Destra: Selettore Sessione e Dettaglio Numerico -->
-                <div class="lg:col-span-5 flex flex-col gap-6">
-                    <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-md">
-                        <label for="session-selector" class="block text-xs font-extrabold text-slate-500 uppercase tracking-wider mb-2.5">Seleziona Sessione o Vista</label>
-                        <select id="session-selector" onchange="loadSessionDetail(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-2xl px-4 py-3.5 text-sm font-extrabold text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white shadow-sm transition-all cursor-pointer">
-                            <!-- Popolato dinamicamente con Media + Sessioni -->
+                <!-- Session Selector & Detailed Numeric Report -->
+                <div class="lg:col-span-5 flex flex-col gap-5">
+                    
+                    <!-- Session Selector Card -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs">
+                        <label for="session-selector" class="block text-[11px] font-extrabold text-slate-500 uppercase tracking-wider mb-2">Filtro Sessione Attiva</label>
+                        <select id="session-selector" onchange="loadSessionDetail(this.value)" class="w-full bg-slate-50 border border-slate-300 rounded-lg px-3.5 py-2.5 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all cursor-pointer">
+                            <!-- Popolato dinamicamente -->
                         </select>
                     </div>
 
-                    <!-- Dettaglio Numerico Completo della Sessione Selezionata -->
-                    <div class="bg-white border border-slate-200/90 rounded-3xl p-6 flex-grow flex flex-col justify-between shadow-md">
+                    <!-- Analytical Breakdown Panel -->
+                    <div class="bg-white border border-slate-200 rounded-xl p-5 flex-grow flex flex-col justify-between shadow-xs">
                         <div>
-                            <h3 class="text-xl font-extrabold text-slate-900 mb-4 flex items-center justify-between">
-                                Report Dettagliato
-                                <span id="session-badge-title" class="text-xs bg-indigo-50 text-indigo-600 font-bold px-3 py-1 rounded-full border border-indigo-100">Vista Attiva</span>
-                            </h3>
-                            <div class="space-y-4">
-                                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                    <span class="text-sm font-bold text-slate-600 flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-indigo-500"></span> Tiri da 3 Punti
+                            <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
+                                <h3 class="text-base font-athletic font-extrabold text-slate-900 tracking-wide">Report Analitico</h3>
+                                <span id="session-badge-title" class="text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-slate-100 text-slate-800 border border-slate-200">Vista Attiva</span>
+                            </div>
+                            
+                            <!-- Key Metric Overview -->
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                                    <span class="text-xs font-bold text-slate-600 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-600"></span> 3 Punti Totali
                                     </span>
-                                    <span id="detail-3pt-stat" class="text-base font-black text-slate-900">0/0 (0%)</span>
+                                    <span id="detail-3pt-stat" class="text-xs font-mono font-bold text-slate-900">0/0 (0%)</span>
                                 </div>
-                                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                    <span class="text-sm font-bold text-slate-600 flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-emerald-500"></span> Tiri Liberi
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                                    <span class="text-xs font-bold text-slate-600 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span> Tiri Liberi
                                     </span>
-                                    <span id="detail-ft-stat" class="text-base font-black text-slate-900">0/0 (0%)</span>
+                                    <span id="detail-ft-stat" class="text-xs font-mono font-bold text-slate-900">0/0 (0%)</span>
                                 </div>
-                                <div class="flex items-center justify-between border-b border-slate-100 pb-3">
-                                    <span class="text-sm font-bold text-slate-600 flex items-center gap-2">
-                                        <span class="w-3 h-3 rounded-full bg-amber-500"></span> Palleggio Arresto e Tiro
+                                <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+                                    <span class="text-xs font-bold text-slate-600 flex items-center gap-2">
+                                        <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Palleggio Arresto e Tiro
                                     </span>
-                                    <span id="detail-pat-stat" class="text-base font-black text-slate-900">0/0 (0%)</span>
+                                    <span id="detail-pat-stat" class="text-xs font-mono font-bold text-slate-900">0/0 (0%)</span>
                                 </div>
                             </div>
 
-                            <!-- Dettaglio analitico per tutte le serie/posizioni -->
-                            <div class="mt-6 pt-4 border-t border-slate-100 space-y-4">
-                                <h4 class="text-xs font-black text-slate-500 uppercase tracking-wider flex items-center gap-1.5">
-                                    📊 Dettaglio Serie & Posizioni
-                                </h4>
-                                <div id="report-breakdown-container" class="space-y-3 max-h-60 overflow-y-auto pr-1">
-                                    <!-- Popolato dinamicamente -->
+                            <!-- Granular Series Preservation Section (Primary Dashboard Direct Visibility) -->
+                            <div class="mt-5 pt-3 border-t border-slate-100">
+                                <div class="flex items-center justify-between mb-3">
+                                    <h4 class="text-[11px] font-extrabold text-slate-500 uppercase tracking-wider">
+                                        Serie & Sub-Blocchi Dettagliati
+                                    </h4>
+                                    <span class="text-[10px] text-slate-400 font-mono">Full Granular Breakdown</span>
+                                </div>
+                                <div id="report-breakdown-container" class="space-y-2.5 max-h-56 overflow-y-auto pr-1">
+                                    <!-- Popolato dinamicamente da JS -->
                                 </div>
                             </div>
                         </div>
 
-                        <div class="mt-8 pt-5 border-t border-slate-100">
-                            <h4 class="text-xs font-black text-orange-600 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-                                💡 Osservazioni Tecniche
+                        <!-- Technical Insights -->
+                        <div class="mt-6 pt-4 border-t border-slate-100">
+                            <h4 class="text-[11px] font-extrabold text-orange-600 uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                                Osservazioni Balistiche
                             </h4>
-                            <p id="technical-insight" class="text-xs text-slate-600 leading-relaxed font-semibold">
-                                Seleziona una sessione o la media globale per generare un'analisi basata sulla precisione di tiro e sulle dinamiche registrate.
+                            <p id="technical-insight" class="text-xs text-slate-600 leading-relaxed font-medium">
+                                Seleziona una sessione o la media globale per visualizzare l'analisi sulle dinamiche registrate.
                             </p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Sezione Grafico di Progresso Storico -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-md">
-                <div class="flex items-center justify-between mb-6">
+            <!-- Historical Trend Chart -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+                <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-100">
                     <div>
-                        <h3 class="text-xl font-extrabold text-slate-900">Trend delle Performance</h3>
-                        <p class="text-xs text-slate-500 font-medium">Andamento percentuale delle tre specialità nel tempo</p>
+                        <h3 class="text-base font-athletic font-extrabold text-slate-900 tracking-wide">Progresso Temporale Performance</h3>
+                        <p class="text-xs text-slate-500 font-medium">Andamento percentuale delle 3 categorie chiave</p>
                     </div>
                 </div>
-                <div class="h-72 w-full relative">
+                <div class="h-64 w-full relative">
                     <canvas id="progressChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <!-- ================= TAB: PIANO ALLENAMENTO (60 MINUTI) ================= -->
-        <section id="tab-plan" class="hidden animate-fade-in space-y-8 max-w-5xl mx-auto">
-            <!-- Header Banner del Programma -->
-            <div class="bg-gradient-to-r from-slate-900 via-slate-850 to-orange-950 text-white rounded-3xl p-8 shadow-2xl relative overflow-hidden border border-slate-800">
-                <div class="absolute right-0 top-0 bottom-0 opacity-10 w-1/3 flex items-center justify-center pointer-events-none">
-                    <svg class="w-96 h-96 text-orange-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
-                </div>
-                
+        <!-- ================= TAB: PIANO ALLENAMENTO ================= -->
+        <section id="tab-plan" class="hidden space-y-6 max-w-5xl mx-auto">
+            
+            <!-- Program Banner -->
+            <div class="bg-slate-950 text-white rounded-xl p-6 shadow-md border border-slate-800 relative overflow-hidden">
                 <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
                     <div>
-                        <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3">
-                            📋 Programma Ufficiale • 60 Minuti
+                        <div class="inline-flex items-center gap-2 bg-orange-600/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded text-[11px] font-mono font-bold uppercase tracking-wider mb-3">
+                            Programma Ufficiale • 60 Minuti
                         </div>
-                        <h2 id="plan-banner-title" class="text-3xl font-black text-white tracking-tight">Programma di Allenamento Analitico</h2>
-                        <p id="plan-banner-desc" class="text-sm text-slate-300 font-medium max-w-2xl mt-2 leading-relaxed">
-                            Strutturato per massimizzare ogni singolo minuto sul parquet, combinando condizionamento meccanico, correzione delle asimmetrie balistiche e gestione dello sforzo fisico.
+                        <h2 id="plan-banner-title" class="text-2xl font-athletic font-extrabold text-white tracking-wide">Programma di Allenamento Analitico</h2>
+                        <p id="plan-banner-desc" class="text-xs text-slate-300 font-medium max-w-2xl mt-1.5 leading-relaxed">
+                            Strutturato per ottimizzare la meccanica di tiro, eliminare le asimmetrie sul campo e mantenere un'elevata percentuale in apnea.
                         </p>
                     </div>
 
-                    <!-- Timer Allenamento Integrato -->
-                    <div class="bg-slate-900/90 border border-slate-700/80 rounded-2xl p-5 text-center shadow-xl min-w-[200px] flex flex-col items-center">
-                        <span class="text-[10px] font-extrabold uppercase text-slate-400 tracking-wider">Timer Sessione Campo</span>
-                        <div id="plan-timer-display" class="text-3xl font-black text-orange-400 my-1 font-mono tracking-widest">00:00</div>
-                        <div class="flex items-center gap-2 mt-2">
-                            <button id="plan-timer-btn" onclick="togglePlanTimer()" class="px-3.5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-black transition-all shadow-md">Start</button>
-                            <button onclick="resetPlanTimer()" class="px-3.5 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold transition-all">Reset</button>
+                    <!-- Integrated Timer -->
+                    <div class="bg-slate-900 border border-slate-800 rounded-xl p-4 text-center min-w-[190px] flex flex-col items-center">
+                        <span class="text-[10px] font-mono uppercase text-slate-400 tracking-wider">Cronometro Campo</span>
+                        <div id="plan-timer-display" class="text-3xl font-athletic font-black text-orange-500 my-1 font-mono tracking-widest">00:00</div>
+                        <div class="flex items-center gap-2 mt-1">
+                            <button id="plan-timer-btn" onclick="togglePlanTimer()" class="px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors">Start</button>
+                            <button onclick="resetPlanTimer()" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded text-xs font-bold transition-colors">Reset</button>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Selettore del Piano di Allenamento -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <!-- Workout Plan Selector -->
+            <div class="bg-white border border-slate-200 rounded-xl p-4 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
-                    <h3 class="text-sm font-black text-slate-900">Seleziona Scheda Allenamento</h3>
-                    <p class="text-xs text-slate-500 font-semibold">Scegli la scheda registrata nello storico dei piani</p>
+                    <h3 class="text-xs font-bold text-slate-900 uppercase tracking-wider">Scheda Allenamento Selezionata</h3>
+                    <p class="text-xs text-slate-500 font-medium">Scegli una scheda dallo storico dei piani per caricarne le direttive</p>
                 </div>
-                <select id="plan-selector" onchange="loadPlanDetail(this.value)" class="bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-sm font-extrabold text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white shadow-sm transition-all cursor-pointer">
-                    <!-- Popolato dinamicamente da JS -->
+                <select id="plan-selector" onchange="loadPlanDetail(this.value)" class="bg-slate-50 border border-slate-300 rounded-lg px-3 py-2 text-xs font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 transition-all cursor-pointer">
+                    <!-- Popolato dinamicamente -->
                 </select>
             </div>
 
-            <!-- Tabella di Marcia Sintetica -->
-            <div class="bg-white border border-slate-200/90 rounded-3xl p-6 shadow-md">
-                <h3 class="text-lg font-black text-slate-900 mb-4 flex items-center gap-2">
-                    ⏱️ Tabella di Marcia Temporale
+            <!-- Timetable Summary Table -->
+            <div class="bg-white border border-slate-200 rounded-xl p-5 shadow-xs">
+                <h3 class="text-base font-athletic font-extrabold text-slate-900 mb-4 tracking-wide">
+                    Tabella Operativa Temporale
                 </h3>
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse text-left">
                         <thead>
-                            <tr class="border-b border-slate-200 bg-slate-50 text-xs font-black uppercase tracking-wider text-slate-500">
-                                <th class="py-3.5 px-4 rounded-l-xl">Fase dell'Allenamento</th>
-                                <th class="py-3.5 px-4 text-center">Intervallo</th>
-                                <th class="py-3.5 px-4">Obiettivo Principale</th>
-                                <th class="py-3.5 px-4 rounded-r-xl">Focus Tecnico</th>
+                            <tr class="border-b border-slate-200 bg-slate-50 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                                <th class="py-3 px-4 rounded-l-lg">Fase Sessione</th>
+                                <th class="py-3 px-4 text-center">Timing</th>
+                                <th class="py-3 px-4">Obiettivo Tecnico</th>
+                                <th class="py-3 px-4 rounded-r-lg">Focus Biomeccanico</th>
                             </tr>
                         </thead>
-                        <tbody id="plan-table-body" class="divide-y divide-slate-100 text-xs font-bold text-slate-700">
-                            <tr class="hover:bg-slate-50/80">
-                                <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Fase 1: Attivazione
-                                </td>
-                                <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">0 - 10 min</td>
-                                <td class="py-3.5 px-4">Riscaldamento e sensibilizzazione del polpastrello</td>
-                                <td class="py-3.5 px-4 text-slate-600">Allineamento gomito-spalla-piede</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80">
-                                <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span> Fase 2: Compensazione (3PT)
-                                </td>
-                                <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">10 - 30 min</td>
-                                <td class="py-3.5 px-4">Correzione della mira sul lato destro e in punta</td>
-                                <td class="py-3.5 px-4 text-slate-600">Rotazione del busto e follow-through</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80">
-                                <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span> Fase 3: Footwork (P.A.T.)
-                                </td>
-                                <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">30 - 45 min</td>
-                                <td class="py-3.5 px-4">Equilibrio nell'arresto dal palleggio sui gomiti</td>
-                                <td class="py-3.5 px-4 text-slate-600">Arresto a due tempi in base alla direzione</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80">
-                                <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500"></span> Fase 4: Fatica (Tiri Liberi)
-                                </td>
-                                <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">45 - 55 min</td>
-                                <td class="py-3.5 px-4">Precisione dalla lunetta in condizioni di apnea</td>
-                                <td class="py-3.5 px-4 text-slate-600">Gestione del battito cardiaco e routine</td>
-                            </tr>
-                            <tr class="hover:bg-slate-50/80">
-                                <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                                    <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span> Fase 5: Defaticamento
-                                </td>
-                                <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">55 - 60 min</td>
-                            <td class="py-3.5 px-4 text-slate-600">Visualizzazione della parabola sulla retina</td>
-                            </tr>
+                        <tbody id="plan-table-body" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
+                            <!-- Popolato dinamicamente da JS -->
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            <!-- Dettaglio Operativo Singole Fasi -->
-            <div class="space-y-6">
-                <h3 class="text-xl font-black text-slate-900 flex items-center gap-2">
-                    🎯 Dettaglio Operativo delle Fasi
+            <!-- Dynamic Phase Detail Cards -->
+            <div class="space-y-4">
+                <h3 class="text-base font-athletic font-extrabold text-slate-900 tracking-wide">
+                    Direttive Operative per Fase
                 </h3>
-
-                <div id="plan-phase-details" class="space-y-6">
-                    <!-- Generato dinamicamente dal file JSON del piano -->
+                <div id="plan-phase-details" class="space-y-4">
+                    <!-- Popolato dinamicamente da JS -->
                 </div>
             </div>
         </section>
 
         <!-- ================= TAB: STORICO ================= -->
-        <section id="tab-history" class="hidden animate-fade-in space-y-6">
+        <section id="tab-history" class="hidden space-y-5">
             <div class="flex items-center justify-between">
                 <div>
-                    <h2 class="text-2xl font-black text-slate-900">Storico Allenamenti</h2>
-                    <p class="text-sm text-slate-500 font-medium">Gestisci, rivedi o elimina le sessioni registrate finora.</p>
+                    <h2 class="text-xl font-athletic font-extrabold text-slate-900 tracking-wide">Storico Sessioni</h2>
+                    <p class="text-xs text-slate-500 font-medium">Archivio completo degli allenamenti registrati.</p>
                 </div>
             </div>
 
-            <div class="bg-white border border-slate-200/90 rounded-3xl overflow-hidden shadow-xl">
+            <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
                 <div class="overflow-x-auto">
                     <table class="w-full border-collapse">
                         <thead>
-                            <tr class="border-b border-slate-200 bg-slate-50/80 text-xs font-black uppercase tracking-wider text-slate-500">
-                                <th class="py-4 px-6 text-left">Data</th>
-                                <th class="py-4 px-6 text-center">Durata</th>
-                                <th class="py-4 px-6 text-center">3PT%</th>
-                                <th class="py-4 px-6 text-center">Tiri Liberi%</th>
-                                <th class="py-4 px-6 text-center">P.A.T.%</th>
-                                <th class="py-4 px-6 text-right">Azioni</th>
+                            <tr class="border-b border-slate-200 bg-slate-50 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
+                                <th class="py-3 px-5 text-left">Data</th>
+                                <th class="py-3 px-5 text-center">Durata</th>
+                                <th class="py-3 px-5 text-center">3PT %</th>
+                                <th class="py-3 px-5 text-center">Tiri Liberi %</th>
+                                <th class="py-3 px-5 text-center">P.A.T. %</th>
+                                <th class="py-3 px-5 text-right">Azioni</th>
                             </tr>
                         </thead>
-                        <tbody id="history-table-body" class="divide-y divide-slate-100 text-sm font-bold text-slate-700">
+                        <tbody id="history-table-body" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
                             <!-- Popolato dinamicamente -->
                         </tbody>
                     </table>
@@ -522,63 +515,39 @@
 
     </main>
 
-    <!-- Footer Desktop -->
-    <footer class="border-t border-slate-200 bg-white/60 py-6 mb-16 md:mb-0 text-center text-xs text-slate-500 font-bold">
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 bg-white py-4 mb-16 md:mb-0 text-center text-[11px] text-slate-500 font-medium">
         <div class="max-w-7xl mx-auto px-4">
-            <p>© 2026 ShotTracker. Progettato per Davide Braghiroli.</p>
+            <p>© 2026 ShotTracker • Basketball Analytics System. Progettato per Davide Braghiroli.</p>
         </div>
     </footer>
 
-    <!-- Bottom Navigation Bar per Smartphone (Fissa in Basso) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200 shadow-lg flex justify-around items-center py-2 px-3">
-        <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="flex flex-col items-center gap-1 text-orange-600 font-bold text-[11px] px-3 py-1">
+    <!-- Bottom Navigation Bar (Mobile) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950 text-slate-400 border-t border-slate-800 flex justify-around items-center py-2 px-3">
+        <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-3 py-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
-            <span>Dashboard</span>
+            <span>Analytics</span>
         </button>
-        <button onclick="switchTab('plan')" id="bottom-nav-plan" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 font-bold text-[11px] px-3 py-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
-            <span>Allenamento</span>
+        <button onclick="switchTab('plan')" id="bottom-nav-plan" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012 2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+            <span>Piano</span>
         </button>
-        <button onclick="switchTab('history')" id="bottom-nav-history" class="flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 font-bold text-[11px] px-3 py-1">
+        <button onclick="switchTab('history')" id="bottom-nav-history" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Storico</span>
         </button>
     </nav>
 
-    <!-- Logica Applicativa (JavaScript) -->
+    <!-- Client-Side JavaScript Logic -->
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'basketball-shottracker-davide';
 
-        const defaultSession = {
-            id: 'sessione-oggi-2026',
-            date: '2026-07-21',
-            duration: 50,
-            tri: {
-                angoloSX: { made: 11, att: 20, series: [3, 3, 3, 2] },
-                guardiaSX: { made: 12, att: 20, series: [3, 3, 2, 4] },
-                punta: { made: 5, att: 20, series: [0, 2, 2, 1] },
-                guardiaDX: { made: 4, att: 20, series: [1, 2, 1, 0] },
-                angoloDX: { made: 10, att: 20, series: [4, 3, 0, 3] }
-            },
-            liberi: { 
-                made: 38, 
-                att: 50, 
-                blocks: [
-                    [4, 4, 4, 3, 4],
-                    [3, 3, 4, 4, 5]
-                ] 
-            },
-            pat: {
-                gomitoSX: { made: 6, att: 15, series: [2, 1, 3] },
-                gomitoDX: { made: 5, att: 15, series: [2, 1, 2] }
-            }
-        };
-
         let sessions = [];
+        let plans = [];
         let progressChartInstance = null;
         let sessionToDeleteId = null;
 
-        // Timer per la scheda Piano Allenamento
+        // Timer Piano Allenamento
         let planTimerInterval = null;
         let planTimerSeconds = 0;
         let planTimerRunning = false;
@@ -586,8 +555,6 @@
         window.onload = function() {
             initApp();
         };
-
-        let plans = [];
 
         async function initApp() {
             await loadSessionsFromDataFolder();
@@ -606,7 +573,6 @@
 
         async function loadSessionsFromDataFolder() {
             try {
-                // Tenta di caricare l'indice delle sessioni da data/sessions.json
                 const res = await fetch('data/sessions.json');
                 if (res.ok) {
                     const indexList = await res.json();
@@ -633,7 +599,6 @@
                 console.info('Caricamento dinamico JSON non disponibile, utilizzo localStorage/fallback.', e);
             }
 
-            // Fallback su localStorage o array vuoto se fetch non disponibile (es. locale senza web server)
             try {
                 const savedData = localStorage.getItem(`${appId}-sessions`);
                 if (savedData) {
@@ -687,7 +652,7 @@
             sortedPlans.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p.id;
-                opt.textContent = `📋 Scheda Allenamento #${p.number || p.id}`;
+                opt.textContent = `Scheda Allenamento #${p.number || p.id}`;
                 selector.appendChild(opt);
             });
 
@@ -709,18 +674,18 @@
 
             if (tbody && plan.phases) {
                 tbody.innerHTML = '';
-                const colors = ['bg-blue-500', 'bg-indigo-500', 'bg-amber-500', 'bg-emerald-500', 'bg-slate-500'];
+                const colors = ['bg-blue-600', 'bg-indigo-600', 'bg-amber-500', 'bg-emerald-600', 'bg-slate-500'];
                 plan.phases.forEach((phase, idx) => {
                     const row = document.createElement('tr');
-                    row.className = "hover:bg-slate-50/80";
+                    row.className = "hover:bg-slate-50/80 transition-colors";
                     const colorClass = colors[idx % colors.length];
                     row.innerHTML = `
-                        <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
-                            <span class="w-2.5 h-2.5 rounded-full ${colorClass}"></span> ${phase.name}
+                        <td class="py-3 px-4 text-slate-900 font-bold flex items-center gap-2">
+                            <span class="w-2 h-2 rounded-full ${colorClass}"></span> ${phase.name}
                         </td>
-                        <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">${phase.time}</td>
-                        <td class="py-3.5 px-4">${phase.objective}</td>
-                        <td class="py-3.5 px-4 text-slate-600">${phase.focus}</td>
+                        <td class="py-3 px-4 text-center font-mono font-bold text-orange-600">${phase.time}</td>
+                        <td class="py-3 px-4">${phase.objective}</td>
+                        <td class="py-3 px-4 text-slate-500 font-medium">${phase.focus}</td>
                     `;
                     tbody.appendChild(row);
                 });
@@ -737,34 +702,34 @@
             if (!plan.phases || plan.phases.length === 0) return;
 
             const colorMap = {
-                blue: { border: 'border-l-blue-500', badge: 'bg-blue-100 text-blue-700' },
-                indigo: { border: 'border-l-indigo-500', badge: 'bg-indigo-100 text-indigo-700' },
-                amber: { border: 'border-l-amber-500', badge: 'bg-amber-100 text-amber-700' },
-                emerald: { border: 'border-l-emerald-500', badge: 'bg-emerald-100 text-emerald-700' },
-                slate: { border: 'border-l-slate-500', badge: 'bg-slate-100 text-slate-700' }
+                blue: { border: 'border-l-blue-600', badge: 'bg-blue-50 text-blue-700 border-blue-200' },
+                indigo: { border: 'border-l-indigo-600', badge: 'bg-indigo-50 text-indigo-700 border-indigo-200' },
+                amber: { border: 'border-l-amber-500', badge: 'bg-amber-50 text-amber-700 border-amber-200' },
+                emerald: { border: 'border-l-emerald-600', badge: 'bg-emerald-50 text-emerald-700 border-emerald-200' },
+                slate: { border: 'border-l-slate-500', badge: 'bg-slate-100 text-slate-700 border-slate-200' }
             };
 
             plan.phases.forEach(phase => {
                 const card = document.createElement('div');
                 const style = colorMap[phase.badgeColor] || colorMap.blue;
-                card.className = `bg-white border border-slate-200/90 rounded-3xl p-6 shadow-md border-l-4 ${style.border} space-y-4`;
+                card.className = `bg-white border border-slate-200 rounded-xl p-5 shadow-xs border-l-4 ${style.border} space-y-3`;
 
                 let html = `
                     <div class="flex items-center justify-between">
-                        <h4 class="text-lg font-black text-slate-900">${phase.name}</h4>
-                        <span class="text-xs font-black ${style.badge} px-3 py-1 rounded-full">Minuti ${phase.time}</span>
+                        <h4 class="text-sm font-athletic font-extrabold text-slate-900 tracking-wide">${phase.name}</h4>
+                        <span class="text-[10px] font-mono font-bold ${style.badge} px-2.5 py-0.5 rounded border">${phase.time}</span>
                     </div>
                 `;
 
                 if (phase.details) {
                     if (phase.details.description) {
-                        html += `<p class="text-xs text-slate-600 leading-relaxed font-semibold">${phase.details.description}</p>`;
+                        html += `<p class="text-xs text-slate-600 leading-relaxed font-medium">${phase.details.description}</p>`;
                     }
 
                     if (phase.details.bullets && phase.details.bullets.length > 0) {
-                        html += `<div class="bg-slate-50 rounded-2xl p-4 text-xs font-semibold text-slate-700 space-y-2 border border-slate-200/60">`;
+                        html += `<div class="bg-slate-50 rounded-lg p-3 text-xs font-medium text-slate-700 space-y-1.5 border border-slate-200">`;
                         phase.details.bullets.forEach(b => {
-                            html += `<div class="flex items-start gap-2"><span class="text-orange-500 font-bold">•</span><span>${b}</span></div>`;
+                            html += `<div class="flex items-start gap-2"><span class="text-orange-600 font-bold">•</span><span>${b}</span></div>`;
                         });
                         html += `</div>`;
                     }
@@ -772,25 +737,25 @@
                     if (phase.details.table && phase.details.table.length > 0) {
                         html += `
                             <div class="overflow-x-auto">
-                                <table class="w-full border-collapse text-left bg-slate-50 rounded-2xl overflow-hidden border border-slate-200/80">
+                                <table class="w-full border-collapse text-left bg-slate-50 rounded-lg overflow-hidden border border-slate-200">
                                     <thead>
-                                        <tr class="bg-slate-100 text-[11px] font-black uppercase text-slate-600 border-b border-slate-200">
-                                            <th class="py-2.5 px-4">Posizione di Tiro</th>
-                                            <th class="py-2.5 px-4 text-center">Volume di Tiri (per giro)</th>
-                                            <th class="py-2.5 px-4">Focus Correttivo Specifico</th>
+                                        <tr class="bg-slate-100 text-[10px] font-extrabold uppercase text-slate-600 border-b border-slate-200">
+                                            <th class="py-2 px-3">Posizione di Tiro</th>
+                                            <th class="py-2 px-3 text-center">Volume</th>
+                                            <th class="py-2 px-3">Focus Specifico</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="divide-y divide-slate-200/60 text-xs font-bold text-slate-700">
+                                    <tbody class="divide-y divide-slate-200 text-xs font-semibold text-slate-700">
                         `;
                         phase.details.table.forEach(row => {
-                            const bgClass = row.highlight ? 'bg-orange-50/50' : '';
-                            const titleClass = row.highlight ? 'text-orange-950 font-black' : 'text-slate-900 font-black';
-                            const focusClass = row.highlight ? 'text-orange-900' : 'text-slate-700';
+                            const bgClass = row.highlight ? 'bg-orange-50/60' : '';
+                            const titleClass = row.highlight ? 'text-orange-950 font-bold' : 'text-slate-900 font-bold';
+                            const focusClass = row.highlight ? 'text-orange-900' : 'text-slate-600';
                             html += `
                                 <tr class="${bgClass}">
-                                    <td class="py-2.5 px-4 ${titleClass}">${row.spot}</td>
-                                    <td class="py-2.5 px-4 text-center font-extrabold text-indigo-600">${row.volume}</td>
-                                    <td class="py-2.5 px-4 ${focusClass}">${row.focus}</td>
+                                    <td class="py-2 px-3 ${titleClass}">${row.spot}</td>
+                                    <td class="py-2 px-3 text-center font-mono font-bold text-indigo-600">${row.volume}</td>
+                                    <td class="py-2 px-3 ${focusClass}">${row.focus}</td>
                                 </tr>
                             `;
                         });
@@ -798,15 +763,15 @@
                     }
 
                     if (phase.details.rule) {
-                        html += `<div class="bg-amber-50 border border-amber-200/80 rounded-2xl p-4 text-xs font-semibold text-amber-900">${phase.details.rule}</div>`;
+                        html += `<div class="bg-amber-50 border border-amber-200 rounded-lg p-3 text-xs font-medium text-amber-900">${phase.details.rule}</div>`;
                     }
 
                     if (phase.details.split && phase.details.split.length > 0) {
-                        html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">`;
+                        html += `<div class="grid grid-cols-1 md:grid-cols-2 gap-3 pt-1">`;
                         phase.details.split.forEach(item => {
                             html += `
-                                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-semibold text-slate-700 space-y-1.5">
-                                    <h5 class="font-black text-slate-900 uppercase text-[11px] text-amber-600">${item.title}</h5>
+                                <div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-medium text-slate-700 space-y-1">
+                                    <h5 class="font-bold text-slate-900 uppercase text-[10px] text-amber-700">${item.title}</h5>
                                     <p class="leading-relaxed">${item.text}</p>
                                 </div>
                             `;
@@ -816,8 +781,8 @@
 
                     if (phase.details.steps && phase.details.steps.length > 0) {
                         html += `
-                            <div class="bg-emerald-50/70 border border-emerald-200 rounded-2xl p-4 text-xs font-semibold text-emerald-950 space-y-2">
-                                <p><strong>${phase.details.protocolTitle || 'Protocollo:'}</strong></p>
+                            <div class="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-xs font-medium text-emerald-950 space-y-1.5">
+                                <p class="font-bold text-emerald-900">${phase.details.protocolTitle || 'Protocollo:'}</p>
                                 <ol class="list-decimal list-inside space-y-1 text-emerald-900">
                         `;
                         phase.details.steps.forEach(step => {
@@ -829,7 +794,7 @@
                         }
                         html += `</div>`;
                     } else if (phase.details.note) {
-                        html += `<div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 text-xs font-semibold text-slate-700">${phase.details.note}</div>`;
+                        html += `<div class="bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs font-medium text-slate-700">${phase.details.note}</div>`;
                     }
                 }
 
@@ -868,24 +833,24 @@
                 if (t === tabId) {
                     section.classList.remove('hidden');
                     if (navBtn) {
-                        navBtn.className = "px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md shadow-orange-500/20";
+                        navBtn.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm";
                     }
                     if (mobileNavBtn) {
-                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 bg-gradient-to-r from-orange-500 to-amber-500 text-white shadow-md";
+                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 bg-orange-600 text-white";
                     }
                     if (bottomNavBtn) {
-                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-orange-600 font-bold text-[11px] px-3 py-1";
+                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-3 py-1";
                     }
                 } else {
                     section.classList.add('hidden');
                     if (navBtn) {
-                        navBtn.className = "px-5 py-2.5 rounded-2xl text-sm font-bold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100";
+                        navBtn.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
                     }
                     if (mobileNavBtn) {
-                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-xl text-sm font-bold flex items-center gap-3 text-slate-700 hover:bg-slate-100";
+                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800";
                     }
                     if (bottomNavBtn) {
-                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-slate-500 hover:text-slate-900 font-bold text-[11px] px-3 py-1";
+                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1";
                     }
                 }
             });
@@ -902,11 +867,11 @@
                 clearInterval(planTimerInterval);
                 planTimerRunning = false;
                 btn.textContent = "Start";
-                btn.className = "px-3.5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-black transition-all shadow-md";
+                btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
             } else {
                 planTimerRunning = true;
                 btn.textContent = "Pausa";
-                btn.className = "px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-black transition-all shadow-md";
+                btn.className = "px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold transition-colors";
                 planTimerInterval = setInterval(() => {
                     planTimerSeconds++;
                     updatePlanTimerDisplay();
@@ -921,7 +886,7 @@
             updatePlanTimerDisplay();
             const btn = document.getElementById('plan-timer-btn');
             btn.textContent = "Start";
-            btn.className = "px-3.5 py-1.5 bg-orange-500 hover:bg-orange-600 text-white rounded-xl text-xs font-black transition-all shadow-md";
+            btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
         }
 
         function updatePlanTimerDisplay() {
@@ -937,7 +902,7 @@
             
             const avgOption = document.createElement('option');
             avgOption.value = 'average';
-            avgOption.textContent = `📊 Media di Tutte le Sessioni (${sessions.length} tot)`;
+            avgOption.textContent = `Media Complessiva (${sessions.length} sessioni)`;
             selector.appendChild(avgOption);
 
             const sortedSessions = [...sessions].sort((a, b) => new Date(b.date) - new Date(a.date));
@@ -946,7 +911,7 @@
                 const formattedDate = formatDate(s.date);
                 const opt = document.createElement('option');
                 opt.value = s.id;
-                opt.textContent = `📅 ${formattedDate} (${s.duration} min)`;
+                opt.textContent = `Sessione del ${formattedDate} (${s.duration} min)`;
                 selector.appendChild(opt);
             });
         }
@@ -1007,7 +972,7 @@
 
             if (isAverage) {
                 document.getElementById('session-badge-title').textContent = "Media Complessiva";
-                document.getElementById('session-badge-title').className = "text-xs bg-orange-100 text-orange-700 font-extrabold px-3 py-1 rounded-full border border-orange-200";
+                document.getElementById('session-badge-title').className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200";
                 
                 let agg = {
                     tri: {
@@ -1041,7 +1006,7 @@
                 s = sessions.find(item => item.id === sessionId);
                 if (!s) return;
                 document.getElementById('session-badge-title').textContent = `Sessione del ${formatDate(s.date)}`;
-                document.getElementById('session-badge-title').className = "text-xs bg-indigo-100 text-indigo-700 font-extrabold px-3 py-1 rounded-full border border-indigo-200";
+                document.getElementById('session-badge-title').className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200";
             }
 
             const angSXP = s.tri.angoloSX.att > 0 ? Math.round((s.tri.angoloSX.made / s.tri.angoloSX.att) * 100) : 0;
@@ -1098,17 +1063,17 @@
             }
 
             if (targetSessions.length === 0) {
-                bodyEl.innerHTML = `<p class="text-sm text-slate-500">Nessun dato disponibile.</p>`;
+                bodyEl.innerHTML = `<p class="text-xs text-slate-500 font-medium">Nessun dato disponibile per la selezione.</p>`;
                 modal.classList.remove('hidden');
                 return;
             }
 
             targetSessions.forEach(session => {
                 const sessionCard = document.createElement('div');
-                sessionCard.className = "bg-slate-50 border border-slate-200/90 rounded-2xl p-4 space-y-3";
+                sessionCard.className = "bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2.5";
                 
                 let htmlHeader = `<div class="flex items-center justify-between border-b border-slate-200 pb-2">
-                    <span class="text-sm font-extrabold text-slate-900">📅 Sessione ${formatDate(session.date)}</span>
+                    <span class="text-xs font-bold text-slate-900">Sessione del ${formatDate(session.date)}</span>
                 `;
 
                 let statsHtml = '';
@@ -1116,7 +1081,7 @@
                 if (posKey === 'liberi') {
                     const lib = session.liberi;
                     const pct = lib.att > 0 ? Math.round((lib.made / lib.att) * 100) : 0;
-                    htmlHeader += `<span class="text-xs font-black px-2.5 py-0.5 rounded-full ${getPercentBadgeClass(pct)}">${lib.made}/${lib.att} (${pct}%)</span></div>`;
+                    htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${lib.made}/${lib.att} (${pct}%)</span></div>`;
                     
                     if (lib.blocks && lib.blocks.length > 0) {
                         statsHtml += `<div class="space-y-2 pt-1">`;
@@ -1124,65 +1089,65 @@
                             const bMade = block.reduce((a, b) => a + b, 0);
                             const bPct = Math.round((bMade / 25) * 100);
                             statsHtml += `<div>
-                                <div class="flex items-center justify-between text-xs font-extrabold text-slate-700 mb-1">
+                                <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
                                     <span>Blocco ${bIdx + 1} (25 tiri): ${bMade}/25 (${bPct}%)</span>
                                 </div>
                                 <div class="grid grid-cols-5 gap-1.5">`;
                             block.forEach((sVal, sIdx) => {
                                 const sPct = Math.round((sVal / 5) * 100);
-                                statsHtml += `<div class="bg-white border border-slate-200 rounded-xl p-2 text-center">
-                                    <span class="text-[10px] text-slate-400 font-bold block">Serie ${sIdx + 1}</span>
-                                    <span class="text-xs font-black text-slate-900">${sVal}/5</span>
-                                    <span class="text-[9px] font-extrabold block text-slate-500">${sPct}%</span>
+                                statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
+                                    <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
+                                    <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                    <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                                 </div>`;
                             });
                             statsHtml += `</div></div>`;
                         });
                         statsHtml += `</div>`;
                     } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-semibold pt-1">Totale sessione: ${lib.made}/${lib.att} tiri realizzati.</p>`;
+                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale sessione: ${lib.made}/${lib.att} realizzati.</p>`;
                     }
                 } else if (['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].includes(posKey)) {
                     const posData = session.tri[posKey];
                     const pct = posData.att > 0 ? Math.round((posData.made / posData.att) * 100) : 0;
-                    htmlHeader += `<span class="text-xs font-black px-2.5 py-0.5 rounded-full ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
+                    htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
 
                     if (posData.series && posData.series.length > 0) {
                         statsHtml += `<div class="pt-1">
-                            <span class="text-xs font-extrabold text-slate-600 block mb-1.5">Dettaglio 4 Serie (da 5 tiri ciascuna):</span>
-                            <div class="grid grid-cols-4 gap-2">`;
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">4 Serie da 5 tiri ciascuna:</span>
+                            <div class="grid grid-cols-4 gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
                             const sPct = Math.round((sVal / 5) * 100);
-                            statsHtml += `<div class="bg-white border border-slate-200 rounded-xl p-2 text-center">
-                                <span class="text-[10px] text-slate-400 font-bold block">Serie ${sIdx + 1}</span>
-                                <span class="text-xs font-black text-slate-900">${sVal}/5</span>
-                                <span class="text-[9px] font-extrabold block text-slate-500">${sPct}%</span>
+                            statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
+                                <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
+                                <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                             </div>`;
                         });
                         statsHtml += `</div></div>`;
                     } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-semibold pt-1">Totale posizione: ${posData.made}/${posData.att} tiri realizzati.</p>`;
+                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale posizione: ${posData.made}/${posData.att} realizzati.</p>`;
                     }
                 } else if (['gomitoSX', 'gomitoDX'].includes(posKey)) {
                     const posData = session.pat[posKey];
                     const pct = posData.att > 0 ? Math.round((posData.made / posData.att) * 100) : 0;
-                    htmlHeader += `<span class="text-xs font-black px-2.5 py-0.5 rounded-full ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
+                    htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
 
                     if (posData.series && posData.series.length > 0) {
                         statsHtml += `<div class="pt-1">
-                            <span class="text-xs font-extrabold text-slate-600 block mb-1.5">Dettaglio 3 Serie (da 5 tiri ciascuna):</span>
-                            <div class="grid grid-cols-3 gap-2">`;
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">3 Serie da 5 tiri ciascuna:</span>
+                            <div class="grid grid-cols-3 gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
                             const sPct = Math.round((sVal / 5) * 100);
-                            statsHtml += `<div class="bg-white border border-slate-200 rounded-xl p-2 text-center">
-                                <span class="text-[10px] text-slate-400 font-bold block">Serie ${sIdx + 1}</span>
-                                <span class="text-xs font-black text-slate-900">${sVal}/5</span>
-                                <span class="text-[9px] font-extrabold block text-slate-500">${sPct}%</span>
+                            statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
+                                <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
+                                <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                             </div>`;
                         });
                         statsHtml += `</div></div>`;
                     } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-semibold pt-1">Totale posizione: ${posData.made}/${posData.att} tiri realizzati.</p>`;
+                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale posizione: ${posData.made}/${posData.att} realizzati.</p>`;
                     }
                 }
 
@@ -1197,6 +1162,7 @@
             document.getElementById('position-modal').classList.add('hidden');
         }
 
+        // Granular Series Preservation: Primary Dashboard Rendering Function
         function renderReportBreakdown(sessionId) {
             const container = document.getElementById('report-breakdown-container');
             if (!container) return;
@@ -1214,16 +1180,16 @@
 
             targetSessions.forEach(session => {
                 const sItem = document.createElement('div');
-                sItem.className = "bg-slate-50 border border-slate-200/80 rounded-2xl p-3 text-xs space-y-2.5";
+                sItem.className = "bg-slate-50 border border-slate-200 rounded-lg p-3 text-xs space-y-2";
                 
-                let html = `<div class="font-extrabold text-slate-800 border-b border-slate-200 pb-1 flex justify-between items-center">
-                    <span>📅 Allenamento del ${formatDate(session.date)}</span>
-                    <span class="text-[10px] text-slate-500 font-bold">${session.duration} min</span>
+                let html = `<div class="font-bold text-slate-900 border-b border-slate-200 pb-1 flex justify-between items-center">
+                    <span>Sessione del ${formatDate(session.date)}</span>
+                    <span class="text-[10px] font-mono text-slate-500">${session.duration} min</span>
                 </div>`;
 
-                // 3PT
+                // 3PT Breakdown
                 html += `<div class="space-y-1">
-                    <span class="font-black text-indigo-600 uppercase text-[10px] tracking-wider block">Tiro da 3 Punti (4 serie da 5 per spot)</span>
+                    <span class="font-mono text-indigo-700 uppercase text-[9px] font-bold tracking-wider block">3PT (4 serie x spot)</span>
                     <div class="space-y-1">`;
                 
                 const pos3ptMap = {
@@ -1237,19 +1203,22 @@
                 for (const [k, name] of Object.entries(pos3ptMap)) {
                     const data = session.tri[k];
                     if (data && data.series) {
-                        const sStr = data.series.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
+                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
                         const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
-                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
-                            <span class="font-bold text-slate-800">${name}:</span>
-                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${data.made}/${data.att} (${pct}%)</strong></span>
+                        html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
+                            <span class="font-semibold text-slate-800">${name}:</span>
+                            <div class="flex items-center gap-1">
+                                ${sStr}
+                                <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
+                            </div>
                         </div>`;
                     }
                 }
                 html += `</div></div>`;
 
-                // PAT
+                // PAT Breakdown
                 html += `<div class="space-y-1 pt-1">
-                    <span class="font-black text-amber-600 uppercase text-[10px] tracking-wider block">Palleggio Arresto e Tiro (3 serie da 5)</span>
+                    <span class="font-mono text-amber-700 uppercase text-[9px] font-bold tracking-wider block">P.A.T. (3 serie x spot)</span>
                     <div class="space-y-1">`;
                 
                 const posPatMap = {
@@ -1260,29 +1229,35 @@
                 for (const [k, name] of Object.entries(posPatMap)) {
                     const data = session.pat[k];
                     if (data && data.series) {
-                        const sStr = data.series.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
+                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
                         const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
-                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
-                            <span class="font-bold text-slate-800">${name}:</span>
-                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${data.made}/${data.att} (${pct}%)</strong></span>
+                        html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
+                            <span class="font-semibold text-slate-800">${name}:</span>
+                            <div class="flex items-center gap-1">
+                                ${sStr}
+                                <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
+                            </div>
                         </div>`;
                     }
                 }
                 html += `</div></div>`;
 
-                // Tiri Liberi
+                // Tiri Liberi Breakdown
                 html += `<div class="space-y-1 pt-1">
-                    <span class="font-black text-emerald-600 uppercase text-[10px] tracking-wider block">Tiri Liberi (2 blocchi da 25)</span>
+                    <span class="font-mono text-emerald-700 uppercase text-[9px] font-bold tracking-wider block">Tiri Liberi (2 blocchi x 25)</span>
                     <div class="space-y-1">`;
                 
                 if (session.liberi && session.liberi.blocks) {
                     session.liberi.blocks.forEach((block, bIdx) => {
                         const bMade = block.reduce((a, b) => a + b, 0);
                         const bPct = Math.round((bMade / 25) * 100);
-                        const sStr = block.map((v, i) => `S${i+1}: ${v}/5`).join(', ');
-                        html += `<div class="flex justify-between items-center bg-white px-2.5 py-1.5 rounded-xl border border-slate-100 font-semibold text-[11px]">
-                            <span class="font-bold text-slate-800">Blocco ${bIdx+1}:</span>
-                            <span class="text-slate-600">${sStr} → <strong class="text-slate-900 font-black">${bMade}/25 (${bPct}%)</strong></span>
+                        const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
+                        html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
+                            <span class="font-semibold text-slate-800">Blocco ${bIdx+1}:</span>
+                            <div class="flex items-center gap-1">
+                                ${sStr}
+                                <span class="font-mono font-bold text-slate-900 ml-1">${bMade}/25 (${bPct}%)</span>
+                            </div>
                         </div>`;
                     });
                 }
@@ -1299,59 +1274,57 @@
             
             el.textContent = `${percent}%`;
             
-            const isGomito = id.includes('gomito');
-            const sizeClasses = isGomito 
-                ? 'w-10 h-10 text-[10px]' 
-                : 'w-12 h-12 text-xs';
-                
             let tierClasses = '';
             if (percent >= 50) {
-                tierClasses = 'bg-emerald-950/95 border-emerald-400 text-emerald-300 shadow-emerald-500/50 shadow-xl ring-2 ring-emerald-500/40';
+                tierClasses = 'bg-emerald-950 border-emerald-500 text-emerald-300 ring-1 ring-emerald-500/40';
             } else if (percent >= 40) {
-                tierClasses = 'bg-indigo-950/95 border-indigo-400 text-indigo-300 shadow-indigo-500/50 shadow-xl ring-2 ring-indigo-500/40';
+                tierClasses = 'bg-indigo-950 border-indigo-500 text-indigo-300 ring-1 ring-indigo-500/40';
             } else if (percent >= 30) {
-                tierClasses = 'bg-amber-950/95 border-amber-400 text-amber-300 shadow-amber-500/50 shadow-xl ring-2 ring-amber-500/40';
+                tierClasses = 'bg-amber-950 border-amber-500 text-amber-300 ring-1 ring-amber-500/40';
             } else {
-                tierClasses = 'bg-red-950/95 border-red-400 text-red-300 shadow-red-500/50 shadow-xl ring-2 ring-red-500/40';
+                tierClasses = 'bg-red-950 border-red-500 text-red-300 ring-1 ring-red-500/40';
             }
 
-            el.className = `${sizeClasses} rounded-full border-2 flex items-center justify-center font-black transition-all duration-300 backdrop-blur-md hover:scale-115 ${tierClasses}`;
+            const isGomito = id.includes('gomito') || id.includes('liberi');
+            const sizeClasses = isGomito ? 'w-10 h-10 text-[10px]' : 'w-12 h-12 text-xs';
+
+            el.className = `${sizeClasses} rounded-lg border-2 flex items-center justify-center font-athletic font-extrabold transition-all duration-200 hover:scale-105 shadow-md ${tierClasses}`;
         }
 
         function generateTechnicalInsight(session, t3P, fP, patP, spots3pt, spotsPat, isAverage = false) {
             let insight = "";
 
             if (isAverage) {
-                insight += `Analisi tecnica aggregata basata sulla media delle ${sessions.length} sessioni registrate: `;
+                insight += `Analisi aggregata su ${sessions.length} sessioni: `;
             }
 
             if (t3P > 45 && fP > 75) {
-                insight += "Ottima performance complessiva, con un'eccellente coordinazione generale. Il tiro da fuori mantiene ritmi ed efficacia elevati. ";
+                insight += "Efficacia elevata sia dal perimetro che in lunetta. ";
             } else {
-                insight += "Allenamento focalizzato sul ritmo. Le tue braccia hanno accumulato un buon volume di lavoro complessivo. ";
+                insight += "Sessione di lavoro sul ritmo complessivo. ";
             }
 
             const sxAverage = (spots3pt.angSXP + spots3pt.guaSXP) / 2;
             const dxAverage = (spots3pt.angDXP + spots3pt.guaDXP) / 2;
 
             if (sxAverage > dxAverage + 15) {
-                insight += "Si conferma una netta preferenza per il lato sinistro del campo, dove il rilascio risulta più naturale e stabile. ";
+                insight += "Maggiore stabilità balistica sul lato sinistro. ";
             } else if (dxAverage > sxAverage + 15) {
-                insight += "In questo ambito il lato destro del campo ha mostrato percentuali migliori rispetto al sinistro. ";
+                insight += "Percentuali superiori sul lato destro del campo. ";
             } else {
-                insight += "Ottima simmetria generale tra il lato destro e il lato sinistro, indice di un buon bilanciamento corporeo all'arresto. ";
+                insight += "Simmetria bilanciata tra lato sinistro e destro. ";
             }
 
             if (fP >= 80) {
-                insight += "I tiri liberi dimostrano una stabilità meccanica consolidata che resiste anche in condizioni di stanchezza fisica. ";
+                insight += "Ottima costanza dalla lunetta. ";
             } else {
-                insight += "Sulla linea dei tiri liberi puoi trovare maggiore efficacia rallentando la routine di preparazione prima del tiro. ";
+                insight += "Curare la routine di tiro per stabilizzare i liberi. ";
             }
 
             if (patP < 40) {
-                insight += "Nel Palleggio Arresto e Tiro la precisione scende leggermente: lavora sul controllo dei piedi nell'arresto a due tempi per ristabilire un baricentro solido.";
+                insight += "Nel P.A.T. si consiglia di rifinire il bilanciamento dell'arresto a due tempi.";
             } else {
-                insight += "Buona fluidità nel P.A.T., l'arresto controllato garantisce una base d'appoggio stabile per una parabola ottimale.";
+                insight += "Buona fluidità nell'arresto dal palleggio.";
             }
 
             document.getElementById('technical-insight').textContent = insight;
@@ -1387,29 +1360,34 @@
                         {
                             label: 'Tiro da 3 Punti %',
                             data: data3pt,
-                            borderColor: '#6366f1',
-                            backgroundColor: 'rgba(99, 102, 241, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.3,
+                            borderColor: '#4F46E5',
+                            backgroundColor: 'rgba(79, 70, 229, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
                             fill: true
                         },
                         {
                             label: 'Tiri Liberi %',
                             data: dataFT,
-                            borderColor: '#10b981',
-                            backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                            borderWidth: 3,
-                            tension: 0.3,
+                            borderColor: '#059669',
+                            backgroundColor: 'rgba(5, 150, 105, 0.05)',
+                            borderWidth: 2,
+                            tension: 0.2,
+                            pointRadius: 4,
+                            pointHoverRadius: 6,
                             fill: true
                         },
                         {
                             label: 'P.A.T. %',
                             data: dataPAT,
-                            borderColor: '#f59e0b',
-                            backgroundColor: 'rgba(245, 158, 11, 0.05)',
-                            borderWidth: 2.5,
-                            borderDash: [5, 5],
-                            tension: 0.3,
+                            borderColor: '#D97706',
+                            backgroundColor: 'rgba(217, 119, 6, 0.05)',
+                            borderWidth: 2,
+                            borderDash: [4, 4],
+                            tension: 0.2,
+                            pointRadius: 3,
                             fill: false
                         }
                     ]
@@ -1420,11 +1398,13 @@
                     plugins: {
                         legend: {
                             position: 'top',
+                            align: 'end',
                             labels: {
-                                color: '#475569',
+                                color: '#334155',
+                                boxWidth: 12,
                                 font: {
-                                    family: 'Urbanist',
-                                    size: 13,
+                                    family: 'Plus Jakarta Sans',
+                                    size: 11,
                                     weight: '700'
                                 }
                             }
@@ -1435,11 +1415,11 @@
                             min: 0,
                             max: 100,
                             grid: {
-                                color: 'rgba(226, 232, 240, 0.8)'
+                                color: '#F1F5F9'
                             },
                             ticks: {
-                                color: '#64748b',
-                                font: { weight: '600' },
+                                color: '#64748B',
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: '600' },
                                 callback: function(value) { return value + '%'; }
                             }
                         },
@@ -1448,8 +1428,8 @@
                                 display: false
                             },
                             ticks: {
-                                color: '#64748b',
-                                font: { weight: '600' }
+                                color: '#64748B',
+                                font: { family: 'Plus Jakarta Sans', size: 10, weight: '600' }
                             }
                         }
                     }
@@ -1462,7 +1442,7 @@
             tbody.innerHTML = '';
 
             if (sessions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400">Nessun allenamento registrato.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 font-medium">Nessuna sessione registrata nello storico.</td></tr>`;
                 return;
             }
 
@@ -1480,22 +1460,22 @@
                 const sPATP = sPATAtt > 0 ? Math.round((sPATMade / sPATAtt) * 100) : 0;
 
                 const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50 transition-colors";
+                row.className = "hover:bg-slate-50/80 transition-colors";
                 row.innerHTML = `
-                    <td class="py-4 px-6 text-left text-slate-900 font-extrabold">${formatDate(s.date)}</td>
-                    <td class="py-4 px-6 text-center text-slate-500 font-semibold">${s.duration} min</td>
-                    <td class="py-4 px-6 text-center">
-                        <span class="px-3 py-1 rounded-full text-xs font-black ${getPercentBadgeClass(s3ptP)}">${s3ptP}%</span>
+                    <td class="py-3.5 px-5 text-left text-slate-900 font-bold">${formatDate(s.date)}</td>
+                    <td class="py-3.5 px-5 text-center text-slate-500 font-mono">${s.duration} min</td>
+                    <td class="py-3.5 px-5 text-center">
+                        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(s3ptP)}">${s3ptP}%</span>
                     </td>
-                    <td class="py-4 px-6 text-center">
-                        <span class="px-3 py-1 rounded-full text-xs font-black ${getPercentBadgeClass(sFTP)}">${sFTP}%</span>
+                    <td class="py-3.5 px-5 text-center">
+                        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(sFTP)}">${sFTP}%</span>
                     </td>
-                    <td class="py-4 px-6 text-center">
-                        <span class="px-3 py-1 rounded-full text-xs font-black ${getPercentBadgeClass(sPATP)}">${sPATP}%</span>
+                    <td class="py-3.5 px-5 text-center">
+                        <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(sPATP)}">${sPATP}%</span>
                     </td>
-                    <td class="py-4 px-6 text-right">
-                        <button onclick="askDeleteSession('${s.id}')" class="text-slate-400 hover:text-red-600 transition-colors p-1.5 rounded-lg hover:bg-red-50" title="Elimina sessione">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    <td class="py-3.5 px-5 text-right">
+                        <button onclick="askDeleteSession('${s.id}')" class="text-slate-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-slate-100" title="Elimina sessione">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                         </button>
                     </td>
                 `;
@@ -1504,10 +1484,10 @@
         }
 
         function getPercentBadgeClass(percent) {
-            if (percent >= 50) return "bg-emerald-100 text-emerald-700 border border-emerald-200";
-            if (percent >= 40) return "bg-indigo-100 text-indigo-700 border border-indigo-200";
-            if (percent >= 30) return "bg-amber-100 text-amber-700 border border-amber-200";
-            return "bg-red-100 text-red-700 border border-red-200";
+            if (percent >= 50) return "bg-emerald-50 text-emerald-700 border border-emerald-200 font-bold";
+            if (percent >= 40) return "bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold";
+            if (percent >= 30) return "bg-amber-50 text-amber-700 border border-amber-200 font-bold";
+            return "bg-red-50 text-red-700 border border-red-200 font-bold";
         }
 
         function askDeleteSession(id) {
@@ -1551,28 +1531,28 @@
             messageEl.textContent = message;
 
             if (type === "success") {
-                iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 border border-emerald-200";
+                iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-7 h-7 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
                 iconBox.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
                     </svg>
                 `;
             } else {
-                iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-9 h-9 rounded-xl bg-red-100 text-red-700 border border-red-200";
+                iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-7 h-7 rounded bg-red-950 text-red-400 border border-red-800";
                 iconBox.innerHTML = `
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
                     </svg>
                 `;
             }
 
-            toast.classList.remove('translate-y-[-100px]', 'opacity-0');
+            toast.classList.remove('-translate-y-24', 'opacity-0');
             toast.classList.add('translate-y-0', 'opacity-100');
 
             setTimeout(() => {
                 toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-[-100px]', 'opacity-0');
-            }, 4000);
+                toast.classList.add('-translate-y-24', 'opacity-0');
+            }, 3500);
         }
     </script>
 </body>
