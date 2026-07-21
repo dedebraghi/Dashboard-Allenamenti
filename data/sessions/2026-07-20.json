@@ -1,0 +1,24 @@
+{
+  "id": "sessione-2026-07-20",
+  "date": "2026-07-20",
+  "duration": 50,
+  "tri": {
+    "angoloSX": { "made": 11, "att": 20, "series": [3, 3, 3, 2] },
+    "guardiaSX": { "made": 12, "att": 20, "series": [3, 3, 2, 4] },
+    "punta": { "made": 5, "att": 20, "series": [0, 2, 2, 1] },
+    "guardiaDX": { "made": 4, "att": 20, "series": [1, 2, 1, 0] },
+    "angoloDX": { "made": 10, "att": 20, "series": [4, 3, 0, 3] }
+  },
+  "liberi": { 
+    "made": 38, 
+    "att": 50, 
+    "blocks": [
+      [4, 4, 4, 3, 4],
+      [3, 3, 4, 4, 5]
+    ] 
+  },
+  "pat": {
+    "gomitoSX": { "made": 6, "att": 15, "series": [2, 1, 3] },
+    "gomitoDX": { "made": 5, "att": 15, "series": [2, 1, 2] }
+  }
+}

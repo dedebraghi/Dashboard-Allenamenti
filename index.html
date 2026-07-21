@@ -389,8 +389,8 @@
                         <div class="inline-flex items-center gap-2 bg-orange-500/20 text-orange-400 border border-orange-500/30 px-3.5 py-1 rounded-full text-xs font-black uppercase tracking-wider mb-3">
                             📋 Programma Ufficiale • 60 Minuti
                         </div>
-                        <h2 class="text-3xl font-black text-white tracking-tight">Programma di Allenamento Analitico</h2>
-                        <p class="text-sm text-slate-300 font-medium max-w-2xl mt-2 leading-relaxed">
+                        <h2 id="plan-banner-title" class="text-3xl font-black text-white tracking-tight">Programma di Allenamento Analitico</h2>
+                        <p id="plan-banner-desc" class="text-sm text-slate-300 font-medium max-w-2xl mt-2 leading-relaxed">
                             Strutturato per massimizzare ogni singolo minuto sul parquet, combinando condizionamento meccanico, correzione delle asimmetrie balistiche e gestione dello sforzo fisico.
                         </p>
                     </div>
@@ -405,6 +405,17 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Selettore del Piano di Allenamento -->
+            <div class="bg-white border border-slate-200/90 rounded-3xl p-5 shadow-md flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                    <h3 class="text-sm font-black text-slate-900">Seleziona Scheda Allenamento</h3>
+                    <p class="text-xs text-slate-500 font-semibold">Scegli la scheda registrata nello storico dei piani</p>
+                </div>
+                <select id="plan-selector" onchange="loadPlanDetail(this.value)" class="bg-slate-50 border border-slate-300 rounded-2xl px-4 py-2.5 text-sm font-extrabold text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500 focus:bg-white shadow-sm transition-all cursor-pointer">
+                    <!-- Popolato dinamicamente da JS -->
+                </select>
             </div>
 
             <!-- Tabella di Marcia Sintetica -->
@@ -422,7 +433,7 @@
                                 <th class="py-3.5 px-4 rounded-r-xl">Focus Tecnico</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-100 text-xs font-bold text-slate-700">
+                        <tbody id="plan-table-body" class="divide-y divide-slate-100 text-xs font-bold text-slate-700">
                             <tr class="hover:bg-slate-50/80">
                                 <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
                                     <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span> Fase 1: Attivazione
@@ -693,23 +704,6 @@
         };
 
         let sessions = [];
-        try {
-            const savedData = localStorage.getItem(`${appId}-sessions`);
-            if (savedData) {
-                sessions = JSON.parse(savedData);
-                // Aggiorna la sessione predefinita con le sotto-serie se era presente la vecchia versione
-                const idx = sessions.findIndex(s => s.id === defaultSession.id);
-                if (idx !== -1) {
-                    sessions[idx] = defaultSession;
-                }
-            } else {
-                sessions = [defaultSession];
-            }
-            localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
-        } catch (e) {
-            sessions = [defaultSession];
-        }
-
         let progressChartInstance = null;
         let sessionToDeleteId = null;
 
@@ -722,8 +716,13 @@
             initApp();
         };
 
-        function initApp() {
+        let plans = [];
+
+        async function initApp() {
+            await loadSessionsFromDataFolder();
+            await loadPlansFromDataFolder();
             populateSessionSelector();
+            populatePlanSelector();
             updateGlobalStats();
             renderProgressChart();
             populateHistoryTable();
@@ -731,6 +730,129 @@
             if (sessions.length > 0) {
                 document.getElementById('session-selector').value = 'average';
                 loadSessionDetail('average');
+            }
+        }
+
+        async function loadSessionsFromDataFolder() {
+            try {
+                // Tenta di caricare l'indice delle sessioni da data/sessions.json
+                const res = await fetch('data/sessions.json');
+                if (res.ok) {
+                    const indexList = await res.json();
+                    const fetchedSessions = [];
+                    for (const item of indexList) {
+                        try {
+                            const sRes = await fetch(item.file);
+                            if (sRes.ok) {
+                                const sData = await sRes.json();
+                                fetchedSessions.push(sData);
+                            }
+                        } catch (err) {
+                            console.warn('Errore nel caricamento della sessione:', item.file, err);
+                        }
+                    }
+
+                    if (fetchedSessions.length > 0) {
+                        sessions = fetchedSessions;
+                        localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+                        return;
+                    }
+                }
+            } catch (e) {
+                console.info('Caricamento dinamico JSON non disponibile, utilizzo localStorage/fallback.', e);
+            }
+
+            // Fallback su localStorage o array vuoto se fetch non disponibile (es. locale senza web server)
+            try {
+                const savedData = localStorage.getItem(`${appId}-sessions`);
+                if (savedData) {
+                    sessions = JSON.parse(savedData);
+                }
+            } catch (e) {
+                sessions = [];
+            }
+        }
+
+        async function loadPlansFromDataFolder() {
+            try {
+                const res = await fetch('data/plans.json');
+                if (res.ok) {
+                    const indexList = await res.json();
+                    const fetchedPlans = [];
+                    for (const item of indexList) {
+                        try {
+                            const pRes = await fetch(item.file);
+                            if (pRes.ok) {
+                                const pData = await pRes.json();
+                                fetchedPlans.push(pData);
+                            }
+                        } catch (err) {
+                            console.warn('Errore nel caricamento del piano:', item.file, err);
+                        }
+                    }
+                    if (fetchedPlans.length > 0) {
+                        plans = fetchedPlans;
+                    }
+                }
+            } catch (e) {
+                console.info('Caricamento piani non disponibile via fetch.', e);
+            }
+        }
+
+        function populatePlanSelector() {
+            const selector = document.getElementById('plan-selector');
+            if (!selector) return;
+            selector.innerHTML = '';
+
+            if (plans.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'Programma Predefinito';
+                selector.appendChild(opt);
+                return;
+            }
+
+            const sortedPlans = [...plans].sort((a, b) => (b.number || 0) - (a.number || 0));
+            sortedPlans.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `📋 Scheda Allenamento #${p.number || p.id}`;
+                selector.appendChild(opt);
+            });
+
+            if (sortedPlans.length > 0) {
+                loadPlanDetail(sortedPlans[0].id);
+            }
+        }
+
+        function loadPlanDetail(planId) {
+            const plan = plans.find(p => p.id === planId);
+            if (!plan) return;
+
+            const titleEl = document.getElementById('plan-banner-title');
+            const descEl = document.getElementById('plan-banner-desc');
+            const tbody = document.getElementById('plan-table-body');
+
+            if (titleEl) titleEl.textContent = plan.title || "Programma di Allenamento Analitico";
+            if (descEl) descEl.textContent = plan.description || "";
+
+            if (tbody && plan.phases) {
+                tbody.innerHTML = '';
+                const colors = ['bg-blue-500', 'bg-indigo-500', 'bg-amber-500', 'bg-emerald-500', 'bg-slate-500'];
+                plan.phases.forEach((phase, idx) => {
+                    const row = document.createElement('tr');
+                    row.className = "hover:bg-slate-50/80";
+                    const colorClass = colors[idx % colors.length];
+                    row.innerHTML = `
+                        <td class="py-3.5 px-4 text-slate-900 font-extrabold flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full ${colorClass}"></span> ${phase.name}
+                        </td>
+                        <td class="py-3.5 px-4 text-center font-extrabold text-orange-600">${phase.time}</td>
+                        <td class="py-3.5 px-4">${phase.objective}</td>
+                        <td class="py-3.5 px-4 text-slate-600">${phase.focus}</td>
+                    `;
+                    tbody.appendChild(row);
+                });
             }
         }
 

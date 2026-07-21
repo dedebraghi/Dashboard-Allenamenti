@@ -1,0 +1,32 @@
+{
+  "id": "piano-2026-07-21",
+  "date": "2026-07-21",
+  "title": "Programma di Allenamento Analitico Mirato",
+  "description": "Strutturato per massimizzare ogni minuto sul campo, focalizzandosi sulle zone a percentuale minore rilevate negli ultimi allenamenti.",
+  "phases": [
+    {
+      "name": "Fase 1: Attivazione & Sensibilità",
+      "time": "0 - 10 min",
+      "objective": "Riscaldamento e sensibilizzazione del polpastrello",
+      "focus": "Allineamento gomito-spalla-piede"
+    },
+    {
+      "name": "Fase 2: Compensazione (Tiro da 3)",
+      "time": "10 - 30 min",
+      "objective": "Focus su Punta (25%) e Guardia DX (20%)",
+      "focus": "Rotazione del busto, spinta delle gambe e follow-through solido"
+    },
+    {
+      "name": "Fase 3: Footwork (P.A.T.)",
+      "time": "30 - 45 min",
+      "objective": "Equilibrio nell'arresto sui gomiti (Gomito DX 33%)",
+      "focus": "Arresto a due tempi in base alla direzione di entrata"
+    },
+    {
+      "name": "Fase 4: Resilienza Liberi & Defaticamento",
+      "time": "45 - 60 min",
+      "objective": "Mantenimento quota 75%+ a stanchezza accumulata",
+      "focus": "Routine di respirazione uniforme prima del rilascio"
+    }
+  ]
+}
