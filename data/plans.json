@@ -3,5 +3,10 @@
     "id": "piano-1",
     "number": 1,
     "file": "data/plans/piano-1.json"
+  },
+  {
+    "id": "piano-2",
+    "number": 2,
+    "file": "data/plans/piano-2.json"
   }
 ]

@@ -1,0 +1,94 @@
+{
+  "id": "piano-2",
+  "number": 2,
+  "title": "Programma di Allenamento Analitico • Scheda #2",
+  "description": "Consolidamento dei progressi su Punta e Guardia DX, recupero della Guardia SX ed ottimizzazione del footwork nel P.A.T.",
+  "phases": [
+    {
+      "id": "fase-1",
+      "name": "Fase 1: Attivazione & Sensibilità",
+      "time": "0 - 10 min",
+      "objective": "Riscaldamento, meccanica di rilascio e allineamento gomito-spalla",
+      "focus": "Form shooting ad una mano e stabilità della base",
+      "badgeColor": "blue",
+      "details": {
+        "description": "Lavoro di sensibilizzazione entro l'area dei 3 secondi per impostare la meccanica ideale prima del lavoro ad alto volume.",
+        "bullets": [
+          "<strong>Form Shooting (0-5 min):</strong> 3 serie da 10 tiri ad una sola mano dal semicerchio (centro, 45° SX, 45° DX). Focus su gomito sotto la palla e finale spezza-polso pulito.",
+          "<strong>Attivazione Lunetta (5-10 min):</strong> 10 tiri liberi sequenziali curando la respirazione diaframmatica prima di ogni rilascio."
+        ]
+      }
+    },
+    {
+      "id": "fase-2",
+      "name": "Fase 2: Compensazione & Bilanciamento (Tiro da 3)",
+      "time": "10 - 30 min",
+      "objective": "Recupero stabilità Guardia SX (30% S2) e consolidamento Punta e Guardia DX",
+      "focus": "Orientamento dei piedi, spinta bilanciata ed estensione completa dell'arto",
+      "badgeColor": "indigo",
+      "details": {
+        "description": "Volume distribuito in modo mirato sull'arco per equilibrare le percentuali complessive, forzando la correzione della Guardia SX ed il mantenimento dei picchi su Punta e Guardia DX.",
+        "table": [
+          { "spot": "Angolo Sinistro", "volume": "10 tiri", "focus": "Ritmo fluido e rilascio rapido", "highlight": false },
+          { "spot": "Guardia Sinistra", "volume": "20 tiri", "focus": "Correzione allineamento e stabilità della base (Focus critico S2)", "highlight": true },
+          { "spot": "Punta", "volume": "20 tiri", "focus": "Consolidamento parabola e spinta gambe (da 25% a 45%)", "highlight": true },
+          { "spot": "Guardia Destra", "volume": "20 tiri", "focus": "Mantenimento ritmo e stabilità (da 20% a 45%)", "highlight": true },
+          { "spot": "Angolo Destro", "volume": "10 tiri", "focus": "Conferma hotspot balistico (60% S2)", "highlight": false }
+        ],
+        "rule": "<strong>💡 Regola Operativa:</strong> Esegui la rotazione per un totale di <strong>80 tiri dall'arco</strong>. Nelle posizioni evidenziate, dividi il volume in serie da 5 tiri con 10 secondi di verifica dell'assetto dei piedi orientati al ferro."
+      }
+    },
+    {
+      "id": "fase-3",
+      "name": "Fase 3: Footwork Pro (P.A.T.)",
+      "time": "30 - 45 min",
+      "objective": "Affinamento dell'arresto sui gomiti in dinamica (Totale 60 tiri)",
+      "focus": "Arresto a due tempi: da Guardia SX perno con piede interno DESTRO; da Guardia DX perno con piede interno SINISTRO",
+      "badgeColor": "amber",
+      "details": {
+        "description": "Consolidamento del salto di qualità nel P.A.T. (salito dal 36.7% al 50.0% complessivo).",
+        "split": [
+          {
+            "title": "1ª Metà: Guardia SX → Gomito SX (30 Ripe - 6 serie x 5)",
+            "text": "Palleggio verso il centro: arresto a 2 tempi con <strong>piede esterno Sinistro</strong> per frenare e <strong>piede interno Destro</strong> come perno di elevazione verso il ferro."
+          },
+          {
+            "title": "2ª Metà: Guardia DX → Gomito DX (30 Ripe - 6 serie x 5)",
+            "text": "Palleggio verso il centro: arresto a 2 tempi con <strong>piede esterno Destro</strong> per assorbire l'inerzia e <strong>piede interno Sinistro</strong> per il decollo verticale."
+          }
+        ]
+      }
+    },
+    {
+      "id": "fase-4",
+      "name": "Fase 4: Resilienza & Fatica (Tiri Liberi)",
+      "time": "45 - 55 min",
+      "objective": "Mantenimento quota 85%+ in condizione di apnea cardiovascolare",
+      "focus": "Routine respiratoria uniforme e stabilità meccanica sotto sforzo",
+      "badgeColor": "emerald",
+      "details": {
+        "description": "Stabilizzazione dell'ottimo rendimento ai liberi (86.7% nella Sessione 2). simulazione di finale di partita.",
+        "protocolTitle": "Protocollo Sotto Sforzo Cardiovascolare (30 tiri liberi totali):",
+        "steps": [
+          "Esegui <strong>2 scatti a tutto campo</strong> a massima velocità.",
+          "Vai immediatamente in lunetta ed esegui <strong>3 tiri liberi</strong> concentrati.",
+          "Effettua un recupero attivo di 30 secondi camminando.",
+          "Ripeti per un totale di <strong>10 serie</strong> (30 tiri liberi complessivi)."
+        ],
+        "note": "<em>Obiettivo Tecnico: Ripetibilità meccanica ed eliminazione delle derive dovute alla fatica sulle gambe.</em>"
+      }
+    },
+    {
+      "id": "fase-5",
+      "name": "Fase 5: Defaticamento & Anchoring Mentale",
+      "time": "55 - 60 min",
+      "objective": "Decompressione muscolare e fissaggio dei pattern motori",
+      "focus": "Visualizzazione attiva della parabola e rilassamento muscolare",
+      "badgeColor": "slate",
+      "details": {
+        "description": "5 minuti di defaticamento attivo per registrare le sensazioni meccaniche ottimali.",
+        "note": "<strong>Visualizzazione della Parabola:</strong> Allungamento catena posteriore e spalle. Ripercorri mentalmente i rilasci riusciti da Guardia DX e Punta per consolidare il pattern motorio corretto."
+      }
+    }
+  ]
+}

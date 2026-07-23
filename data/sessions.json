@@ -3,5 +3,10 @@
     "id": "sessione-2026-07-20",
     "date": "2026-07-20",
     "file": "data/sessions/2026-07-20.json"
+  },
+  {
+    "id": "sessione-2026-07-23",
+    "date": "2026-07-23",
+    "file": "data/sessions/2026-07-23.json"
   }
 ]
