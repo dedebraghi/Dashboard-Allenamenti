@@ -20,5 +20,23 @@
   "pat": {
     "gomitoSX": { "made": 14, "att": 30, "series": [2, 1, 3, 3, 2, 3] },
     "gomitoDX": { "made": 16, "att": 30, "series": [2, 2, 2, 4, 4, 2] }
+  },
+  "insight": {
+    "title": "Analisi Puntuale Sessione #2 (23/07/2026)",
+    "summary": "Sessione di forte compensazione balistica. Risposta immediata sui punti critici della Sessione 1 (Guardia DX e Punta).",
+    "sections": [
+      {
+        "heading": "Tiro da 3 Punti (46.2% Totale - 37/80)",
+        "content": "Risposta balistica straordinaria nelle zone fredde dell'allenamento precedente: la Guardia DX compie un balzo dal 20.0% al 45.0% (9/20) e la Punta dal 25.0% al 45.0% (9/20), dimostrando l'efficacia del volume asimmetrico del Piano #1. L'Angolo DX si afferma come hotspot assoluto al 60.0% (12/20). La Guardia SX evidenzia un calo temporaneo al 30.0% (3/10) causato dal volume contenuto (10 tiri) e da una leggera perdita di stabilità della base di appoggio da recuperare nella Scheda #2."
+      },
+      {
+        "heading": "Palleggio Arresto e Tiro - P.A.T. (50.0% Totale - 30/60)",
+        "content": "Notevole incremento dell'efficacia (+13.3% rispetto a S1). Il Gomito DX sale al 53.3% (16/30) con picchi da 4/5 nelle serie centrali. Ottimo recepimento dell'arresto a due tempi con piede interno (Sinistro) orientato al ferro per la spinta verticale."
+      },
+      {
+        "heading": "Tiri Liberi (86.7% Totale - 26/30)",
+        "content": "Tenuta mentale e balistica eccellente: 9/10 (90%) nel blocco unico iniziale e 17/20 (85.0%) nella serie sotto sforzo 10x2. Dimostrata un'elevata capacità di gestione del respiro ed isolamento dalla fatica accumulata."
+      }
+    ]
   }
 }

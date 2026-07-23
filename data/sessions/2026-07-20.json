@@ -20,5 +20,23 @@
   "pat": {
     "gomitoSX": { "made": 6, "att": 15, "series": [2, 1, 3] },
     "gomitoDX": { "made": 5, "att": 15, "series": [2, 1, 2] }
+  },
+  "insight": {
+    "title": "Analisi Puntuale Sessione #1 (20/07/2026)",
+    "summary": "Sessione di partenza (baseline). Rilevata una spiccata asimmetria balistica con forte predominanza del lato sinistro dall'arco.",
+    "sections": [
+      {
+        "heading": "Tiro da 3 Punti (46.0% Totale - 23/50)",
+        "content": "Netto divario balistico tra i due lati: il lato sinistro è molto performante con l'Angolo SX al 55.0% (11/20) e la Guardia SX al 60.0% (12/20). Al contrario, sul lato destro si registrano criticità importanti con la Guardia DX al 20.0% (4/20) e la Punta al 25.0% (5/20). La spinta della gamba destra e l'orientamento delle spalle sul lato destro richiedono correzione biomeccanica."
+      },
+      {
+        "heading": "Palleggio Arresto e Tiro - P.A.T. (36.7% Totale - 11/30)",
+        "content": "Resa sotto le potenziale sui gomiti della lunetta (Gomito SX 40.0%, Gomito DX 33.3%). Si nota rigidità nella gestione dell'arresto a due tempi: scarso assorbimento dell'inerzia sul piede esterno e spinta verticale incompleta dal piede interno."
+      },
+      {
+        "heading": "Tiri Liberi (76.0% Totale - 38/50)",
+        "content": "Prestazione solida su due blocchi da 25 tiri (76.0% in entrambi i blocchi). Emerge una leggera sgranatura di precisione nelle ultime 2 serie del secondo blocco a causa della fatica accumulata."
+      }
+    ]
   }
 }
