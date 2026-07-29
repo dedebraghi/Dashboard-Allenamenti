@@ -49,11 +49,11 @@
         "description": "Lavoro sulla dinamica del Palleggio Arresto e Tiro nei gomiti della lunetta. Partenza in palleggio forte dalla posizione di guardia simulando il superamento di un difensore, seguita da un arresto deciso e tiro immediato.",
         "split": [
           {
-            "title": "1ª Metà: Guardia SX → Gomito SX (15 Ripe)",
+            "title": "1ª Metà: Guardia SX → Gomito SX (15 Tiri: 3 serie x 5 ripetizioni)",
             "text": "Palleggiando verso destra (centro campo), usa l'arresto a 2 tempi: pianta prima il <strong>piede sinistro (esterno)</strong> per frenare l'inerzia laterale, seguito dal <strong>piede destro (interno)</strong> orientato verso il canestro per l'elevazione."
           },
           {
-            "title": "2ª Metà: Guardia DX → Gomito DX (15 Ripe)",
+            "title": "2ª Metà: Guardia DX → Gomito DX (15 Tiri: 3 serie x 5 ripetizioni)",
             "text": "Palleggiando verso sinistra (centro campo), pianta prima il <strong>piede destro (esterno)</strong> per assorbire l'energia cinetica, seguito dal <strong>piede sinistro (interno)</strong> per chiudere l'arresto e dare la spinta verticale."
           }
         ]
