@@ -1,93 +1,93 @@
 {
   "id": "piano-3",
   "number": 3,
-  "title": "Programma di Allenamento Analitico • Scheda #3",
-  "description": "Recupero balistico prioritario sugli Angoli (SX al 10% e DX al 30% in S3), consolidamento della Guardia DX e tenuta cardio nei tiri liberi.",
+  "title": "Programma di Allenamento Analitico • Scheda #3 (Player Development Edition)",
+  "description": "Scheda ad alto valore evolutivo: recupero balistico dinamico dagli Angoli (High-Arc Corner Lift & Drift), varianti di footwork avanzato nel P.A.T. (Float Dribble & Step-Back Counter) e protocollo Heartbeat Control ai liberi.",
   "phases": [
     {
       "id": "fase-1",
-      "name": "Fase 1: Attivazione & Sensibilità",
+      "name": "Fase 1: Attivazione & High-Arc Pocket Control",
       "time": "0 - 10 min",
-      "objective": "Riscaldamento, sensibilità dei polpastrelli e parabola d'arco negli angoli",
-      "focus": "Form shooting ad una mano con accento sull'estensione dell'arco verso l'alto",
+      "objective": "Riscaldamento, caricamento polpastrello ed elevazione della parabola ad alta traiettoria",
+      "focus": "Form Shooting High-Arc Routine e sincronizzazione respiratoria diaframmatica",
       "badgeColor": "blue",
       "details": {
-        "description": "Lavoro preparatorio per ripristinare l'allineamento gomito-spalla e la spinta verticale sui rilasci corti dagli angoli.",
+        "description": "Esercitazione di sensibilizzazione per sbloccare la rigidezza delle braccia e garantire un arco ad alta traiettoria dagli angoli stretti.",
         "bullets": [
-          "<strong>Form Shooting (0-5 min):</strong> 3 serie da 10 tiri ad una sola mano (centro, angolo SX, angolo DX). Focus su gomito sotto la palla e finale spezza-polso pulito con parabola alta.",
-          "<strong>Attivazione Lunetta (5-10 min):</strong> 10 tiri liberi sequenziali curando il ritmo respiratorio pre-rilascio."
+          "<strong>High-Arc Form Shooting (0-5 min):</strong> 3 serie da 10 tiri ad una sola mano (centro, angolo SX, angolo DX). Rilascio sopra la linea delle sopracciglia con finale spezza-polso morbido ad alta parabola d'aria.",
+          "<strong>Attivazione Lunetta Breath-Control (5-10 min):</strong> 10 tiri liberi sequenziali applicando 2 espirazioni profonde prima del piegamento delle ginocchia."
         ]
       }
     },
     {
       "id": "fase-2",
-      "name": "Fase 2: Compensazione & Bilanciamento (Tiro da 3)",
+      "name": "Fase 2: Compensazione Dinamica (Tiro da 3)",
       "time": "10 - 30 min",
-      "objective": "Intervento urgente sul collasso balistico degli Angoli (SX 10% e DX 30%) e stabilizzazione Guardia DX",
-      "focus": "Volume raddoppiato dagli angoli, rilascio fluido e allineamento base-spalle",
+      "objective": "Risoluzione delle debolezze negli Angoli (SX 10% e DX 30% in S3) con drill dinamici di Catch&Shoot e Drift",
+      "focus": "Variabilità degli stimoli motori, rilascio in movimento e bilanciamento della spinta",
       "badgeColor": "indigo",
       "details": {
-        "description": "Rotazione balistica da 80 tiri totali con carico asimmetrico mirato a riattivare la sensibilità balistica dagli angoli e stabilizzare la Guardia DX.",
+        "description": "Rotazione balistica da 80 tiri dall'arco strutturata con esercitazioni dinamiche evolutive per stimolare il giocatore su situazioni di gara reali.",
         "table": [
-          { "spot": "Angolo Sinistro", "volume": "20 tiri", "focus": "Intervento critico: incremento parabola ed orientamento piedi (da 10% in S3)", "highlight": true },
-          { "spot": "Guardia Sinistra", "volume": "10 tiri", "focus": "Mantenimento del picco di rendimento (60% in S3)", "highlight": false },
-          { "spot": "Punta", "volume": "15 tiri", "focus": "Consolidamento del trend positivo (55% in S3)", "highlight": false },
-          { "spot": "Guardia Destra", "volume": "15 tiri", "focus": "Stabilizzazione stabilità base e spinta gamba destra (35% in S3)", "highlight": true },
-          { "spot": "Angolo Destro", "volume": "20 tiri", "focus": "Intervento critico: recupero stabilità di rilascio (da 30% in S3)", "highlight": true }
+          { "spot": "Angolo Sinistro", "volume": "20 tiri", "focus": "10 Catch&Shoot fisso High-Arc + 10 Step-In dagli 0° (ricezione in scivolamento e tiro rapido)", "highlight": true },
+          { "spot": "Guardia Sinistra", "volume": "10 tiri", "focus": "Rhythm Transition 3s (mantenimento del picco 60% S3)", "highlight": false },
+          { "spot": "Punta", "volume": "15 tiri", "focus": "Pound Dribble Balance 3 (1 palleggio forte di caricamento dal centro)", "highlight": false },
+          { "spot": "Guardia Destra", "volume": "15 tiri", "focus": "Wing Side-Step & Sway (1 palleggio laterale a destra per bilanciare l'asse spalla-bacino)", "highlight": true },
+          { "spot": "Angolo Destro", "volume": "20 tiri", "focus": "10 Catch&Shoot fisso + 10 Corner Drift (ricezione in movimento angolare verso il fondo)", "highlight": true }
         ],
-        "rule": "<strong>💡 Regola Operativa:</strong> Esegui la rotazione per un totale di <strong>80 tiri dall'arco</strong>. Nelle zone evidenziate (Angolo SX, Angolo DX e Guardia DX), esegui serie da 5 tiri con 10 secondi di pausa per verificare l'orientamento dei piedi verso il ferro."
+        "rule": "<strong>💡 Regola Operativa:</strong> Esegui la rotazione da <strong>80 tiri totali</strong>. Negli angoli, alterna 5 tiri da fermo a 5 tiri in movimento dinamico (Step-In / Drift) per abituare il corpo alla stabilità dei piedi sotto pressione."
       }
     },
     {
       "id": "fase-3",
-      "name": "Fase 3: Footwork Pro (P.A.T.)",
+      "name": "Fase 3: Footwork Pro & Unlocks (P.A.T.)",
       "time": "30 - 45 min",
-      "objective": "Affinamento dell'arresto a 2 tempi ed elevazione verticale sui gomiti (Totale 60 tiri)",
+      "objective": "Affinamento del P.A.T. con varianti di palleggio dal vivo (Float Dribble & Step-Back Counter) sui gomiti",
       "focus": "Arresto a due tempi: da Guardia SX perno su piede interno DESTRO; da Guardia DX perno su piede interno SINISTRO",
       "badgeColor": "amber",
       "details": {
-        "description": "Consolidamento del ritmo nel mid-range (46.7% complessivo in S3, con Gomito DX al 50.0% e Gomito SX al 43.3%).",
+        "description": "Evoluzione del lavoro sui gomiti (46.7% in S3) introducendo stimoli di palleggio reale per sviluppare il giocatore nel gioco a metà campo (Totale 60 tiri).",
         "split": [
           {
-            "title": "1ª Metà: Guardia SX → Gomito SX (30 Tiri Totali: 6 serie x 5 ripetizioni)",
-            "text": "Palleggio verso il centro: arresto a 2 tempi con <strong>piede esterno Sinistro</strong> per frenare e <strong>piede interno Destro</strong> come perno di elevazione verso il ferro."
+            "title": "1ª Metà: Guardia SX → Gomito SX (30 Tiri: 2 serie da 15)",
+            "text": "<strong>15 tiri Heavy Dribble:</strong> arresto a 2 tempi (piede esterno SX per frenare, interno DX per decollare).<br><strong>15 tiri Float Dribble Cross-Over:</strong> esitazione in palleggio, cambio di mano rapido ed arresto perno interno DX al gomito."
           },
           {
-            "title": "2ª Metà: Guardia DX → Gomito DX (30 Tiri Totali: 6 serie x 5 ripetizioni)",
-            "text": "Palleggio verso il centro: arresto a 2 tempi con <strong>piede esterno Destro</strong> per assorbire l'inerzia e <strong>piede interno Sinistro</strong> per il decollo verticale."
+            "title": "2ª Metà: Guardia DX → Gomito DX (30 Tiri: 2 serie da 15)",
+            "text": "<strong>15 tiri Heavy Dribble:</strong> arresto a 2 tempi (piede esterno DX per assorbire, interno SX per decollare).<br><strong>15 tiri Step-Back Counter:</strong> palleggio aggressivo in penetrazione, stacco secco sul piede esterno DX e tiro verticale dal perno interno SX."
           }
         ]
       }
     },
     {
       "id": "fase-4",
-      "name": "Fase 4: Resilienza & Fatica (Tiri Liberi)",
+      "name": "Fase 4: Heartbeat Control & Fatica (Tiri Liberi)",
       "time": "45 - 55 min",
-      "objective": "Recupero quota 80%+ nel secondo blocco di tiri liberi sotto sforzo cardiovascolare",
-      "focus": "Gestione del respiro diaframmatico ed eliminazione della deriva respiratoria nel finale",
+      "objective": "Gestione del battito cardiaco sotto sforzo e superamento della flessione nella seconda metà del blocco",
+      "focus": "Routine di respirazione diaframmatica sotto forte carico cardiovascolare",
       "badgeColor": "emerald",
       "details": {
-        "description": "Correzione del calo evidenziato nella Sessione #3 (passato dall'80.0% del Blocco 1 al 66.7% del Blocco 2).",
-        "protocolTitle": "Protocollo Sotto Sforzo Cardiovascolare (30 tiri liberi totali):",
+        "description": "Protocollo ad alta intensità per azzerare il calo registrato nella Sessione #3 (passato dall'80% nel Blocco 1 al 66.7% nel Blocco 2).",
+        "protocolTitle": "Protocollo Heartbeat Pressure (30 tiri liberi totali):",
         "steps": [
-          "Esegui <strong>2 scatti a tutto campo</strong> a massima velocità.",
-          "Vai immediatamente in lunetta ed esegui <strong>3 tiri liberi</strong> curando 2 respiri profondi prima di ogni rilascio.",
-          "Effettua un recupero attivo di 30 secondi camminando.",
-          "Ripeti per un totale di <strong>10 serie</strong> (30 tiri liberi complessivi, suddivisi in 2 blocchi da 5 serie)."
+          "Esegui <strong>2 scivolamenti difensivi laterali</strong> bordo area + <strong>1 scatto a tutto campo</strong> a massima velocità.",
+          "Vai in lunetta ed imponiti <strong>10 secondi di recupero respiratorio in posizione eretta</strong> prima di iniziare la serie.",
+          "Esegui <strong>3 tiri liberi</strong> ad altissima concentrazione.",
+          "Ripeti per un totale di <strong>10 serie</strong> (30 tiri liberi complessivi in 2 blocchi da 5)."
         ],
-        "note": "<em>Obiettivo Tecnico: Mantenimento della stabilità delle gambe e della concentrazione nella seconda metà del protocollo.</em>"
+        "note": "<em>Obiettivo Tecnico: Domare il battito cardiaco elevato prima del rilascio per garantire ripetibilità meccanica anche a gambe stanche.</em>"
       }
     },
     {
       "id": "fase-5",
       "name": "Fase 5: Defaticamento & Anchoring Mentale",
       "time": "55 - 60 min",
-      "objective": "Decompressione muscolare e fissaggio del pattern balistico corretto",
-      "focus": "Stretching catena posteriore e visualizzazione della parabola dagli angoli",
+      "objective": "Decompressione muscolare e fissaggio neurale delle soluzioni di gioco apprese",
+      "focus": "Stretching catena posteriore e visualizzazione attiva delle nuove soluzioni da 3 e dal palleggio",
       "badgeColor": "slate",
       "details": {
-        "description": "5 minuti di defaticamento attivo per registrare le sensazioni meccaniche ottimali.",
-        "note": "<strong>Visualizzazione della Parabola:</strong> Allungamento catena posteriore e spalle. Ripercorri mentalmente i rilasci riusciti dagli angoli e dalla Guardia SX per fissare il ritmo motorio corretto."
+        "description": "5 minuti di defaticamento per ripercorrere mentalmente i rilasci riusciti durante la sessione.",
+        "note": "<strong>Visualizzazione della Parabola:</strong> Allungamento spalle e catena posteriore. Ripassa mentalmente le parabole ad alto arco dagli angoli e gli arresti a 2 tempi sui gomiti per fissare il pattern motorio evolutivo."
       }
     }
   ]
