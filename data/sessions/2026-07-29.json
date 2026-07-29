@@ -1,0 +1,47 @@
+{
+  "id": "sessione-2026-07-29",
+  "date": "2026-07-29",
+  "duration": 60,
+  "formShooting": {
+    "made": 22,
+    "att": 30
+  },
+  "tri": {
+    "angoloSX": { "made": 1, "att": 10, "series": [1] },
+    "guardiaSX": { "made": 12, "att": 20, "series": [12] },
+    "punta": { "made": 11, "att": 20, "series": [11] },
+    "guardiaDX": { "made": 7, "att": 20, "series": [7] },
+    "angoloDX": { "made": 3, "att": 10, "series": [3] }
+  },
+  "pat": {
+    "gomitoSX": { "made": 13, "att": 30, "series": [3, 2, 2, 1, 2, 3] },
+    "gomitoDX": { "made": 15, "att": 30, "series": [2, 2, 0, 4, 4, 3] }
+  },
+  "liberi": {
+    "made": 29,
+    "att": 40,
+    "blocks": [
+      [7],
+      [3, 3, 3, 2, 1],
+      [3, 2, 1, 2, 2]
+    ]
+  },
+  "insight": {
+    "title": "Analisi Puntuale Sessione #3 (29/07/2026)",
+    "summary": "Esecuzione completa della Scheda #2 (Programma 60 Minuti). Straordinario riscatto della Guardia SX (60.0%) e consolidamento della Punta (55.0%), uniti ad una solida prestazione nel P.A.T. (46.7%), pur con una contrazione balistica negli angoli e nel secondo blocco di tiri liberi sotto sforzo.",
+    "sections": [
+      {
+        "heading": "Tiro da 3 Punti (42.5% Totale - 34/80)",
+        "content": "Prestazione caratterizzata da un'evidente polarizzazione delle percentuali: eccellente riscatto balistico della Guardia SX che sale al 60.0% (12/20) superando il momento critico di S2, affiancata da una conferma di altissimo livello sulla Punta col 55.0% (11/20). Di contro, si registra una marcata sofferenza balistica negli angoli (Angolo SX 10.0% - 1/10; Angolo DX 30.0% - 3/10) causata da un arco di parabola piatto e rilascio affrettato negli angoli stretti."
+      },
+      {
+        "heading": "Palleggio Arresto e Tiro - P.A.T. (46.7% Totale - 28/60)",
+        "content": "Risposta solida nella gestione dell'arresto a 2 tempi con perno sul piede interno (Gomito SX 43.3% - 13/30; Gomito DX 50.0% - 15/30). Sul Gomito DX si evidenzia un ottimo adattamento in corsa: dopo uno 0/5 nella terza serie, il giocatore ha inanellato due serie consecutive da 4/5, dimostrando grande capacità di correzione e stabilità verticale nel decollo."
+      },
+      {
+        "heading": "Tiri Liberi & Tenuta sotto sforzo (72.5% Totale - 29/40)",
+        "content": "Avvio di attivazione pulito col 70.0% (7/10). Nel protocollo 10x3 ad alta intensità cardiovascolare, la partenza è stata perfetta con 9/9 nelle prime 3 serie. Si è poi verificata una fisiologica flessione nella seconda metà dell'esercizio (dall'80.0% del primo blocco al 66.7% del secondo), legata alla fatica accumulata sulle gambe e alla deriva respiratoria."
+      }
+    ]
+  }
+}

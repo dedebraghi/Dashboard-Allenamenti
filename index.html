@@ -1090,15 +1090,19 @@
                             let blockAtt = 25;
                             if (lib.att === 30 && lib.blocks.length === 2) {
                                 blockAtt = (bIdx === 0) ? 10 : 20;
+                            } else if (lib.att === 40 && lib.blocks.length === 3) {
+                                blockAtt = (bIdx === 0) ? 10 : 15;
                             } else if (block.length > 0) {
                                 blockAtt = block.length * 5;
                             }
                             const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
                             const shotsPerSub = Math.round(blockAtt / block.length);
 
-                            const blockLabel = (lib.att === 30 && lib.blocks.length === 2) 
-                                ? (bIdx === 0 ? "Attivazione Liberi" : "Protocollo Sotto Sforzo")
-                                : `Blocco ${bIdx + 1}`;
+                            const blockLabel = (lib.att === 40 && lib.blocks.length === 3)
+                                ? (bIdx === 0 ? "Attivazione Liberi" : `Protocollo Sotto Sforzo - Blocco ${bIdx}`)
+                                : ((lib.att === 30 && lib.blocks.length === 2) 
+                                    ? (bIdx === 0 ? "Attivazione Liberi" : "Protocollo Sotto Sforzo")
+                                    : `Blocco ${bIdx + 1}`);
 
                             statsHtml += `<div>
                                 <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
@@ -1271,15 +1275,19 @@
                         let blockAtt = 25;
                         if (session.liberi.att === 30 && session.liberi.blocks.length === 2) {
                             blockAtt = (bIdx === 0) ? 10 : 20;
+                        } else if (session.liberi.att === 40 && session.liberi.blocks.length === 3) {
+                            blockAtt = (bIdx === 0) ? 10 : 15;
                         } else if (block.length > 0) {
                             blockAtt = block.length * 5;
                         }
                         const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
                         const shotsPerSub = Math.round(blockAtt / block.length);
 
-                        const blockLabel = (session.liberi.att === 30 && session.liberi.blocks.length === 2)
-                            ? (bIdx === 0 ? "Attivazione" : "Sotto Sforzo")
-                            : `Blocco ${bIdx+1}`;
+                        const blockLabel = (session.liberi.att === 40 && session.liberi.blocks.length === 3)
+                            ? (bIdx === 0 ? "Attivazione" : `Sotto Sforzo B${bIdx}`)
+                            : ((session.liberi.att === 30 && session.liberi.blocks.length === 2)
+                                ? (bIdx === 0 ? "Attivazione" : "Sotto Sforzo")
+                                : `Blocco ${bIdx+1}`);
 
                         const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSub}</span>`).join(' ');
                         html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
@@ -1367,7 +1375,7 @@
                                 <span class="font-mono text-[10px] bg-orange-200/60 text-orange-900 font-bold px-2 py-0.5 rounded">Media ${global3Pct}% 3PT</span>
                             </div>
                             <p class="text-xs text-orange-950 leading-relaxed font-medium">
-                                L'analisi aggregata mostra un'evoluzione tattica costante: l'attacco mirato ai punti deboli rilevati nella prima sessione (Guardia DX al 20% e Punta al 25%) ha prodotto un netto recupero nella seconda sessione, portando entrambe le posizioni al 45.0%.
+                                L'analisi aggregata su ${sessions.length} sessioni mostra un'evoluzione balistica costante: il lavoro mirato della Scheda #2 ha portato al completo recupero della Guardia SX (salita al 60.0% in S3) ed al consolidamento della Punta (55.0% in S3).
                             </p>
                         </div>
 
@@ -1379,7 +1387,7 @@
                                 <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">SX ${sxPct}% vs DX ${dxPct}%</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                La stabilità complessiva tra i lati del campo tende all'equilibrio (SX ${sxPct}% su ${sxAtt} tiri vs DX ${dxPct}% su ${dxAtt} tiri). L'<strong>Angolo DX (55.0% tot)</strong> ed l'<strong>Angolo SX (50.0% tot)</strong> rappresentano i punti di massima affidabilità. La <strong>Guardia SX (50.0% tot)</strong> ha fatto registrare un calo temporaneo in S2 (30%) e costituisce il focus primario di compensazione per il Piano #2.
+                                La stabilità complessiva tra i lati tende all'equilibrio (SX ${sxPct}% su ${sxAtt} tiri vs DX ${dxPct}% su ${dxAtt} tiri). La <strong>Guardia SX (53.8% complessivo)</strong> ha ritrovato grande efficacia balistica, mentre la <strong>Punta (50.0% complessivo)</strong> si conferma una certezza. Gli angoli evidenziano invece discontinuità balistica (Angolo SX 32.5%, Angolo DX 48.0%), richiedendo attenzione al ritmo di rilascio.
                             </p>
                         </div>
 
@@ -1391,7 +1399,7 @@
                                 <span class="font-mono text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Media ${globalPATPct}% (${totalPATMade}/${totalPATAtt})</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Crescita marcata dal 36.7% della prima sessione al 50.0% della seconda. Il lavoro sul footwork nei gomiti (arresto a 2 tempi con perno sul piede interno) ha stabilizzato la postura al momento del rilascio, in particolare sul Gomito DX (salito al 53.3%).
+                                Progressione consolidata nel mid-range (da 36.7% in S1 a 50.0% in S2 e 46.7% in S3). L'arresto a 2 tempi sui gomiti ha stabilizzato il decollo, con il Gomito DX al 50.0% (36/72) ed il Gomito SX al 42.3% (33/78).
                             </p>
                         </div>
 
@@ -1403,7 +1411,7 @@
                                 <span class="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Media ${globalFTPct}% (${totalFTMade}/${totalFTAtt})</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Trend ascensionale continuo (da 76.0% a 86.7%). Dimostrata una spiccata capacità di concentrazione e consolidamento della routine di respirazione diaframmatica prima del rilascio, anche in serie sotto sforzo fisico.
+                                Affidabilità eccellente nel lungo periodo (${globalFTPct}% su ${totalFTAtt} tiri liberi complessivi). Nel protocollo sotto sforzo di S3 è emersa una flessione nella seconda metà dell'esercizio (66.7%), indicando la tenuta respiratoria sotto sforzo cardiovascolare come focus primario per le prossime schede.
                             </p>
                         </div>
                     </div>
