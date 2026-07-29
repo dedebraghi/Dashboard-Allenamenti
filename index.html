@@ -1087,17 +1087,29 @@
                         statsHtml += `<div class="space-y-2 pt-1">`;
                         lib.blocks.forEach((block, bIdx) => {
                             const bMade = block.reduce((a, b) => a + b, 0);
-                            const bPct = Math.round((bMade / 25) * 100);
+                            let blockAtt = 25;
+                            if (lib.att === 30 && lib.blocks.length === 2) {
+                                blockAtt = (bIdx === 0) ? 10 : 20;
+                            } else if (block.length > 0) {
+                                blockAtt = block.length * 5;
+                            }
+                            const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
+                            const shotsPerSub = Math.round(blockAtt / block.length);
+
+                            const blockLabel = (lib.att === 30 && lib.blocks.length === 2) 
+                                ? (bIdx === 0 ? "Attivazione Liberi" : "Protocollo Sotto Sforzo")
+                                : `Blocco ${bIdx + 1}`;
+
                             statsHtml += `<div>
                                 <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
-                                    <span>Blocco ${bIdx + 1} (25 tiri): ${bMade}/25 (${bPct}%)</span>
+                                    <span>${blockLabel} (${blockAtt} tiri): ${bMade}/${blockAtt} (${bPct}%)</span>
                                 </div>
-                                <div class="grid grid-cols-5 gap-1.5">`;
+                                <div class="grid grid-cols-${block.length > 5 ? 5 : block.length} gap-1.5">`;
                             block.forEach((sVal, sIdx) => {
-                                const sPct = Math.round((sVal / 5) * 100);
+                                const sPct = shotsPerSub > 0 ? Math.round((sVal / shotsPerSub) * 100) : 0;
                                 statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
                                     <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                    <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                    <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSub}</span>
                                     <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                                 </div>`;
                             });
@@ -1113,14 +1125,16 @@
                     htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
 
                     if (posData.series && posData.series.length > 0) {
+                        const shotsPerSeries = Math.round(posData.att / posData.series.length);
+                        const numSeries = posData.series.length;
                         statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">4 Serie da 5 tiri ciascuna:</span>
-                            <div class="grid grid-cols-4 gap-1.5">`;
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri ciascuna:</span>
+                            <div class="grid grid-cols-${numSeries > 4 ? 4 : numSeries} gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
-                            const sPct = Math.round((sVal / 5) * 100);
+                            const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
                             statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
                                 <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSeries}</span>
                                 <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                             </div>`;
                         });
@@ -1134,14 +1148,16 @@
                     htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
 
                     if (posData.series && posData.series.length > 0) {
+                        const shotsPerSeries = Math.round(posData.att / posData.series.length);
+                        const numSeries = posData.series.length;
                         statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">3 Serie da 5 tiri ciascuna:</span>
-                            <div class="grid grid-cols-3 gap-1.5">`;
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri ciascuna:</span>
+                            <div class="grid grid-cols-${numSeries > 5 ? 5 : numSeries} gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
-                            const sPct = Math.round((sVal / 5) * 100);
+                            const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
                             statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
                                 <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                <span class="text-xs font-bold text-slate-900">${sVal}/5</span>
+                                <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSeries}</span>
                                 <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                             </div>`;
                         });
@@ -1189,7 +1205,7 @@
 
                 // 3PT Breakdown
                 html += `<div class="space-y-1">
-                    <span class="font-mono text-indigo-700 uppercase text-[9px] font-bold tracking-wider block">3PT (4 serie x spot)</span>
+                    <span class="font-mono text-indigo-700 uppercase text-[9px] font-bold tracking-wider block">3PT (Serie per Spot)</span>
                     <div class="space-y-1">`;
                 
                 const pos3ptMap = {
@@ -1203,7 +1219,8 @@
                 for (const [k, name] of Object.entries(pos3ptMap)) {
                     const data = session.tri[k];
                     if (data && data.series) {
-                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
+                        const shotsPerSeries = Math.round(data.att / data.series.length);
+                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
                         const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
                         html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
                             <span class="font-semibold text-slate-800">${name}:</span>
@@ -1218,7 +1235,7 @@
 
                 // PAT Breakdown
                 html += `<div class="space-y-1 pt-1">
-                    <span class="font-mono text-amber-700 uppercase text-[9px] font-bold tracking-wider block">P.A.T. (3 serie x spot)</span>
+                    <span class="font-mono text-amber-700 uppercase text-[9px] font-bold tracking-wider block">P.A.T. (Serie per Spot)</span>
                     <div class="space-y-1">`;
                 
                 const posPatMap = {
@@ -1229,7 +1246,8 @@
                 for (const [k, name] of Object.entries(posPatMap)) {
                     const data = session.pat[k];
                     if (data && data.series) {
-                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
+                        const shotsPerSeries = Math.round(data.att / data.series.length);
+                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
                         const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
                         html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
                             <span class="font-semibold text-slate-800">${name}:</span>
@@ -1244,19 +1262,31 @@
 
                 // Tiri Liberi Breakdown
                 html += `<div class="space-y-1 pt-1">
-                    <span class="font-mono text-emerald-700 uppercase text-[9px] font-bold tracking-wider block">Tiri Liberi (2 blocchi x 25)</span>
+                    <span class="font-mono text-emerald-700 uppercase text-[9px] font-bold tracking-wider block">Tiri Liberi</span>
                     <div class="space-y-1">`;
                 
                 if (session.liberi && session.liberi.blocks) {
                     session.liberi.blocks.forEach((block, bIdx) => {
                         const bMade = block.reduce((a, b) => a + b, 0);
-                        const bPct = Math.round((bMade / 25) * 100);
-                        const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/5</span>`).join(' ');
+                        let blockAtt = 25;
+                        if (session.liberi.att === 30 && session.liberi.blocks.length === 2) {
+                            blockAtt = (bIdx === 0) ? 10 : 20;
+                        } else if (block.length > 0) {
+                            blockAtt = block.length * 5;
+                        }
+                        const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
+                        const shotsPerSub = Math.round(blockAtt / block.length);
+
+                        const blockLabel = (session.liberi.att === 30 && session.liberi.blocks.length === 2)
+                            ? (bIdx === 0 ? "Attivazione" : "Sotto Sforzo")
+                            : `Blocco ${bIdx+1}`;
+
+                        const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSub}</span>`).join(' ');
                         html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
-                            <span class="font-semibold text-slate-800">Blocco ${bIdx+1}:</span>
+                            <span class="font-semibold text-slate-800">${blockLabel}:</span>
                             <div class="flex items-center gap-1">
                                 ${sStr}
-                                <span class="font-mono font-bold text-slate-900 ml-1">${bMade}/25 (${bPct}%)</span>
+                                <span class="font-mono font-bold text-slate-900 ml-1">${bMade}/${blockAtt} (${bPct}%)</span>
                             </div>
                         </div>`;
                     });
