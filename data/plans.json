@@ -8,5 +8,10 @@
     "id": "piano-2",
     "number": 2,
     "file": "data/plans/piano-2.json"
+  },
+  {
+    "id": "piano-3",
+    "number": 3,
+    "file": "data/plans/piano-3.json"
   }
 ]
