@@ -18,6 +18,9 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js per i grafici delle prestazioni -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Firebase Compat SDK per cloud sync Firestore -->
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
     <!-- Font Plus Jakarta Sans (UI) & Barlow (Athletic Headers) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -142,6 +145,122 @@
         </div>
     </div>
 
+    <!-- Modal Impostazioni Cloud & AI -->
+    <div id="settings-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Impostazioni Cloud & AI</h3>
+                        <p class="text-[11px] text-slate-500 font-semibold">Configura Firebase Sync e Google Gemini Coach</p>
+                    </div>
+                </div>
+                <button onclick="closeSettingsModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors text-sm font-bold">✕</button>
+            </div>
+            
+            <div class="py-4 overflow-y-auto space-y-5 flex-grow pr-1">
+                <!-- Sezione 1: Google Gemini API -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
+                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">1. Google Gemini AI Key</h4>
+                        </div>
+                        <span id="gemini-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">Non configurata</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                        Serve per generare analisi tecniche e nuove schede personalizzate. Gratuita su 
+                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio ↗</a>.
+                    </p>
+                    <div>
+                        <label for="input-gemini-key" class="block text-[10px] font-mono font-bold text-slate-500 uppercase mb-1">Gemini API Key</label>
+                        <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="testGeminiConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione AI</button>
+                    </div>
+                </div>
+
+                <!-- Sezione 2: Firebase Firestore Config -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
+                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">2. Firebase Cloud Database</h4>
+                        </div>
+                        <span id="firebase-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">Non configurato</span>
+                    </div>
+                    <p class="text-[11px] text-slate-600 leading-relaxed">
+                        Permette la sincronizzazione permanente dei tuoi allenamenti tra smartphone e PC. Crea un progetto gratuito su 
+                        <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-600 underline font-bold">Firebase Console ↗</a> (Piano Spark Gratuito).
+                    </p>
+                    <div>
+                        <label for="input-firebase-config" class="block text-[10px] font-mono font-bold text-slate-500 uppercase mb-1">Incolla Oggetto Configurazione Firebase (JSON o codice web app)</label>
+                        <textarea id="input-firebase-config" rows="4" placeholder='{ "apiKey": "...", "projectId": "...", "appId": "..." }' class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-[11px] font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="testFirebaseConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione Cloud</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex items-center justify-between gap-3">
+                <button type="button" onclick="clearSettings()" class="px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg transition-colors">Ripristina</button>
+                <div class="flex gap-2">
+                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Annulla</button>
+                    <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition-colors shadow">Salva Impostazioni</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Caricamento / Elaborazione AI Coach -->
+    <div id="ai-loading-modal" class="fixed inset-0 z-50 hidden bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="bg-slate-900 border border-slate-800 rounded-2xl p-8 max-w-sm w-full text-center shadow-2xl space-y-4">
+            <div class="relative w-16 h-16 mx-auto flex items-center justify-center">
+                <div class="absolute inset-0 rounded-full border-4 border-orange-500/20 border-t-orange-500 animate-spin"></div>
+                <div class="w-10 h-10 rounded-full bg-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-600/50">
+                    <svg class="w-6 h-6 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                </div>
+            </div>
+            <div>
+                <h3 class="text-lg font-athletic font-extrabold text-white tracking-wide uppercase">AI Coach al Lavoro</h3>
+                <p id="ai-loading-status" class="text-xs text-orange-400 font-semibold mt-1">Analisi balistica e calcolo affaticamento...</p>
+                <p class="text-[11px] text-slate-400 font-medium mt-2 leading-relaxed">Generazione del resoconto analitico e creazione della prossima scheda adattiva.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Riscontro Coach AI Generato -->
+    <div id="ai-feedback-modal" class="fixed inset-0 z-50 hidden bg-slate-950/80 backdrop-blur-xs flex items-center justify-center p-4">
+        <div class="bg-white border border-slate-200 rounded-2xl p-6 max-w-lg w-full shadow-2xl max-h-[90vh] flex flex-col">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-200">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-md shadow-orange-600/30">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                    </div>
+                    <div>
+                        <h3 id="ai-feedback-modal-title" class="text-lg font-athletic font-extrabold text-slate-900 tracking-wide uppercase">Report AI Coach</h3>
+                        <p class="text-[11px] text-slate-500 font-semibold">Allenamento registrato e nuova scheda creata</p>
+                    </div>
+                </div>
+                <button onclick="closeAiFeedbackModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg text-sm font-bold">✕</button>
+            </div>
+            
+            <div id="ai-feedback-modal-body" class="py-4 overflow-y-auto space-y-3.5 flex-grow text-xs leading-relaxed text-slate-700">
+                <!-- Popolato dinamicamente -->
+            </div>
+
+            <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
+                <button onclick="switchTab('plan'); closeAiFeedbackModal();" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition-colors shadow">Vedi Nuova Scheda 🏀</button>
+                <button onclick="closeAiFeedbackModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs transition-colors">Chiudi & Vai a Dashboard</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Header Principale Pro Sports -->
     <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-40">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -166,32 +285,48 @@
                 </div>
             </div>
             
-            <!-- Navigazione Desktop & Install Button -->
+            <!-- Navigazione Desktop & Actions -->
             <div class="hidden md:flex items-center gap-3">
                 <nav class="flex items-center gap-1 bg-slate-900 p-1 rounded-xl border border-slate-800">
-                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm">
+                    <button onclick="switchTab('dashboard')" id="nav-dashboard" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
                         Dashboard
                     </button>
-                    <button onclick="switchTab('plan')" id="nav-plan" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <button onclick="switchTab('workout')" id="nav-workout" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                        <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                        Workout Live
+                    </button>
+                    <button onclick="switchTab('plan')" id="nav-plan" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                         Piano Allenamento
                     </button>
-                    <button onclick="switchTab('history')" id="nav-history" class="px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
+                    <button onclick="switchTab('history')" id="nav-history" class="px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         Storico
                     </button>
                 </nav>
 
+                <!-- Tasto Impostazioni Cloud & AI -->
+                <button onclick="openSettingsModal()" title="Impostazioni Cloud & AI" class="p-2 bg-slate-900 hover:bg-slate-800 text-slate-300 hover:text-white rounded-xl border border-slate-800 transition-colors relative flex items-center gap-1.5 text-xs font-bold">
+                    <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                    <span id="header-sync-status" class="w-2 h-2 rounded-full bg-slate-500"></span>
+                </button>
+
                 <!-- Tasto Installazione Desktop -->
                 <button id="pwa-install-btn" onclick="installPWA()" class="hidden items-center gap-2 px-3.5 py-2 bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white text-xs font-bold rounded-xl shadow-lg shadow-orange-600/20 border border-orange-500/30 transition-all hover:scale-[1.02] active:scale-95 cursor-pointer">
                     <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                    <span>Installa App</span>
+                    <span>Installa</span>
                 </button>
             </div>
 
             <!-- Mobile Action Bar & Menu Toggle -->
             <div class="flex md:hidden items-center gap-2">
+                <!-- Tasto Impostazioni Mobile Header -->
+                <button onclick="openSettingsModal()" class="p-2 rounded-lg text-slate-300 hover:bg-slate-900 border border-slate-800 relative">
+                    <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                    <span id="mobile-header-sync-status" class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-slate-500"></span>
+                </button>
+
                 <!-- Tasto Installazione Mobile Header -->
                 <button id="pwa-install-btn-mobile-header" onclick="installPWA()" class="hidden items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-xs font-bold rounded-lg shadow-md border border-orange-500/30 active:scale-95">
                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
@@ -217,6 +352,10 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
                 Dashboard Analytics
             </button>
+            <button onclick="switchTab('workout'); toggleMobileMenu(false);" id="mobile-nav-workout" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800">
+                <svg class="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                Workout Live (Compila)
+            </button>
             <button onclick="switchTab('plan'); toggleMobileMenu(false);" id="mobile-nav-plan" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
                 Piano Allenamento
@@ -225,7 +364,10 @@
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                 Storico Sessioni
             </button>
-        </div>
+            <button onclick="openSettingsModal(); toggleMobileMenu(false);" class="w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800 border-t border-slate-800 pt-3">
+                <svg class="w-4 h-4 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><circle cx="12" cy="12" r="3" stroke-width="2"/></svg>
+                Impostazioni Cloud & AI
+            </button>
     </header>
 
     <!-- Contenuto Principale -->
@@ -479,6 +621,316 @@
             </div>
         </section>
 
+        <!-- ================= TAB: WORKOUT LIVE (SCHEDA COMPILABILE) ================= -->
+        <section id="tab-workout" class="hidden space-y-6 max-w-5xl mx-auto">
+            
+            <!-- Workout Banner & Controls -->
+            <div class="bg-slate-950 text-white rounded-2xl p-6 shadow-xl border border-slate-800 relative overflow-hidden">
+                <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                    <div>
+                        <div class="inline-flex items-center gap-2 bg-orange-600/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
+                            <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span>
+                            Sessione Attiva al Campo
+                        </div>
+                        <h2 class="text-2xl font-athletic font-extrabold text-white tracking-wide uppercase">Scheda di Allenamento Interattiva</h2>
+                        <p class="text-xs text-slate-300 font-medium max-w-2xl mt-1 leading-relaxed">
+                            Compila i canestri realizzati e tentati serie per serie. A fine allenamento, l'AI analizzerà i tuoi dati e creerà la scheda per la prossima sessione!
+                        </p>
+                    </div>
+
+                    <!-- Configurazione Rapida Data & Scheda -->
+                    <div class="flex flex-wrap items-center gap-3 bg-slate-900/90 border border-slate-800 p-3.5 rounded-xl">
+                        <div>
+                            <label for="workout-date" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Data</label>
+                            <input type="date" id="workout-date" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label for="workout-duration" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Durata (Min)</label>
+                            <input type="number" id="workout-duration" value="60" min="15" max="180" step="5" class="w-20 bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
+                        </div>
+                        <div>
+                            <label for="workout-plan-ref" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Scheda Seguito</label>
+                            <select id="workout-plan-ref" onchange="onWorkoutPlanChange(this.value)" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer">
+                                <!-- Popolato dinamicamente -->
+                            </select>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Live Workout KPI Dashboard Ribbon -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider block">Totale Tiri</span>
+                        <div class="flex items-baseline gap-1.5 mt-0.5">
+                            <span id="live-kpi-total-pct" class="text-xl font-athletic font-black text-slate-900">0%</span>
+                            <span id="live-kpi-total-cnt" class="text-[11px] text-slate-500 font-mono font-bold">(0/0)</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-slate-100 text-slate-700 flex items-center justify-center font-bold text-xs">🏀</div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-indigo-500 uppercase tracking-wider block">Tiro da 3</span>
+                        <div class="flex items-baseline gap-1.5 mt-0.5">
+                            <span id="live-kpi-3pt-pct" class="text-xl font-athletic font-black text-indigo-600">0%</span>
+                            <span id="live-kpi-3pt-cnt" class="text-[11px] text-slate-500 font-mono font-bold">(0/0)</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">3P</div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-amber-500 uppercase tracking-wider block">P.A.T. (Gomiti)</span>
+                        <div class="flex items-baseline gap-1.5 mt-0.5">
+                            <span id="live-kpi-pat-pct" class="text-xl font-athletic font-black text-amber-600">0%</span>
+                            <span id="live-kpi-pat-cnt" class="text-[11px] text-slate-500 font-mono font-bold">(0/0)</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-xs">PAT</div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-xl p-3.5 shadow-xs flex items-center justify-between">
+                    <div>
+                        <span class="text-[10px] font-extrabold text-emerald-500 uppercase tracking-wider block">Tiri Liberi</span>
+                        <div class="flex items-baseline gap-1.5 mt-0.5">
+                            <span id="live-kpi-ft-pct" class="text-xl font-athletic font-black text-emerald-600">0%</span>
+                            <span id="live-kpi-ft-cnt" class="text-[11px] text-slate-500 font-mono font-bold">(0/0)</span>
+                        </div>
+                    </div>
+                    <div class="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold text-xs">TL</div>
+                </div>
+            </div>
+
+            <!-- Contenitore Esercizi Interattivi Compilabili -->
+            <div class="space-y-6" id="workout-exercises-container">
+                
+                <!-- 1. Form Shooting & Attivazione -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs border-l-4 border-l-blue-600 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 font-extrabold flex items-center justify-center text-xs">1</span>
+                            <div>
+                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 1: Form Shooting & Attivazione</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Riscaldamento a 1 mano, parabole ravvicinate e prime serie</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="live-card-formshooting-summary" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-blue-50 text-blue-700 border border-blue-200">0/0 (0%)</span>
+                        </div>
+                    </div>
+
+                    <div id="workout-formshooting-series-container" class="space-y-2.5">
+                        <!-- Serie generate dinamicamente -->
+                    </div>
+
+                    <div class="flex items-center justify-between pt-2">
+                        <button type="button" onclick="addWorkoutSerie('formshooting')" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-blue-50 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Aggiungi Serie Form Shooting</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 2. Compensazione Tiro da 3 Punti (5 Spot Specifici) -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs border-l-4 border-l-indigo-600 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 font-extrabold flex items-center justify-center text-xs">2</span>
+                            <div>
+                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 2: Tiro da 3 Punti (Compensazione per Spot)</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Registra serie e tiri per ciascuno dei 5 spot dall'arco</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="live-card-3pt-summary" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-indigo-50 text-indigo-700 border border-indigo-200">0/0 (0%)</span>
+                        </div>
+                    </div>
+
+                    <!-- 5 Spot Grid -->
+                    <div class="space-y-4">
+                        <!-- Spot 1: Angolo SX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5" id="workout-spot-box-angoloSX">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                    <span class="text-xs font-bold text-slate-900">Angolo Sinistro (Corner SX)</span>
+                                </div>
+                                <span id="workout-spot-summary-angoloSX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-angoloSX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutSpotSerie('angoloSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                + Aggiungi Serie
+                            </button>
+                        </div>
+
+                        <!-- Spot 2: Guardia SX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5" id="workout-spot-box-guardiaSX">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                    <span class="text-xs font-bold text-slate-900">Guardia Sinistra (Wing SX)</span>
+                                </div>
+                                <span id="workout-spot-summary-guardiaSX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-guardiaSX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutSpotSerie('guardiaSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                + Aggiungi Serie
+                            </button>
+                        </div>
+
+                        <!-- Spot 3: Punta -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5" id="workout-spot-box-punta">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                    <span class="text-xs font-bold text-slate-900">Punta (Top of the Key)</span>
+                                </div>
+                                <span id="workout-spot-summary-punta" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-punta" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutSpotSerie('punta')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                + Aggiungi Serie
+                            </button>
+                        </div>
+
+                        <!-- Spot 4: Guardia DX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5" id="workout-spot-box-guardiaDX">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                    <span class="text-xs font-bold text-slate-900">Guardia Destra (Wing DX)</span>
+                                </div>
+                                <span id="workout-spot-summary-guardiaDX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-guardiaDX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutSpotSerie('guardiaDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                + Aggiungi Serie
+                            </button>
+                        </div>
+
+                        <!-- Spot 5: Angolo DX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5" id="workout-spot-box-angoloDX">
+                            <div class="flex items-center justify-between">
+                                <div class="flex items-center gap-2">
+                                    <span class="w-2 h-2 rounded-full bg-indigo-600"></span>
+                                    <span class="text-xs font-bold text-slate-900">Angolo Destro (Corner DX)</span>
+                                </div>
+                                <span id="workout-spot-summary-angoloDX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-angoloDX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutSpotSerie('angoloDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                + Aggiungi Serie
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. Palleggio Arresto e Tiro (P.A.T. Gomiti) -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs border-l-4 border-l-amber-500 space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 font-extrabold flex items-center justify-center text-xs">3</span>
+                            <div>
+                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 3: Palleggio Arresto & Tiro (Gomiti Lunetta)</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Arresti a due tempi con perno su piede interno</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="live-card-pat-summary" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-amber-50 text-amber-700 border border-amber-200">0/0 (0%)</span>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- Gomito SX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-900">Gomito Sinistro (Elbow SX)</span>
+                                <span id="workout-spot-summary-gomitoSX" class="text-[11px] font-mono font-bold text-amber-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-gomitoSX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutPatSerie('gomitoSX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
+                                + Aggiungi Serie Gomito SX
+                            </button>
+                        </div>
+
+                        <!-- Gomito DX -->
+                        <div class="bg-slate-50/80 border border-slate-200/80 rounded-xl p-3.5 space-y-2.5">
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs font-bold text-slate-900">Gomito Destro (Elbow DX)</span>
+                                <span id="workout-spot-summary-gomitoDX" class="text-[11px] font-mono font-bold text-amber-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
+                            </div>
+                            <div id="workout-series-container-gomitoDX" class="space-y-2"></div>
+                            <button type="button" onclick="addWorkoutPatSerie('gomitoDX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
+                                + Aggiungi Serie Gomito DX
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. Tiri Liberi & Fatica -->
+                <div class="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs border-l-4 border-l-emerald-600 space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 font-extrabold flex items-center justify-center text-xs">4</span>
+                            <div>
+                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 4: Tiri Liberi & Sotto Sforzo</h3>
+                                <p class="text-[11px] text-slate-500 font-medium">Blocchi e cicli ad alta intensità a fine sessione</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span id="live-card-ft-summary" class="text-xs font-mono font-bold px-2.5 py-1 rounded bg-emerald-50 text-emerald-700 border border-emerald-200">0/0 (0%)</span>
+                        </div>
+                    </div>
+
+                    <div id="workout-ft-blocks-container" class="space-y-3">
+                        <!-- Blocchi liberi generati dinamicamente -->
+                    </div>
+
+                    <div class="flex items-center justify-between pt-1">
+                        <button type="button" onclick="addWorkoutFtBlock()" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-emerald-50 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            <span>Aggiungi Blocco / Serie Liberi</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5. Sezione Chiusura Sessione & AI Coach Generator -->
+                <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 text-white shadow-2xl space-y-5">
+                    <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
+                        <div class="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-600/40">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-athletic font-extrabold uppercase tracking-wide text-white">Chiusura Workout & AI Coach</h3>
+                            <p class="text-xs text-slate-400 font-medium">Salva i record nel database e genera la prossima scheda di allenamento adattata</p>
+                        </div>
+                    </div>
+
+                    <!-- Note Opzionali per il Coach AI -->
+                    <div>
+                        <label for="workout-player-notes" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                            Note per il Coach AI (Opzionale)
+                        </label>
+                        <textarea id="workout-player-notes" rows="2" placeholder="Es. Ho sentito un calo fisico negli ultimi 15 min; Vorrei concentrarmi sul pull-up da destra; La prossima sessione durerà 45 min..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"></textarea>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                        <button type="button" onclick="saveWorkoutSessionOnly()" class="px-5 py-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center justify-center gap-2">
+                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                            <span>Salva Solo Dati (Senza AI)</span>
+                        </button>
+                        <button type="button" onclick="saveWorkoutWithAICoach()" class="px-6 py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-xl shadow-orange-600/30 transition-all transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <span class="uppercase tracking-wider">Salva & Genera Prossima Scheda con AI</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
         <!-- ================= TAB: PIANO ALLENAMENTO ================= -->
         <section id="tab-plan" class="hidden space-y-6 max-w-5xl mx-auto">
             
@@ -591,21 +1043,26 @@
     </footer>
 
     <!-- Bottom Navigation Bar (Mobile) -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950 text-slate-400 border-t border-slate-800 flex justify-around items-center py-2 px-3">
-        <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-3 py-1">
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-slate-950 text-slate-400 border-t border-slate-800 flex justify-around items-center py-2 px-2">
+        <button onclick="switchTab('dashboard')" id="bottom-nav-dashboard" class="flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-2 py-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4zM14 16a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2v-4z"></path></svg>
             <span>Analytics</span>
         </button>
-        <button onclick="switchTab('plan')" id="bottom-nav-plan" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 012 2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+        <button onclick="switchTab('workout')" id="bottom-nav-workout" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-2 py-1">
+            <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+            <span>Workout</span>
+        </button>
+        <button onclick="switchTab('plan')" id="bottom-nav-plan" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-2 py-1">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
             <span>Piano</span>
         </button>
-        <button onclick="switchTab('history')" id="bottom-nav-history" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1">
+        <button onclick="switchTab('history')" id="bottom-nav-history" class="flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-2 py-1">
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
             <span>Storico</span>
         </button>
     </nav>
 
+    <!-- Client-Side JavaScript Logic -->
     <!-- Client-Side JavaScript Logic -->
     <script>
         const appId = typeof __app_id !== 'undefined' ? __app_id : 'basketball-shottracker-davide';
@@ -615,23 +1072,66 @@
         let progressChartInstance = null;
         let sessionToDeleteId = null;
 
+        // Firebase & AI Configuration State
+        let firebaseDb = null;
+        let firebaseInitialized = false;
+        let settings = {
+            geminiApiKey: '',
+            firebaseConfig: ''
+        };
+
         // Timer Piano Allenamento
         let planTimerInterval = null;
         let planTimerSeconds = 0;
         let planTimerRunning = false;
+
+        // Stato Scheda Workout Attiva
+        let currentWorkout = {
+            date: new Date().toISOString().split('T')[0],
+            duration: 60,
+            planId: '',
+            formShooting: [
+                { made: 10, att: 10 },
+                { made: 8, att: 10 },
+                { made: 9, att: 10 }
+            ],
+            formShootingLiberi: { made: 8, att: 10 },
+            tri: {
+                angoloSX: [{ made: 4, att: 5 }, { made: 4, att: 5 }],
+                guardiaSX: [{ made: 3, att: 5 }, { made: 4, att: 5 }],
+                punta: [{ made: 6, att: 10 }, { made: 5, att: 10 }],
+                guardiaDX: [{ made: 5, att: 10 }, { made: 6, att: 10 }],
+                angoloDX: [{ made: 4, att: 10 }, { made: 5, att: 10 }]
+            },
+            pat: {
+                gomitoSX: [{ made: 3, att: 5 }, { made: 2, att: 5 }, { made: 3, att: 5 }, { made: 2, att: 5 }, { made: 3, att: 5 }, { made: 3, att: 5 }],
+                gomitoDX: [{ made: 3, att: 5 }, { made: 3, att: 5 }, { made: 4, att: 5 }, { made: 2, att: 5 }, { made: 4, att: 5 }, { made: 3, att: 5 }]
+            },
+            liberi: [
+                { title: "Attivazione Liberi", series: [{ made: 7, att: 10 }] },
+                { title: "Protocollo Sotto Sforzo (Blocco 1)", series: [{ made: 3, att: 3 }, { made: 3, att: 3 }, { made: 3, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }] },
+                { title: "Protocollo Sotto Sforzo (Blocco 2)", series: [{ made: 3, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }] }
+            ]
+        };
 
         window.onload = function() {
             initApp();
         };
 
         async function initApp() {
-            await loadSessionsFromDataFolder();
-            await loadPlansFromDataFolder();
+            loadSettings();
+            initFirebaseIfConfigured();
+            await loadSessionsData();
+            await loadPlansData();
+
             populateSessionSelector();
             populatePlanSelector();
+            populateWorkoutPlanSelector();
+            initWorkoutSheet();
             updateGlobalStats();
             renderProgressChart();
             populateHistoryTable();
+            updateSyncBadges();
 
             if (sessions.length > 0) {
                 document.getElementById('session-selector').value = 'average';
@@ -639,68 +1139,1217 @@
             }
         }
 
-        async function loadSessionsFromDataFolder() {
+        // =========================================================================
+        // 1. GESTIONE IMPOSTAZIONI (Firebase Cloud & Google Gemini AI)
+        // =========================================================================
+
+        function loadSettings() {
+            try {
+                const saved = localStorage.getItem('shottracker_settings');
+                if (saved) {
+                    settings = JSON.parse(saved);
+                }
+            } catch (e) {
+                console.warn('Errore lettura impostazioni:', e);
+            }
+
+            const keyInput = document.getElementById('input-gemini-key');
+            const fbInput = document.getElementById('input-firebase-config');
+            if (keyInput) keyInput.value = settings.geminiApiKey || '';
+            if (fbInput) fbInput.value = settings.firebaseConfig || '';
+        }
+
+        function openSettingsModal() {
+            loadSettings();
+            updateSettingsStatusBadges();
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeSettingsModal() {
+            const modal = document.getElementById('settings-modal');
+            if (modal) modal.classList.add('hidden');
+        }
+
+        function saveSettings() {
+            const keyInput = document.getElementById('input-gemini-key');
+            const fbInput = document.getElementById('input-firebase-config');
+
+            settings.geminiApiKey = keyInput ? keyInput.value.trim() : '';
+            settings.firebaseConfig = fbInput ? fbInput.value.trim() : '';
+
+            try {
+                localStorage.setItem('shottracker_settings', JSON.stringify(settings));
+                showToast("Impostazioni salvate con successo!", "success");
+            } catch (e) {
+                showToast("Errore salvataggio impostazioni", "error");
+            }
+
+            initFirebaseIfConfigured();
+            updateSyncBadges();
+            updateSettingsStatusBadges();
+            closeSettingsModal();
+        }
+
+        function clearSettings() {
+            if (confirm("Vuoi ripristinare le impostazioni Cloud & AI?")) {
+                settings = { geminiApiKey: '', firebaseConfig: '' };
+                localStorage.removeItem('shottracker_settings');
+                const keyInput = document.getElementById('input-gemini-key');
+                const fbInput = document.getElementById('input-firebase-config');
+                if (keyInput) keyInput.value = '';
+                if (fbInput) fbInput.value = '';
+                firebaseDb = null;
+                firebaseInitialized = false;
+                updateSyncBadges();
+                updateSettingsStatusBadges();
+                showToast("Impostazioni ripristinate.", "info");
+            }
+        }
+
+        function updateSettingsStatusBadges() {
+            const gBadge = document.getElementById('gemini-status-badge');
+            const fbBadge = document.getElementById('firebase-status-badge');
+
+            if (gBadge) {
+                if (settings.geminiApiKey && settings.geminiApiKey.length > 10) {
+                    gBadge.textContent = "🟢 Chiave Inserita";
+                    gBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
+                } else {
+                    gBadge.textContent = "Non configurata";
+                    gBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
+                }
+            }
+
+            if (fbBadge) {
+                if (firebaseInitialized && firebaseDb) {
+                    fbBadge.textContent = "🟢 Connesso al Cloud";
+                    fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
+                } else if (settings.firebaseConfig) {
+                    fbBadge.textContent = "Configurato";
+                    fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold";
+                } else {
+                    fbBadge.textContent = "Non configurato";
+                    fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
+                }
+            }
+        }
+
+        function updateSyncBadges() {
+            const hStatus = document.getElementById('header-sync-status');
+            const mStatus = document.getElementById('mobile-header-sync-status');
+            
+            const isCloud = firebaseInitialized && firebaseDb;
+            const hasAi = settings.geminiApiKey && settings.geminiApiKey.length > 10;
+
+            const badgeColor = isCloud ? (hasAi ? 'bg-emerald-500 shadow-sm shadow-emerald-500' : 'bg-blue-500') : 'bg-amber-500';
+
+            if (hStatus) hStatus.className = `w-2 h-2 rounded-full ${badgeColor}`;
+            if (mStatus) mStatus.className = `absolute top-1.5 right-1.5 w-2 h-2 rounded-full ${badgeColor}`;
+        }
+
+        function initFirebaseIfConfigured() {
+            if (!settings.firebaseConfig) {
+                firebaseDb = null;
+                firebaseInitialized = false;
+                return;
+            }
+
+            try {
+                let configObj = null;
+                const raw = settings.firebaseConfig.trim();
+                
+                if (raw.startsWith('{') && raw.endsWith('}')) {
+                    configObj = JSON.parse(raw);
+                } else {
+                    // Cerca di estrarre proprietà con regex se l'utente incolla l'intero snippet js
+                    const extract = (key) => {
+                        const m = raw.match(new RegExp(`${key}\\s*:\\s*["']([^"']+)["']`));
+                        return m ? m[1] : undefined;
+                    };
+                    configObj = {
+                        apiKey: extract('apiKey'),
+                        authDomain: extract('authDomain'),
+                        projectId: extract('projectId'),
+                        storageBucket: extract('storageBucket'),
+                        messagingSenderId: extract('messagingSenderId'),
+                        appId: extract('appId')
+                    };
+                }
+
+                if (configObj && configObj.projectId && typeof firebase !== 'undefined') {
+                    if (!firebase.apps || firebase.apps.length === 0) {
+                        firebase.initializeApp(configObj);
+                    }
+                    firebaseDb = firebase.firestore();
+                    firebaseInitialized = true;
+                    console.log('[Firebase] Inizializzato con successo per projectId:', configObj.projectId);
+                }
+            } catch (err) {
+                console.warn('[Firebase] Configurazione non valida:', err);
+                firebaseDb = null;
+                firebaseInitialized = false;
+            }
+        }
+
+        async function testGeminiConnection() {
+            const keyInput = document.getElementById('input-gemini-key');
+            const key = keyInput ? keyInput.value.trim() : settings.geminiApiKey;
+
+            if (!key) {
+                showToast("Inserisci prima la Gemini API Key.", "error");
+                return;
+            }
+
+            showToast("Test connessione AI in corso...", "info");
+
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
+                const res = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [{ parts: [{ text: "Rispondi esclusivamente con la parola 'OK' se sei attivo e pronto." }] }]
+                    })
+                });
+
+                if (res.ok) {
+                    const data = await res.json();
+                    showToast("🟢 Connessione a Google Gemini riuscita!", "success");
+                    updateSettingsStatusBadges();
+                } else {
+                    const errData = await res.json().catch(() => ({}));
+                    showToast(`Errore Gemini (${res.status}): ${errData.error?.message || 'Chiave non valida'}`, "error");
+                }
+            } catch (err) {
+                showToast("Errore di rete durante la verifica Gemini.", "error");
+            }
+        }
+
+        async function testFirebaseConnection() {
+            initFirebaseIfConfigured();
+            if (!firebaseDb) {
+                showToast("Configurazione Firebase non valida o incompleta.", "error");
+                return;
+            }
+
+            showToast("Test connessione Firestore in corso...", "info");
+            try {
+                await firebaseDb.collection('status_check').doc('ping').set({
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    app: 'ShotTracker'
+                });
+                showToast("🟢 Connessione a Firebase Firestore riuscita!", "success");
+                updateSettingsStatusBadges();
+                updateSyncBadges();
+            } catch (err) {
+                console.error('[Firebase Test Error]', err);
+                showToast("Errore Firestore: verifica le regole del database (attiva test mode).", "error");
+            }
+        }
+
+        // =========================================================================
+        // 2. SINCRONIZZAZIONE DATI IBRIDA (Cloud Firestore ↔ LocalStorage ↔ Static JSON)
+        // =========================================================================
+
+        async function loadSessionsData() {
+            // 1. Prova da Firebase Cloud se configurato
+            if (firebaseDb) {
+                try {
+                    const snap = await firebaseDb.collection('sessions').orderBy('date', 'desc').get();
+                    if (!snap.empty) {
+                        const cloudSessions = [];
+                        snap.forEach(doc => cloudSessions.push(doc.data()));
+                        if (cloudSessions.length > 0) {
+                            sessions = cloudSessions;
+                            localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+                            console.log(`[Sync] Caricate ${sessions.length} sessioni da Firestore.`);
+                            return;
+                        }
+                    }
+                } catch (e) {
+                    console.warn('[Sync] Fallito caricamento Firestore, passo a localStorage:', e);
+                }
+            }
+
+            // 2. Prova da LocalStorage
+            try {
+                const saved = localStorage.getItem(`${appId}-sessions`);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        sessions = parsed;
+                        return;
+                    }
+                }
+            } catch (e) {}
+
+            // 3. Fallback iniziale dai file data/
             try {
                 const res = await fetch('data/sessions.json');
                 if (res.ok) {
                     const indexList = await res.json();
-                    const fetchedSessions = [];
+                    const fetched = [];
                     for (const item of indexList) {
                         try {
                             const sRes = await fetch(item.file);
-                            if (sRes.ok) {
-                                const sData = await sRes.json();
-                                fetchedSessions.push(sData);
-                            }
-                        } catch (err) {
-                            console.warn('Errore nel caricamento della sessione:', item.file, err);
-                        }
+                            if (sRes.ok) fetched.push(await sRes.json());
+                        } catch (err) {}
                     }
-
-                    if (fetchedSessions.length > 0) {
-                        sessions = fetchedSessions;
+                    if (fetched.length > 0) {
+                        sessions = fetched;
                         localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
-                        return;
                     }
-                }
-            } catch (e) {
-                console.info('Caricamento dinamico JSON non disponibile, utilizzo localStorage/fallback.', e);
-            }
-
-            try {
-                const savedData = localStorage.getItem(`${appId}-sessions`);
-                if (savedData) {
-                    sessions = JSON.parse(savedData);
                 }
             } catch (e) {
                 sessions = [];
             }
         }
 
-        async function loadPlansFromDataFolder() {
+        async function loadPlansData() {
+            // 1. Prova da Firestore
+            if (firebaseDb) {
+                try {
+                    const snap = await firebaseDb.collection('plans').get();
+                    if (!snap.empty) {
+                        const cloudPlans = [];
+                        snap.forEach(doc => cloudPlans.push(doc.data()));
+                        if (cloudPlans.length > 0) {
+                            plans = cloudPlans;
+                            localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
+                            console.log(`[Sync] Caricati ${plans.length} piani da Firestore.`);
+                            return;
+                        }
+                    }
+                } catch (e) {}
+            }
+
+            // 2. Prova da LocalStorage
+            try {
+                const saved = localStorage.getItem(`${appId}-plans`);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed) && parsed.length > 0) {
+                        plans = parsed;
+                        return;
+                    }
+                }
+            } catch (e) {}
+
+            // 3. Fallback iniziale da data/
             try {
                 const res = await fetch('data/plans.json');
                 if (res.ok) {
                     const indexList = await res.json();
-                    const fetchedPlans = [];
+                    const fetched = [];
                     for (const item of indexList) {
                         try {
                             const pRes = await fetch(item.file);
-                            if (pRes.ok) {
-                                const pData = await pRes.json();
-                                fetchedPlans.push(pData);
-                            }
-                        } catch (err) {
-                            console.warn('Errore nel caricamento del piano:', item.file, err);
-                        }
+                            if (pRes.ok) fetched.push(await pRes.json());
+                        } catch (err) {}
                     }
-                    if (fetchedPlans.length > 0) {
-                        plans = fetchedPlans;
+                    if (fetched.length > 0) {
+                        plans = fetched;
+                        localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
                     }
                 }
             } catch (e) {
-                console.info('Caricamento piani non disponibile via fetch.', e);
+                plans = [];
             }
+        }
+
+        async function saveSessionToDb(newSession) {
+            const idx = sessions.findIndex(s => s.id === newSession.id);
+            if (idx >= 0) {
+                sessions[idx] = newSession;
+            } else {
+                sessions.unshift(newSession);
+            }
+
+            // Salva sempre in LocalStorage (offline-first)
+            try {
+                localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+            } catch (e) {}
+
+            // Sincronizza su Firestore Cloud se attivo
+            if (firebaseDb) {
+                try {
+                    await firebaseDb.collection('sessions').doc(newSession.id).set(newSession);
+                    console.log('[Sync] Sessione salvata su Firestore:', newSession.id);
+                } catch (err) {
+                    console.warn('[Sync] Errore scrittura Firestore:', err);
+                }
+            }
+        }
+
+        async function savePlanToDb(newPlan) {
+            const idx = plans.findIndex(p => p.id === newPlan.id);
+            if (idx >= 0) {
+                plans[idx] = newPlan;
+            } else {
+                plans.unshift(newPlan);
+            }
+
+            try {
+                localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
+            } catch (e) {}
+
+            if (firebaseDb) {
+                try {
+                    await firebaseDb.collection('plans').doc(newPlan.id).set(newPlan);
+                    console.log('[Sync] Piano salvato su Firestore:', newPlan.id);
+                } catch (err) {
+                    console.warn('[Sync] Errore scrittura Firestore:', err);
+                }
+            }
+        }
+
+        async function deleteSessionFromDb(sessionId) {
+            sessions = sessions.filter(s => s.id !== sessionId);
+            try {
+                localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+            } catch (e) {}
+
+            if (firebaseDb) {
+                try {
+                    await firebaseDb.collection('sessions').doc(sessionId).delete();
+                } catch (err) {}
+            }
+        }
+
+        // =========================================================================
+        // 3. SCHEDA DI ALLENAMENTO INTERATTIVA (WORKOUT LIVE MODE)
+        // =========================================================================
+
+        function populateWorkoutPlanSelector() {
+            const selector = document.getElementById('workout-plan-ref');
+            if (!selector) return;
+            selector.innerHTML = '';
+
+            if (plans.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = 'default';
+                opt.textContent = 'Scheda Base Ufficiale (60 Min)';
+                selector.appendChild(opt);
+                return;
+            }
+
+            const sortedPlans = [...plans].sort((a, b) => (b.number || 0) - (a.number || 0));
+            sortedPlans.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.id;
+                opt.textContent = `Scheda #${p.number || p.id}: ${(p.title || '').replace('Programma di Allenamento Analitico • ', '')}`;
+                selector.appendChild(opt);
+            });
+
+            if (sortedPlans.length > 0) {
+                selector.value = sortedPlans[0].id;
+                currentWorkout.planId = sortedPlans[0].id;
+            }
+        }
+
+        function onWorkoutPlanChange(planId) {
+            currentWorkout.planId = planId;
+            showToast(`Scheda di riferimento impostata su #${planId}`, "info");
+        }
+
+        function initWorkoutSheet() {
+            const dateInput = document.getElementById('workout-date');
+            if (dateInput) {
+                dateInput.value = currentWorkout.date;
+                dateInput.onchange = (e) => currentWorkout.date = e.target.value;
+            }
+
+            const durInput = document.getElementById('workout-duration');
+            if (durInput) {
+                durInput.value = currentWorkout.duration;
+                durInput.onchange = (e) => currentWorkout.duration = parseInt(e.target.value, 10) || 60;
+            }
+
+            renderWorkoutFormShooting();
+            renderWorkout3ptSpots();
+            renderWorkoutPatSpots();
+            renderWorkoutLiberi();
+            updateWorkoutLiveKpis();
+        }
+
+        function renderWorkoutFormShooting() {
+            const container = document.getElementById('workout-formshooting-series-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            currentWorkout.formShooting.forEach((serie, idx) => {
+                const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                const row = document.createElement('div');
+                row.className = "flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl";
+                row.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
+                        <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Fatti</span>
+                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                            <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'made', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', 1)" class="w-6 h-6 rounded bg-blue-600 hover:bg-blue-700 font-black text-xs text-white flex items-center justify-center">+</button>
+                        </div>
+                        <span class="text-slate-400 font-bold">/</span>
+                        <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
+                            <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Tentati</span>
+                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                            <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'att', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-900 font-black text-xs text-white flex items-center justify-center">+</button>
+                        </div>
+                        ${currentWorkout.formShooting.length > 1 ? `
+                            <button type="button" onclick="removeWorkoutSerie('formshooting', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                            </button>
+                        ` : ''}
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function renderWorkout3ptSpots() {
+            const spots = ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'];
+            spots.forEach(spotKey => {
+                const container = document.getElementById(`workout-series-container-${spotKey}`);
+                if (!container) return;
+                container.innerHTML = '';
+
+                const series = currentWorkout.tri[spotKey] || [];
+                series.forEach((serie, idx) => {
+                    const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                    const row = document.createElement('div');
+                    row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-white border border-slate-200 rounded-lg";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
+                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold">+</button>
+                            </div>
+                            <span class="text-slate-400 font-bold text-xs">/</span>
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                <span class="text-[9px] font-bold text-slate-500">Tent:</span>
+                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                            </div>
+                            ${series.length > 1 ? `
+                                <button type="button" onclick="removeWorkoutSerie('tri', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            });
+        }
+
+        function renderWorkoutPatSpots() {
+            const spots = ['gomitoSX', 'gomitoDX'];
+            spots.forEach(spotKey => {
+                const container = document.getElementById(`workout-series-container-${spotKey}`);
+                if (!container) return;
+                container.innerHTML = '';
+
+                const series = currentWorkout.pat[spotKey] || [];
+                series.forEach((serie, idx) => {
+                    const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                    const row = document.createElement('div');
+                    row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-white border border-slate-200 rounded-lg";
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
+                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold">+</button>
+                            </div>
+                            <span class="text-slate-400 font-bold text-xs">/</span>
+                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                <span class="text-[9px] font-bold text-slate-500">Tent:</span>
+                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                            </div>
+                            ${series.length > 1 ? `
+                                <button type="button" onclick="removeWorkoutSerie('pat', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
+                            ` : ''}
+                        </div>
+                    `;
+                    container.appendChild(row);
+                });
+            });
+        }
+
+        function renderWorkoutLiberi() {
+            const container = document.getElementById('workout-ft-blocks-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            currentWorkout.liberi.forEach((block, bIdx) => {
+                let bMade = 0, bAtt = 0;
+                block.series.forEach(s => { bMade += s.made; bAtt += s.att; });
+                const bPct = bAtt > 0 ? Math.round((bMade / bAtt) * 100) : 0;
+
+                const blockEl = document.createElement('div');
+                blockEl.className = "bg-slate-50/90 border border-slate-200 rounded-xl p-3.5 space-y-3";
+                
+                let html = `
+                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
+                        <span class="text-xs font-bold text-slate-900">${block.title}</span>
+                        <span class="text-[11px] font-mono font-bold text-emerald-700 bg-white px-2 py-0.5 rounded border border-slate-200">${bMade}/${bAtt} (${bPct}%)</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
+                `;
+
+                block.series.forEach((serie, sIdx) => {
+                    const sPct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                    html += `
+                        <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
+                            <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
+                            <div class="flex items-center gap-1">
+                                <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-[10px]">-</button>
+                                <input type="number" min="0" max="20" value="${serie.made}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'made', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', 1)" class="w-5 h-5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px]">+</button>
+                                <span class="text-slate-300 font-bold">/</span>
+                                <input type="number" min="1" max="20" value="${serie.att}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'att', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded">
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                    </div>
+                    <div class="flex justify-end pt-1">
+                        <button type="button" onclick="addWorkoutFtSubSerie(${bIdx})" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 py-0.5 px-2 rounded hover:bg-emerald-100/50">
+                            + Aggiungi Ripetizione al Blocco
+                        </button>
+                    </div>
+                `;
+
+                blockEl.innerHTML = html;
+                container.appendChild(blockEl);
+            });
+        }
+
+        function updateWorkoutLiveKpis() {
+            let totalMade = 0, totalAtt = 0;
+            let m3 = 0, a3 = 0;
+            let mPat = 0, aPat = 0;
+            let mFt = 0, aFt = 0;
+            let mForm = 0, aForm = 0;
+
+            // Form Shooting
+            currentWorkout.formShooting.forEach(s => { mForm += s.made; aForm += s.att; });
+            totalMade += mForm; totalAtt += aForm;
+            const formPct = aForm > 0 ? Math.round((mForm / aForm) * 100) : 0;
+            const formSummary = document.getElementById('live-card-formshooting-summary');
+            if (formSummary) formSummary.textContent = `${mForm}/${aForm} (${formPct}%)`;
+
+            // 3PT
+            ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(spot => {
+                let sMade = 0, sAtt = 0;
+                (currentWorkout.tri[spot] || []).forEach(s => { sMade += s.made; sAtt += s.att; });
+                m3 += sMade; a3 += sAtt;
+                const spotSummary = document.getElementById(`workout-spot-summary-${spot}`);
+                const spotPct = sAtt > 0 ? Math.round((sMade / sAtt) * 100) : 0;
+                if (spotSummary) spotSummary.textContent = `${sMade}/${sAtt} (${spotPct}%)`;
+            });
+            totalMade += m3; totalAtt += a3;
+            const pt3Pct = a3 > 0 ? Math.round((m3 / a3) * 100) : 0;
+            const summary3pt = document.getElementById('live-card-3pt-summary');
+            if (summary3pt) summary3pt.textContent = `${m3}/${a3} (${pt3Pct}%)`;
+
+            // PAT
+            ['gomitoSX', 'gomitoDX'].forEach(spot => {
+                let sMade = 0, sAtt = 0;
+                (currentWorkout.pat[spot] || []).forEach(s => { sMade += s.made; sAtt += s.att; });
+                mPat += sMade; aPat += sAtt;
+                const spotSummary = document.getElementById(`workout-spot-summary-${spot}`);
+                const spotPct = sAtt > 0 ? Math.round((sMade / sAtt) * 100) : 0;
+                if (spotSummary) spotSummary.textContent = `${sMade}/${sAtt} (${spotPct}%)`;
+            });
+            totalMade += mPat; totalAtt += aPat;
+            const patPct = aPat > 0 ? Math.round((mPat / aPat) * 100) : 0;
+            const summaryPat = document.getElementById('live-card-pat-summary');
+            if (summaryPat) summaryPat.textContent = `${mPat}/${aPat} (${patPct}%)`;
+
+            // Liberi
+            currentWorkout.liberi.forEach(block => {
+                block.series.forEach(s => { mFt += s.made; aFt += s.att; });
+            });
+            totalMade += mFt; totalAtt += aFt;
+            const ftPct = aFt > 0 ? Math.round((mFt / aFt) * 100) : 0;
+            const summaryFt = document.getElementById('live-card-ft-summary');
+            if (summaryFt) summaryFt.textContent = `${mFt}/${aFt} (${ftPct}%)`;
+
+            // Ribbon Totali
+            const totPct = totalAtt > 0 ? Math.round((totalMade / totalAtt) * 100) : 0;
+            document.getElementById('live-kpi-total-pct').textContent = `${totPct}%`;
+            document.getElementById('live-kpi-total-cnt').textContent = `(${totalMade}/${totalAtt})`;
+
+            document.getElementById('live-kpi-3pt-pct').textContent = `${pt3Pct}%`;
+            document.getElementById('live-kpi-3pt-cnt').textContent = `(${m3}/${a3})`;
+
+            document.getElementById('live-kpi-pat-pct').textContent = `${patPct}%`;
+            document.getElementById('live-kpi-pat-cnt').textContent = `(${mPat}/${aPat})`;
+
+            document.getElementById('live-kpi-ft-pct').textContent = `${ftPct}%`;
+            document.getElementById('live-kpi-ft-cnt').textContent = `(${mFt}/${aFt})`;
+        }
+
+        // Metodi di Modifica Serie
+        function adjustWorkoutSerie(cat, spot, idx, field, delta) {
+            let targetObj;
+            if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
+            else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
+            else if (cat === 'pat') targetObj = currentWorkout.pat[spot][idx];
+
+            if (!targetObj) return;
+            targetObj[field] = Math.max(0, targetObj[field] + delta);
+            if (field === 'made' && targetObj.made > targetObj.att) {
+                targetObj.att = targetObj.made;
+            }
+
+            if (cat === 'formshooting') renderWorkoutFormShooting();
+            else if (cat === 'tri') renderWorkout3ptSpots();
+            else if (cat === 'pat') renderWorkoutPatSpots();
+            updateWorkoutLiveKpis();
+        }
+
+        function setWorkoutSerieVal(cat, spot, idx, field, val) {
+            let targetObj;
+            if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
+            else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
+            else if (cat === 'pat') targetObj = currentWorkout.pat[spot][idx];
+
+            if (!targetObj) return;
+            const parsed = parseInt(val, 10);
+            targetObj[field] = isNaN(parsed) ? 0 : Math.max(0, parsed);
+            if (field === 'made' && targetObj.made > targetObj.att) {
+                targetObj.att = targetObj.made;
+            }
+
+            if (cat === 'formshooting') renderWorkoutFormShooting();
+            else if (cat === 'tri') renderWorkout3ptSpots();
+            else if (cat === 'pat') renderWorkoutPatSpots();
+            updateWorkoutLiveKpis();
+        }
+
+        function addWorkoutSerie(cat, spot) {
+            if (cat === 'formshooting') {
+                currentWorkout.formShooting.push({ made: 8, att: 10 });
+                renderWorkoutFormShooting();
+            }
+            updateWorkoutLiveKpis();
+        }
+
+        function removeWorkoutSerie(cat, spot, idx) {
+            if (cat === 'formshooting' && currentWorkout.formShooting.length > 1) {
+                currentWorkout.formShooting.splice(idx, 1);
+                renderWorkoutFormShooting();
+            } else if (cat === 'tri' && currentWorkout.tri[spot].length > 1) {
+                currentWorkout.tri[spot].splice(idx, 1);
+                renderWorkout3ptSpots();
+            } else if (cat === 'pat' && currentWorkout.pat[spot].length > 1) {
+                currentWorkout.pat[spot].splice(idx, 1);
+                renderWorkoutPatSpots();
+            }
+            updateWorkoutLiveKpis();
+        }
+
+        function addWorkoutSpotSerie(spotKey) {
+            if (!currentWorkout.tri[spotKey]) currentWorkout.tri[spotKey] = [];
+            currentWorkout.tri[spotKey].push({ made: 5, att: 10 });
+            renderWorkout3ptSpots();
+            updateWorkoutLiveKpis();
+        }
+
+        function addWorkoutPatSerie(spotKey) {
+            if (!currentWorkout.pat[spotKey]) currentWorkout.pat[spotKey] = [];
+            currentWorkout.pat[spotKey].push({ made: 3, att: 5 });
+            renderWorkoutPatSpots();
+            updateWorkoutLiveKpis();
+        }
+
+        function adjustWorkoutFtSerie(bIdx, sIdx, field, delta) {
+            const s = currentWorkout.liberi[bIdx].series[sIdx];
+            if (!s) return;
+            s[field] = Math.max(0, s[field] + delta);
+            if (field === 'made' && s.made > s.att) s.att = s.made;
+            renderWorkoutLiberi();
+            updateWorkoutLiveKpis();
+        }
+
+        function setWorkoutFtSerieVal(bIdx, sIdx, field, val) {
+            const s = currentWorkout.liberi[bIdx].series[sIdx];
+            if (!s) return;
+            const parsed = parseInt(val, 10);
+            s[field] = isNaN(parsed) ? 0 : Math.max(0, parsed);
+            if (field === 'made' && s.made > s.att) s.att = s.made;
+            renderWorkoutLiberi();
+            updateWorkoutLiveKpis();
+        }
+
+        function addWorkoutFtSubSerie(bIdx) {
+            const block = currentWorkout.liberi[bIdx];
+            if (block) {
+                block.series.push({ made: 2, att: 2 });
+                renderWorkoutLiberi();
+                updateWorkoutLiveKpis();
+            }
+        }
+
+        function addWorkoutFtBlock() {
+            currentWorkout.liberi.push({
+                title: `Protocollo Sotto Sforzo (Blocco ${currentWorkout.liberi.length})`,
+                series: [{ made: 2, att: 2 }, { made: 2, att: 2 }, { made: 2, att: 2 }]
+            });
+            renderWorkoutLiberi();
+            updateWorkoutLiveKpis();
+        }
+
+        // =========================================================================
+        // 4. GENERAZIONE SESSIONE & MOTORE AI COACH (Google Gemini)
+        // =========================================================================
+
+        function buildSessionObjectFromWorkout() {
+            const dateVal = document.getElementById('workout-date')?.value || currentWorkout.date;
+            const durVal = parseInt(document.getElementById('workout-duration')?.value, 10) || currentWorkout.duration;
+            const sessionId = `sessione-${dateVal}`;
+
+            // Form shooting aggregato
+            let formMade = 0, formAtt = 0;
+            currentWorkout.formShooting.forEach(s => { formMade += s.made; formAtt += s.att; });
+
+            // 3PT
+            const triData = {};
+            ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
+                const sList = currentWorkout.tri[k] || [];
+                let m = 0, a = 0;
+                const seriesArr = sList.map(s => {
+                    m += s.made;
+                    a += s.att;
+                    return s.made;
+                });
+                triData[k] = { made: m, att: a, series: seriesArr };
+            });
+
+            // PAT
+            const patData = {};
+            ['gomitoSX', 'gomitoDX'].forEach(k => {
+                const sList = currentWorkout.pat[k] || [];
+                let m = 0, a = 0;
+                const seriesArr = sList.map(s => {
+                    m += s.made;
+                    a += s.att;
+                    return s.made;
+                });
+                patData[k] = { made: m, att: a, series: seriesArr };
+            });
+
+            // Liberi
+            let ftMade = 0, ftAtt = 0;
+            const ftBlocks = currentWorkout.liberi.map(b => {
+                return b.series.map(s => {
+                    ftMade += s.made;
+                    ftAtt += s.att;
+                    return s.made;
+                });
+            });
+
+            return {
+                id: sessionId,
+                date: dateVal,
+                duration: durVal,
+                formShooting: { made: formMade, att: formAtt },
+                tri: triData,
+                pat: patData,
+                liberi: { made: ftMade, att: ftAtt, blocks: ftBlocks }
+            };
+        }
+
+        async function saveWorkoutSessionOnly() {
+            const sessionData = buildSessionObjectFromWorkout();
+            
+            // Genera insight base
+            sessionData.insight = {
+                title: `Analisi Sessione del ${formatDate(sessionData.date)}`,
+                summary: `Allenamento di ${sessionData.duration} minuti registrato dal campo. Dati salvati con successo nello storico e nei grafici.`,
+                sections: []
+            };
+
+            await saveSessionToDb(sessionData);
+            await initApp();
+            switchTab('dashboard');
+            document.getElementById('session-selector').value = sessionData.id;
+            loadSessionDetail(sessionData.id);
+            showToast("Sessione salvata con successo!", "success");
+        }
+
+        async function saveWorkoutWithAICoach() {
+            const sessionData = buildSessionObjectFromWorkout();
+            const playerNotes = document.getElementById('workout-player-notes')?.value.trim() || '';
+
+            if (!settings.geminiApiKey || settings.geminiApiKey.length < 10) {
+                showToast("Configura prima la tua Gemini API Key gratuita nelle Impostazioni!", "error");
+                openSettingsModal();
+                return;
+            }
+
+            // Mostra Modal Caricamento AI
+            const loadModal = document.getElementById('ai-loading-modal');
+            const loadStatus = document.getElementById('ai-loading-status');
+            if (loadModal) loadModal.classList.remove('hidden');
+
+            try {
+                if (loadStatus) loadStatus.textContent = "Elaborazione balistica e correlazione storico...";
+
+                // Calcola statistiche storiche per il prompt
+                let histOverview = `Storico giocatore su ${sessions.length} sessioni registrate:\n`;
+                sessions.slice(0, 5).forEach((s, idx) => {
+                    const s3 = s.tri.angoloSX.att > 0 ? `${s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made}/${s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att}` : 'N/D';
+                    histOverview += `- Sessione ${s.date}: 3PT ${s3}, Liberi ${s.liberi.made}/${s.liberi.att}, PAT Gomito SX ${s.pat.gomitoSX.made}/${s.pat.gomitoSX.att}, Gomito DX ${s.pat.gomitoDX.made}/${s.pat.gomitoDX.att}\n`;
+                });
+
+                const currentNumbers = JSON.stringify({
+                    data: sessionData.date,
+                    durataMinuti: sessionData.duration,
+                    tiroDa3: sessionData.tri,
+                    palleggioArrestoTiro: sessionData.pat,
+                    tiriLiberi: sessionData.liberi,
+                    noteAtleta: playerNotes
+                }, null, 2);
+
+                const nextPlanNumber = plans.length + 1;
+
+                const systemInstruction = `
+Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
+Il tuo compito è:
+1) Analizzare accuratamente la sessione di tiro odierna incrociandola con lo storico.
+2) Generare un'analisi balistica tecnica ("insight") con osservazioni su meccanica, affaticamento, parabola e perno nei gomiti.
+3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber}, adattata sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo varianti sugli spot dove ha tirato peggio, e mantenendo ritmo dove è stato costante).
+
+Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggiuntivo) che rispetti questo schema:
+{
+  "insight": {
+    "title": "Titolo Analisi Puntuale (es. Analisi Puntuale Sessione #X)",
+    "summary": "Sintesi tecnica generale di 2-3 frasi sulle prestazioni odierne.",
+    "sections": [
+      { "heading": "Tiro da 3 Punti (XX% Totale - X/X)", "content": "Analisi dettagliata per spot e serie..." },
+      { "heading": "Palleggio Arresto e Tiro - P.A.T. (XX% Totale - X/X)", "content": "Analisi footwork e perno sui gomiti..." },
+      { "heading": "Tiri Liberi & Tenuta sotto sforzo (XX% Totale - X/X)", "content": "Analisi tenuta in apnea e serie finali..." }
+    ]
+  },
+  "nextPlan": {
+    "id": "piano-${nextPlanNumber}",
+    "number": ${nextPlanNumber},
+    "title": "Programma di Allenamento Analitico • Scheda #${nextPlanNumber}",
+    "description": "Descrizione tecnica dell'obiettivo della scheda adattata.",
+    "phases": [
+      {
+        "id": "fase-1",
+        "name": "Fase 1: Attivazione & Sensibilità",
+        "time": "0 - 10 min",
+        "objective": "Obiettivo...",
+        "focus": "Focus biomeccanico...",
+        "badgeColor": "blue",
+        "details": {
+          "description": "Dettaglio operativo...",
+          "bullets": ["Indicazione 1...", "Indicazione 2..."]
+        }
+      },
+      {
+        "id": "fase-2",
+        "name": "Fase 2: Compensazione (Tiro da 3)",
+        "time": "10 - 30 min",
+        "objective": "Obiettivo...",
+        "focus": "Focus...",
+        "badgeColor": "indigo",
+        "details": {
+          "description": "Dettaglio...",
+          "table": [
+            { "spot": "Angolo Sinistro", "volume": "X tiri", "focus": "...", "highlight": false },
+            { "spot": "Guardia Sinistra", "volume": "X tiri", "focus": "...", "highlight": false },
+            { "spot": "Punta", "volume": "X tiri", "focus": "...", "highlight": true },
+            { "spot": "Guardia Destra", "volume": "X tiri", "focus": "...", "highlight": true },
+            { "spot": "Angolo Destro", "volume": "X tiri", "focus": "...", "highlight": true }
+          ],
+          "rule": "💡 Regola Operativa: ..."
+        }
+      },
+      {
+        "id": "fase-3",
+        "name": "Fase 3: Footwork (P.A.T.)",
+        "time": "30 - 45 min",
+        "objective": "Obiettivo...",
+        "focus": "Focus...",
+        "badgeColor": "amber",
+        "details": {
+          "description": "Dettaglio...",
+          "split": [
+            { "title": "1ª Metà: Guardia SX → Gomito SX", "text": "..." },
+            { "title": "2ª Metà: Guardia DX → Gomito DX", "text": "..." }
+          ]
+        }
+      },
+      {
+        "id": "fase-4",
+        "name": "Fase 4: Fatica (Tiri Liberi)",
+        "time": "45 - 55 min",
+        "objective": "Obiettivo...",
+        "focus": "Focus...",
+        "badgeColor": "emerald",
+        "details": {
+          "description": "Dettaglio...",
+          "protocolTitle": "Protocollo Sotto Sforzo:",
+          "steps": ["Step 1...", "Step 2..."],
+          "note": "Obiettivo Tecnico: ..."
+        }
+      },
+      {
+        "id": "fase-5",
+        "name": "Fase 5: Defaticamento & Visualizzazione",
+        "time": "55 - 60 min",
+        "objective": "Obiettivo...",
+        "focus": "Focus...",
+        "badgeColor": "slate",
+        "details": {
+          "description": "Allungamento e visualizzazione retina..."
+        }
+      }
+    ]
+  }
+}
+`;
+
+                if (loadStatus) loadStatus.textContent = "Chiamata API a Google Gemini in corso...";
+
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${settings.geminiApiKey}`;
+                const apiRes = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        contents: [
+                            {
+                                parts: [
+                                    { text: systemInstruction },
+                                    { text: `Ecco i dati della sessione:\n${currentNumbers}\n\nStorico:\n${histOverview}` }
+                                ]
+                            }
+                        ],
+                        generationConfig: {
+                            responseMimeType: "application/json"
+                        }
+                    })
+                });
+
+                if (!apiRes.ok) {
+                    throw new Error(`Errore API Gemini (${apiRes.status})`);
+                }
+
+                if (loadStatus) loadStatus.textContent = "Salvataggio dati e aggiornamento database...";
+                const apiJson = await apiRes.json();
+                const aiRawText = apiJson.candidates?.[0]?.content?.parts?.[0]?.text;
+                
+                if (!aiRawText) throw new Error("Risposta AI vuota");
+
+                let parsedAi;
+                try {
+                    parsedAi = JSON.parse(aiRawText);
+                } catch (e) {
+                    const cleanJson = aiRawText.replace(/^```json/m, '').replace(/```$/m, '').trim();
+                    parsedAi = JSON.parse(cleanJson);
+                }
+
+                // Assegna l'insight generato alla sessione
+                sessionData.insight = parsedAi.insight;
+
+                // Salva la sessione
+                await saveSessionToDb(sessionData);
+
+                // Salva la nuova scheda generata
+                if (parsedAi.nextPlan) {
+                    await savePlanToDb(parsedAi.nextPlan);
+                }
+
+                // Re-inizializza l'applicazione con i nuovi dati
+                await initApp();
+
+                // Chiudi caricamento
+                if (loadModal) loadModal.classList.add('hidden');
+
+                // Mostra Modal di Riscontro AI
+                showAiFeedback(sessionData.insight, parsedAi.nextPlan);
+
+            } catch (err) {
+                console.error('[AI Coach Error]', err);
+                if (loadModal) loadModal.classList.add('hidden');
+                showToast(`Errore AI: ${err.message}. Salvataggio sessione locale...`, "error");
+                await saveWorkoutSessionOnly();
+            }
+        }
+
+        function showAiFeedback(insight, nextPlan) {
+            const modal = document.getElementById('ai-feedback-modal');
+            const titleEl = document.getElementById('ai-feedback-modal-title');
+            const bodyEl = document.getElementById('ai-feedback-modal-body');
+
+            if (titleEl && insight.title) titleEl.textContent = insight.title;
+
+            let html = `
+                <div class="bg-orange-50 border border-orange-200 rounded-xl p-3.5 space-y-1.5">
+                    <span class="text-[11px] font-athletic font-extrabold uppercase tracking-wider text-orange-950 block">🎯 Valutazione del Coach</span>
+                    <p class="text-xs text-orange-900 leading-relaxed font-medium">${insight.summary || ''}</p>
+                </div>
+            `;
+
+            if (insight.sections && insight.sections.length > 0) {
+                html += `<div class="space-y-2 pt-1">`;
+                insight.sections.forEach(s => {
+                    html += `
+                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                            <span class="text-[11px] font-bold text-slate-900 block">${s.heading}</span>
+                            <p class="text-xs text-slate-600 leading-relaxed">${s.content}</p>
+                        </div>
+                    `;
+                });
+                html += `</div>`;
+            }
+
+            if (nextPlan) {
+                html += `
+                    <div class="bg-indigo-50 border border-indigo-200 rounded-xl p-3.5 space-y-1 mt-3">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-bold text-indigo-950 uppercase">🏀 Nuova Scheda #${nextPlan.number} Pronta</span>
+                            <span class="text-[10px] font-mono font-bold bg-indigo-200/80 text-indigo-900 px-2 py-0.5 rounded">Adattiva</span>
+                        </div>
+                        <p class="text-xs text-indigo-900 font-medium">${nextPlan.description}</p>
+                    </div>
+                `;
+            }
+
+            if (bodyEl) bodyEl.innerHTML = html;
+            if (modal) modal.classList.remove('hidden');
+        }
+
+        function closeAiFeedbackModal() {
+            const modal = document.getElementById('ai-feedback-modal');
+            if (modal) modal.classList.add('hidden');
+            switchTab('dashboard');
+        }
+
+        // =========================================================================
+        // 5. NAVIGAZIONE TAB & RENDERERS DASHBOARD / PIANO / STORICO
+        // =========================================================================
+
+        function switchTab(tabId) {
+            const tabs = ['dashboard', 'workout', 'plan', 'history'];
+            tabs.forEach(t => {
+                const section = document.getElementById(`tab-${t}`);
+                const navBtn = document.getElementById(`nav-${t}`);
+                const mobileNavBtn = document.getElementById(`mobile-nav-${t}`);
+                const bottomNavBtn = document.getElementById(`bottom-nav-${t}`);
+                
+                if (t === tabId) {
+                    if (section) section.classList.remove('hidden');
+                    if (navBtn) {
+                        navBtn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm";
+                    }
+                    if (mobileNavBtn) {
+                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 bg-orange-600 text-white";
+                    }
+                    if (bottomNavBtn) {
+                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-2 py-1";
+                    }
+                } else {
+                    if (section) section.classList.add('hidden');
+                    if (navBtn) {
+                        navBtn.className = "px-3.5 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
+                    }
+                    if (mobileNavBtn) {
+                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800";
+                    }
+                    if (bottomNavBtn) {
+                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-2 py-1";
+                    }
+                }
+            });
+
+            if (tabId === 'dashboard' && progressChartInstance) {
+                setTimeout(() => progressChartInstance.resize(), 100);
+            }
+            if (tabId === 'workout') {
+                updateWorkoutLiveKpis();
+            }
+        }
+
+        function toggleMobileMenu(forceState) {
+            const menu = document.getElementById('mobile-menu');
+            const iconOpen = document.getElementById('mobile-menu-icon-open');
+            const iconClose = document.getElementById('mobile-menu-icon-close');
+            
+            const isCurrentlyHidden = menu.classList.contains('hidden');
+            const shouldShow = forceState !== undefined ? forceState : isCurrentlyHidden;
+
+            if (shouldShow) {
+                menu.classList.remove('hidden');
+                iconOpen.classList.add('hidden');
+                iconClose.classList.remove('hidden');
+            } else {
+                menu.classList.add('hidden');
+                iconOpen.classList.remove('hidden');
+                iconClose.classList.add('hidden');
+            }
+        }
+
+        // Timer Piano Allenamento
+        function togglePlanTimer() {
+            const btn = document.getElementById('plan-timer-btn');
+            if (planTimerRunning) {
+                clearInterval(planTimerInterval);
+                planTimerRunning = false;
+                btn.textContent = "Start";
+                btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
+            } else {
+                planTimerRunning = true;
+                btn.textContent = "Pausa";
+                btn.className = "px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold transition-colors";
+                planTimerInterval = setInterval(() => {
+                    planTimerSeconds++;
+                    updatePlanTimerDisplay();
+                }, 1000);
+            }
+        }
+
+        function resetPlanTimer() {
+            clearInterval(planTimerInterval);
+            planTimerRunning = false;
+            planTimerSeconds = 0;
+            updatePlanTimerDisplay();
+            const btn = document.getElementById('plan-timer-btn');
+            btn.textContent = "Start";
+            btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
+        }
+
+        function updatePlanTimerDisplay() {
+            const mins = Math.floor(planTimerSeconds / 60);
+            const secs = planTimerSeconds % 60;
+            const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+            document.getElementById('plan-timer-display').textContent = formatted;
         }
 
         function populatePlanSelector() {
@@ -871,101 +2520,9 @@
             });
         }
 
-        function toggleMobileMenu(forceState) {
-            const menu = document.getElementById('mobile-menu');
-            const iconOpen = document.getElementById('mobile-menu-icon-open');
-            const iconClose = document.getElementById('mobile-menu-icon-close');
-            
-            const isCurrentlyHidden = menu.classList.contains('hidden');
-            const shouldShow = forceState !== undefined ? forceState : isCurrentlyHidden;
-
-            if (shouldShow) {
-                menu.classList.remove('hidden');
-                iconOpen.classList.add('hidden');
-                iconClose.classList.remove('hidden');
-            } else {
-                menu.classList.add('hidden');
-                iconOpen.classList.remove('hidden');
-                iconClose.classList.add('hidden');
-            }
-        }
-
-        function switchTab(tabId) {
-            const tabs = ['dashboard', 'plan', 'history'];
-            tabs.forEach(t => {
-                const section = document.getElementById(`tab-${t}`);
-                const navBtn = document.getElementById(`nav-${t}`);
-                const mobileNavBtn = document.getElementById(`mobile-nav-${t}`);
-                const bottomNavBtn = document.getElementById(`bottom-nav-${t}`);
-                
-                if (t === tabId) {
-                    section.classList.remove('hidden');
-                    if (navBtn) {
-                        navBtn.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 bg-orange-600 text-white shadow-sm";
-                    }
-                    if (mobileNavBtn) {
-                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 bg-orange-600 text-white";
-                    }
-                    if (bottomNavBtn) {
-                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-orange-500 font-bold text-[10px] px-3 py-1";
-                    }
-                } else {
-                    section.classList.add('hidden');
-                    if (navBtn) {
-                        navBtn.className = "px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 text-slate-400 hover:text-white hover:bg-slate-800";
-                    }
-                    if (mobileNavBtn) {
-                        mobileNavBtn.className = "w-full px-4 py-2.5 rounded-lg text-xs font-bold flex items-center gap-3 text-slate-300 hover:bg-slate-800";
-                    }
-                    if (bottomNavBtn) {
-                        bottomNavBtn.className = "flex flex-col items-center gap-1 text-slate-400 hover:text-white font-bold text-[10px] px-3 py-1";
-                    }
-                }
-            });
-
-            if (tabId === 'dashboard' && progressChartInstance) {
-                setTimeout(() => progressChartInstance.resize(), 100);
-            }
-        }
-
-        // Timer Piano Allenamento
-        function togglePlanTimer() {
-            const btn = document.getElementById('plan-timer-btn');
-            if (planTimerRunning) {
-                clearInterval(planTimerInterval);
-                planTimerRunning = false;
-                btn.textContent = "Start";
-                btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
-            } else {
-                planTimerRunning = true;
-                btn.textContent = "Pausa";
-                btn.className = "px-3 py-1 bg-amber-600 hover:bg-amber-700 text-white rounded text-xs font-bold transition-colors";
-                planTimerInterval = setInterval(() => {
-                    planTimerSeconds++;
-                    updatePlanTimerDisplay();
-                }, 1000);
-            }
-        }
-
-        function resetPlanTimer() {
-            clearInterval(planTimerInterval);
-            planTimerRunning = false;
-            planTimerSeconds = 0;
-            updatePlanTimerDisplay();
-            const btn = document.getElementById('plan-timer-btn');
-            btn.textContent = "Start";
-            btn.className = "px-3 py-1 bg-orange-600 hover:bg-orange-700 text-white rounded text-xs font-bold transition-colors";
-        }
-
-        function updatePlanTimerDisplay() {
-            const mins = Math.floor(planTimerSeconds / 60);
-            const secs = planTimerSeconds % 60;
-            const formatted = `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-            document.getElementById('plan-timer-display').textContent = formatted;
-        }
-
         function populateSessionSelector() {
             const selector = document.getElementById('session-selector');
+            if (!selector) return;
             selector.innerHTML = '';
             
             const avgOption = document.createElement('option');
@@ -1155,26 +2712,20 @@
                         statsHtml += `<div class="space-y-2 pt-1">`;
                         lib.blocks.forEach((block, bIdx) => {
                             const bMade = block.reduce((a, b) => a + b, 0);
-                            let blockAtt = 25;
+                            let blockAtt = (block.length > 0) ? block.length * 3 : 15;
                             if (lib.att === 30 && lib.blocks.length === 2) {
                                 blockAtt = (bIdx === 0) ? 10 : 20;
                             } else if (lib.att === 40 && lib.blocks.length === 3) {
                                 blockAtt = (bIdx === 0) ? 10 : 15;
-                            } else if (block.length > 0) {
-                                blockAtt = block.length * 5;
                             }
                             const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
-                            const shotsPerSub = Math.round(blockAtt / block.length);
+                            const shotsPerSub = block.length > 0 ? Math.max(1, Math.round(blockAtt / block.length)) : 2;
 
-                            const blockLabel = (lib.att === 40 && lib.blocks.length === 3)
-                                ? (bIdx === 0 ? "Attivazione Liberi" : `Protocollo Sotto Sforzo - Blocco ${bIdx}`)
-                                : ((lib.att === 30 && lib.blocks.length === 2) 
-                                    ? (bIdx === 0 ? "Attivazione Liberi" : "Protocollo Sotto Sforzo")
-                                    : `Blocco ${bIdx + 1}`);
+                            const blockLabel = (bIdx === 0) ? "Attivazione Liberi" : `Protocollo Sotto Sforzo (Blocco ${bIdx})`;
 
                             statsHtml += `<div>
                                 <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
-                                    <span>${blockLabel} (${blockAtt} tiri): ${bMade}/${blockAtt} (${bPct}%)</span>
+                                    <span>${blockLabel}: ${bMade}/${blockAtt} (${bPct}%)</span>
                                 </div>
                                 <div class="grid grid-cols-${block.length > 5 ? 5 : block.length} gap-1.5">`;
                             block.forEach((sVal, sIdx) => {
@@ -1188,8 +2739,6 @@
                             statsHtml += `</div></div>`;
                         });
                         statsHtml += `</div>`;
-                    } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale sessione: ${lib.made}/${lib.att} realizzati.</p>`;
                     }
                 } else if (['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].includes(posKey)) {
                     const posData = session.tri[posKey];
@@ -1200,7 +2749,7 @@
                         const shotsPerSeries = Math.round(posData.att / posData.series.length);
                         const numSeries = posData.series.length;
                         statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri ciascuna:</span>
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie registrate:</span>
                             <div class="grid grid-cols-${numSeries > 4 ? 4 : numSeries} gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
                             const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
@@ -1211,8 +2760,6 @@
                             </div>`;
                         });
                         statsHtml += `</div></div>`;
-                    } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale posizione: ${posData.made}/${posData.att} realizzati.</p>`;
                     }
                 } else if (['gomitoSX', 'gomitoDX'].includes(posKey)) {
                     const posData = session.pat[posKey];
@@ -1223,7 +2770,7 @@
                         const shotsPerSeries = Math.round(posData.att / posData.series.length);
                         const numSeries = posData.series.length;
                         statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri ciascuna:</span>
+                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri:</span>
                             <div class="grid grid-cols-${numSeries > 5 ? 5 : numSeries} gap-1.5">`;
                         posData.series.forEach((sVal, sIdx) => {
                             const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
@@ -1234,8 +2781,6 @@
                             </div>`;
                         });
                         statsHtml += `</div></div>`;
-                    } else {
-                        statsHtml = `<p class="text-xs text-slate-500 font-medium pt-1">Totale posizione: ${posData.made}/${posData.att} realizzati.</p>`;
                     }
                 }
 
@@ -1250,7 +2795,6 @@
             document.getElementById('position-modal').classList.add('hidden');
         }
 
-        // Granular Series Preservation: Primary Dashboard Rendering Function
         function renderReportBreakdown(sessionId) {
             const container = document.getElementById('report-breakdown-container');
             if (!container) return;
@@ -1340,23 +2884,16 @@
                 if (session.liberi && session.liberi.blocks) {
                     session.liberi.blocks.forEach((block, bIdx) => {
                         const bMade = block.reduce((a, b) => a + b, 0);
-                        let blockAtt = 25;
+                        let blockAtt = (block.length > 0) ? block.length * 3 : 15;
                         if (session.liberi.att === 30 && session.liberi.blocks.length === 2) {
                             blockAtt = (bIdx === 0) ? 10 : 20;
                         } else if (session.liberi.att === 40 && session.liberi.blocks.length === 3) {
                             blockAtt = (bIdx === 0) ? 10 : 15;
-                        } else if (block.length > 0) {
-                            blockAtt = block.length * 5;
                         }
                         const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
-                        const shotsPerSub = Math.round(blockAtt / block.length);
+                        const shotsPerSub = block.length > 0 ? Math.max(1, Math.round(blockAtt / block.length)) : 2;
 
-                        const blockLabel = (session.liberi.att === 40 && session.liberi.blocks.length === 3)
-                            ? (bIdx === 0 ? "Attivazione" : `Sotto Sforzo B${bIdx}`)
-                            : ((session.liberi.att === 30 && session.liberi.blocks.length === 2)
-                                ? (bIdx === 0 ? "Attivazione" : "Sotto Sforzo")
-                                : `Blocco ${bIdx+1}`);
-
+                        const blockLabel = (bIdx === 0) ? "Attivazione" : `Sotto Sforzo B${bIdx}`;
                         const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSub}</span>`).join(' ');
                         html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
                             <span class="font-semibold text-slate-800">${blockLabel}:</span>
@@ -1443,7 +2980,7 @@
                                 <span class="font-mono text-[10px] bg-orange-200/60 text-orange-900 font-bold px-2 py-0.5 rounded">Media ${global3Pct}% 3PT</span>
                             </div>
                             <p class="text-xs text-orange-950 leading-relaxed font-medium">
-                                L'analisi aggregata su ${sessions.length} sessioni mostra un'evoluzione balistica costante: il lavoro mirato della Scheda #2 ha portato al completo recupero della Guardia SX (salita al 60.0% in S3) ed al consolidamento della Punta (55.0% in S3).
+                                L'analisi aggregata su ${sessions.length} sessioni mostra un'evoluzione balistica costante con una media totale del <strong>${global3Pct}% da 3</strong>, <strong>${globalFTPct}% ai liberi</strong> e <strong>${globalPATPct}% nel P.A.T.</strong>
                             </p>
                         </div>
 
@@ -1455,31 +2992,7 @@
                                 <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">SX ${sxPct}% vs DX ${dxPct}%</span>
                             </div>
                             <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                La stabilità complessiva tra i lati tende all'equilibrio (SX ${sxPct}% su ${sxAtt} tiri vs DX ${dxPct}% su ${dxAtt} tiri). La <strong>Guardia SX (53.8% complessivo)</strong> ha ritrovato grande efficacia balistica, mentre la <strong>Punta (50.0% complessivo)</strong> si conferma una certezza. Gli angoli evidenziano invece discontinuità balistica (Angolo SX 32.5%, Angolo DX 48.0%), richiedendo attenzione al ritmo di rilascio.
-                            </p>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <h6 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                    ⚡ Progressione Palleggio Arresto e Tiro (P.A.T.)
-                                </h6>
-                                <span class="font-mono text-[10px] font-bold text-amber-700 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">Media ${globalPATPct}% (${totalPATMade}/${totalPATAtt})</span>
-                            </div>
-                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Progressione consolidata nel mid-range (da 36.7% in S1 a 50.0% in S2 e 46.7% in S3). L'arresto a 2 tempi sui gomiti ha stabilizzato il decollo, con il Gomito DX al 50.0% (36/72) ed il Gomito SX al 42.3% (33/78).
-                            </p>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <h6 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                    🏀 Tenuta Mentale & Lunetta (Tiri Liberi)
-                                </h6>
-                                <span class="font-mono text-[10px] font-bold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded">Media ${globalFTPct}% (${totalFTMade}/${totalFTAtt})</span>
-                            </div>
-                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Affidabilità eccellente nel lungo periodo (${globalFTPct}% su ${totalFTAtt} tiri liberi complessivi). Nel protocollo sotto sforzo di S3 è emersa una flessione nella seconda metà dell'esercizio (66.7%), indicando la tenuta respiratoria sotto sforzo cardiovascolare come focus primario per le prossime schede.
+                                Distribuzione perimetrale: Lato Sinistro al <strong>${sxPct}%</strong> su ${sxAtt} tiri vs Lato Destro al <strong>${dxPct}%</strong> su ${dxAtt} tiri.
                             </p>
                         </div>
                     </div>
@@ -1525,7 +3038,8 @@
         }
 
         function renderProgressChart() {
-            const ctx = document.getElementById('progressChart').getContext('2d');
+            const ctx = document.getElementById('progressChart')?.getContext('2d');
+            if (!ctx) return;
             
             const sortedSessions = [...sessions].sort((a, b) => new Date(a.date) - new Date(b.date));
             
@@ -1633,6 +3147,7 @@
 
         function populateHistoryTable() {
             const tbody = document.getElementById('history-table-body');
+            if (!tbody) return;
             tbody.innerHTML = '';
 
             if (sessions.length === 0) {
@@ -1669,7 +3184,7 @@
                     </td>
                     <td class="py-3.5 px-5 text-right">
                         <button onclick="askDeleteSession('${s.id}')" class="text-slate-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-slate-100" title="Elimina sessione">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     </td>
                 `;
@@ -1699,14 +3214,10 @@
             sessionToDeleteId = null;
         }
 
-        function confirmDelete() {
+        async function confirmDelete() {
             if (!sessionToDeleteId) return;
 
-            sessions = sessions.filter(item => item.id !== sessionToDeleteId);
-            try {
-                localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
-            } catch (e) {}
-
+            await deleteSessionFromDb(sessionToDeleteId);
             closeConfirmModal();
             initApp();
             showToast("Sessione eliminata con successo.", "success");
@@ -1722,30 +3233,18 @@
             const messageEl = document.getElementById('toast-message');
             const iconBox = document.getElementById('toast-icon-box');
 
+            if (!toast || !messageEl || !iconBox) return;
             messageEl.textContent = message;
 
             if (type === "success") {
                 iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-7 h-7 rounded bg-emerald-950 text-emerald-400 border border-emerald-800";
-                iconBox.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path>
-                    </svg>
-                `;
+                iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>`;
             } else if (type === "info") {
                 iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-7 h-7 rounded bg-blue-950 text-blue-400 border border-blue-800";
-                iconBox.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <circle cx="12" cy="12" r="9" stroke-width="2"/>
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/>
-                    </svg>
-                `;
+                iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" r="9" stroke-width="2"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01"/></svg>`;
             } else {
                 iconBox.className = "inline-flex flex-shrink-0 justify-center items-center w-7 h-7 rounded bg-red-950 text-red-400 border border-red-800";
-                iconBox.innerHTML = `
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path>
-                    </svg>
-                `;
+                iconBox.innerHTML = `<svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"></path></svg>`;
             }
 
             toast.classList.remove('-translate-y-24', 'opacity-0');
@@ -1799,26 +3298,19 @@
             });
         }
 
-        // Service Worker registration
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
                 navigator.serviceWorker.register('./sw.js')
-                    .then(reg => {
-                        console.log('[PWA] Service Worker registrato con successo:', reg.scope);
-                    })
-                    .catch(err => {
-                        console.warn('[PWA] Errore registrazione Service Worker:', err);
-                    });
+                    .then(reg => console.log('[PWA] Service Worker registrato:', reg.scope))
+                    .catch(err => console.warn('[PWA] Errore Service Worker:', err));
             });
         }
 
-        // Se l'app è già installata/aperta come standalone, nascondi categoricamente
         if (isStandaloneMode()) {
             localStorage.setItem('shottracker_pwa_installed', 'true');
             updateInstallButtonsVisibility(false);
         }
 
-        // Monitora cambiamenti del display mode (es. passaggio a standalone)
         window.matchMedia('(display-mode: standalone)').addEventListener('change', (evt) => {
             if (evt.matches) {
                 localStorage.setItem('shottracker_pwa_installed', 'true');
@@ -1826,17 +3318,14 @@
             }
         });
 
-        // Intercettazione prompt di installazione nativo PWA (Chrome, Edge, Android)
         window.addEventListener('beforeinstallprompt', (e) => {
             e.preventDefault();
             deferredPrompt = e;
-            // Mostra il tasto solo se non è già installata
             if (!isAppInstalled()) {
                 updateInstallButtonsVisibility(true);
             }
         });
 
-        // App installata con successo: rimuovi definitivamente il tasto
         window.addEventListener('appinstalled', () => {
             deferredPrompt = null;
             localStorage.setItem('shottracker_pwa_installed', 'true');
@@ -1844,7 +3333,6 @@
             showToast("ShotTracker installata con successo! 🎉", "success");
         });
 
-        // Per dispositivi iOS dove non c'è beforeinstallprompt
         document.addEventListener('DOMContentLoaded', () => {
             if (isIosDevice() && !isAppInstalled()) {
                 updateInstallButtonsVisibility(true);
@@ -1856,7 +3344,6 @@
                 deferredPrompt.prompt();
                 const { outcome } = await deferredPrompt.userChoice;
                 if (outcome === 'accepted') {
-                    console.log('[PWA] Installazione accettata');
                     localStorage.setItem('shottracker_pwa_installed', 'true');
                     updateInstallButtonsVisibility(false);
                 }
