@@ -211,6 +211,26 @@
                         <button type="button" onclick="testFirebaseConnection()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition-colors shadow-xs">Test Connessione Database</button>
                     </div>
                 </div>
+
+                <!-- Sezione Notifiche Push Smartphone -->
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="text-base">🔔</span>
+                            <h4 class="text-xs font-athletic font-extrabold uppercase tracking-wider text-slate-900">Notifiche Push Smartphone</h4>
+                        </div>
+                        <span id="push-notification-badge" class="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-slate-200 px-2 py-0.5 rounded">Da Abilitare</span>
+                    </div>
+                    <p class="text-xs text-slate-600 font-medium">
+                        Ricevi una notifica push istantanea con suono e vibrazione sullo smartphone non appena il Coach AI completa la nuova scheda nel Cloud.
+                    </p>
+                    <div class="flex justify-end gap-2">
+                        <button type="button" onclick="testNotificationFlow()" class="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[11px] font-bold transition-colors shadow-xs flex items-center gap-1.5 cursor-pointer">
+                            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                            <span>Attiva / Invia Notifica Test</span>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <div class="pt-3 border-t border-slate-200 flex items-center justify-end">
@@ -1291,6 +1311,82 @@
                     fbBadge.textContent = "Non configurato";
                     fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
                 }
+            }
+
+            const pBadge = document.getElementById('push-notification-badge');
+            if (pBadge) {
+                if (!("Notification" in window)) {
+                    pBadge.textContent = "Non supportate";
+                    pBadge.className = "text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-200 px-2 py-0.5 rounded";
+                } else if (Notification.permission === 'granted') {
+                    pBadge.textContent = "🟢 Notifiche Attive";
+                    pBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
+                } else if (Notification.permission === 'denied') {
+                    pBadge.textContent = "🔴 Bloccate da Browser";
+                    pBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-red-100 text-red-800 font-bold";
+                } else {
+                    pBadge.textContent = "Da Abilitare";
+                    pBadge.className = "text-[10px] font-bold uppercase tracking-wider text-amber-700 bg-amber-100 px-2 py-0.5 rounded";
+                }
+            }
+        }
+
+        async function requestNotificationPermission() {
+            if (!("Notification" in window)) {
+                return false;
+            }
+            if (Notification.permission === "granted") return true;
+            if (Notification.permission !== "denied") {
+                const res = await Notification.requestPermission();
+                updateSettingsStatusBadges();
+                return res === "granted";
+            }
+            return false;
+        }
+
+        async function sendDeviceNotification(title, body, tag = 'shottracker-ai-plan') {
+            if (!("Notification" in window)) return;
+            if (Notification.permission !== "granted") {
+                const granted = await requestNotificationPermission();
+                if (!granted) return;
+            }
+
+            const options = {
+                body: body,
+                icon: 'icons/icon-192.png',
+                badge: 'icons/icon-192.png',
+                tag: tag,
+                renotify: true,
+                vibrate: [200, 100, 200]
+            };
+
+            if ('serviceWorker' in navigator && navigator.serviceWorker.ready) {
+                try {
+                    const registration = await navigator.serviceWorker.ready;
+                    await registration.showNotification(title, options);
+                    return;
+                } catch (e) {
+                    console.warn('[Push] Errore notifica SW:', e);
+                }
+            }
+
+            try {
+                new Notification(title, options);
+            } catch (e) {
+                console.warn('[Push] Errore notifica standard:', e);
+            }
+        }
+
+        async function testNotificationFlow() {
+            const granted = await requestNotificationPermission();
+            if (granted) {
+                await sendDeviceNotification(
+                    '🏀 ShotTracker • Notifiche Attive',
+                    'Riceverai una notifica con suono/vibrazione non appena il Coach AI completa la nuova scheda!'
+                );
+                showToast("🔔 Notifica di test inviata con successo!", "success");
+            } else {
+                showToast("Permesso notifiche non concesso nel browser.", "error");
             }
         }
 
@@ -2506,6 +2602,9 @@
             showToast("🚀 Sessione salvata! L'AI Coach sta preparando il piano in background. Puoi chiudere l'app!", "success");
             showAiBgBanner(`Elaborazione balistica con AI Coach per la sessione del ${formatDate(sessionData.date)} in corso... Puoi chiudere l'app in qualsiasi momento!`);
 
+            // Richiedi permesso notifiche se non ancora impostato
+            requestNotificationPermission();
+
             // 5. Avvia elaborazione in background (non blocca l'interfaccia)
             processPendingAiSession(sessionData, playerNotes, false);
         }
@@ -2544,6 +2643,10 @@
                             await initApp();
                             hideAiBgBanner();
                             showToast(`🎉 Nuova Scheda #${serverlessData.nextPlan?.number || ''} generata in Cloud dal Coach AI!`, "success");
+                            await sendDeviceNotification(
+                                '🏀 ShotTracker • Coach AI',
+                                `Nuova Scheda #${serverlessData.nextPlan?.number || ''} Pronta! L'analisi balistica è stata completata nel Cloud.`
+                            );
                             if (!isAutoResumed && serverlessData.insight) {
                                 showAiFeedback(serverlessData.insight, serverlessData.nextPlan);
                             }
@@ -2753,6 +2856,10 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
 
                 hideAiBgBanner();
                 showToast(`🎉 Nuova Scheda #${nextPlanNumber} generata con successo dal Coach AI!`, "success");
+                await sendDeviceNotification(
+                    '🏀 ShotTracker • Coach AI',
+                    `Nuova Scheda #${nextPlanNumber} Pronta! L'analisi balistica è stata completata.`
+                );
 
                 if (!isAutoResumed) {
                     showAiFeedback(sessionData.insight, parsedAi.nextPlan);
@@ -2904,6 +3011,10 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             await savePlanToDb(fallbackPlan);
             await initApp();
             showToast(`✅ Scheda #${nextPlanNumber} generata e pronta per il prossimo workout!`, "success");
+            await sendDeviceNotification(
+                '🏀 ShotTracker • Coach AI',
+                `Nuova Scheda #${nextPlanNumber} Pronta per il prossimo allenamento!`
+            );
         }
 
         async function regenerateNextPlanFromLatestSession() {
@@ -2918,6 +3029,9 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
 
             showToast(`🤖 Rigenerazione della nuova scheda in corso dall'ultima sessione (${formatDate(latestSession.date)})...`, "info");
             showAiBgBanner(`Rigenerazione scheda con AI Coach in corso per l'allenamento #${sessions.length + 1}...`);
+
+            // Richiedi permesso notifiche se non ancora impostato
+            requestNotificationPermission();
 
             // Avvia elaborazione AI
             await processPendingAiSession(latestSession, latestSession.noteAtleta || '', false);
