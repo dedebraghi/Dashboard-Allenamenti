@@ -161,26 +161,29 @@
                 <button onclick="closeSettingsModal()" class="p-1.5 text-slate-400 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors text-sm font-bold">✕</button>
             </div>
             
-            <div class="py-4 overflow-y-auto space-y-5 flex-grow pr-1">
+            <div class="py-4 overflow-y-auto space-y-4 flex-grow pr-1">
                 <!-- Sezione 1: Google Gemini API -->
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 space-y-3">
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">1. Google Gemini 3.7 Flash AI Key</h4>
+                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">1. Motore AI • Google Gemini 3.7 Flash</h4>
                         </div>
-                        <span id="gemini-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">Non configurata</span>
+                        <span id="gemini-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">🟢 Integrato & Attivo</span>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
-                        Utilizza il nuovo modello <strong>Gemini 3.7 Flash</strong> per generare analisi tecniche e nuove schede personalizzate. Gratuita su 
-                        <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio ↗</a>.
+                        L'AI Shooting Coach utilizza il modello <strong>Gemini 3.7 Flash</strong> per analizzare la balistica di ogni sessione e creare schede personalizzate ad ogni allenamento.
                     </p>
-                    <div>
-                        <label for="input-gemini-key" class="block text-[10px] font-mono font-bold text-slate-500 uppercase mb-1">Gemini API Key</label>
-                        <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500">
+                    <div class="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 text-[11px] font-mono font-bold text-slate-700">
+                            <span class="text-emerald-600">🔒</span>
+                            <span>Chiave API di Sistema:</span>
+                            <span class="text-slate-400 font-normal">••••••••••••••••••••••••••••••••</span>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Protetto</span>
                     </div>
                     <div class="flex justify-end gap-2">
-                        <button type="button" onclick="testGeminiConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione AI (3.7 Flash)</button>
+                        <button type="button" onclick="testGeminiConnection()" class="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-700 text-white rounded-lg text-[11px] font-bold transition-colors shadow-xs">Test Connessione AI Coach</button>
                     </div>
                 </div>
 
@@ -189,30 +192,29 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-blue-600"></span>
-                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">2. Firebase Cloud Database</h4>
+                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">2. Cloud Database • Firebase Firestore</h4>
                         </div>
-                        <span id="firebase-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">Non configurato</span>
+                        <span id="firebase-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold">🟢 Cloud Sincronizzato</span>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
-                        Permette la sincronizzazione permanente dei tuoi allenamenti tra smartphone e PC. Crea un progetto gratuito su 
-                        <a href="https://console.firebase.google.com/" target="_blank" class="text-blue-600 underline font-bold">Firebase Console ↗</a> (Piano Spark Gratuito).
+                        Sincronizzazione cloud in tempo reale tra tutti i tuoi dispositivi (smartphone, tablet, PC).
                     </p>
-                    <div>
-                        <label for="input-firebase-config" class="block text-[10px] font-mono font-bold text-slate-500 uppercase mb-1">Incolla Oggetto Configurazione Firebase (JSON o codice web app)</label>
-                        <textarea id="input-firebase-config" rows="4" placeholder='{ "apiKey": "...", "projectId": "...", "appId": "..." }' class="w-full bg-white border border-slate-300 rounded-lg p-2.5 text-[11px] font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500"></textarea>
+                    <div class="p-3 bg-white border border-slate-200 rounded-lg flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 text-[11px] font-mono font-bold text-slate-700">
+                            <span class="text-blue-600">☁️</span>
+                            <span>Progetto Cloud:</span>
+                            <span class="text-slate-900 font-semibold">dashboard-allenamenti</span>
+                        </div>
+                        <span class="text-[10px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 px-2 py-0.5 rounded border border-blue-200">Firestore Attivo</span>
                     </div>
                     <div class="flex justify-end gap-2">
-                        <button type="button" onclick="testFirebaseConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione Cloud</button>
+                        <button type="button" onclick="testFirebaseConnection()" class="px-3.5 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-[11px] font-bold transition-colors shadow-xs">Test Connessione Database</button>
                     </div>
                 </div>
             </div>
 
-            <div class="pt-3 border-t border-slate-200 flex items-center justify-between gap-3">
-                <button type="button" onclick="clearSettings()" class="px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 rounded-lg transition-colors">Ripristina</button>
-                <div class="flex gap-2">
-                    <button type="button" onclick="closeSettingsModal()" class="px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors">Annulla</button>
-                    <button type="button" onclick="saveSettings()" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition-colors shadow">Salva Impostazioni</button>
-                </div>
+            <div class="pt-3 border-t border-slate-200 flex items-center justify-end">
+                <button type="button" onclick="closeSettingsModal()" class="px-5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs transition-colors shadow">Chiudi</button>
             </div>
         </div>
     </div>
@@ -1188,11 +1190,6 @@
                 console.warn('Errore lettura impostazioni:', e);
                 settings = { ...DEFAULT_CONFIG };
             }
-
-            const keyInput = document.getElementById('input-gemini-key');
-            const fbInput = document.getElementById('input-firebase-config');
-            if (keyInput) keyInput.value = settings.geminiApiKey || '';
-            if (fbInput) fbInput.value = settings.firebaseConfig || '';
         }
 
         function openSettingsModal() {
@@ -1207,63 +1204,27 @@
             if (modal) modal.classList.add('hidden');
         }
 
-        function saveSettings() {
-            const keyInput = document.getElementById('input-gemini-key');
-            const fbInput = document.getElementById('input-firebase-config');
-
-            settings.geminiApiKey = keyInput ? keyInput.value.trim() : '';
-            settings.firebaseConfig = fbInput ? fbInput.value.trim() : '';
-
-            try {
-                localStorage.setItem('shottracker_settings', JSON.stringify(settings));
-                showToast("Impostazioni salvate con successo!", "success");
-            } catch (e) {
-                showToast("Errore salvataggio impostazioni", "error");
-            }
-
-            initFirebaseIfConfigured();
-            updateSyncBadges();
-            updateSettingsStatusBadges();
-            closeSettingsModal();
-        }
-
-        function clearSettings() {
-            if (confirm("Vuoi ripristinare le impostazioni Cloud & AI?")) {
-                settings = { geminiApiKey: '', firebaseConfig: '' };
-                localStorage.removeItem('shottracker_settings');
-                const keyInput = document.getElementById('input-gemini-key');
-                const fbInput = document.getElementById('input-firebase-config');
-                if (keyInput) keyInput.value = '';
-                if (fbInput) fbInput.value = '';
-                firebaseDb = null;
-                firebaseInitialized = false;
-                updateSyncBadges();
-                updateSettingsStatusBadges();
-                showToast("Impostazioni ripristinate.", "info");
-            }
-        }
-
         function updateSettingsStatusBadges() {
             const gBadge = document.getElementById('gemini-status-badge');
             const fbBadge = document.getElementById('firebase-status-badge');
 
             if (gBadge) {
                 if (settings.geminiApiKey && settings.geminiApiKey.length > 10) {
-                    gBadge.textContent = "🟢 Chiave Inserita";
+                    gBadge.textContent = "🟢 Integrato & Attivo";
                     gBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
                 } else {
-                    gBadge.textContent = "Non configurata";
+                    gBadge.textContent = "Non configurato";
                     gBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
                 }
             }
 
             if (fbBadge) {
                 if (firebaseInitialized && firebaseDb) {
-                    fbBadge.textContent = "🟢 Connesso al Cloud";
+                    fbBadge.textContent = "🟢 Cloud Sincronizzato";
                     fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
                 } else if (settings.firebaseConfig) {
-                    fbBadge.textContent = "Configurato";
-                    fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-blue-100 text-blue-800 font-bold";
+                    fbBadge.textContent = "🟢 Configurato";
+                    fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 font-bold";
                 } else {
                     fbBadge.textContent = "Non configurato";
                     fbBadge.className = "text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold";
@@ -1367,22 +1328,21 @@
         }
 
         async function testGeminiConnection() {
-            const keyInput = document.getElementById('input-gemini-key');
-            const key = keyInput ? keyInput.value.trim() : settings.geminiApiKey;
+            const key = settings.geminiApiKey || DEFAULT_CONFIG.geminiApiKey;
 
             if (!key) {
-                showToast("Inserisci prima la Gemini API Key.", "error");
+                showToast("Nessuna chiave Gemini configurata nel sistema.", "error");
                 return;
             }
 
-            showToast("Test connessione AI in corso (Gemini 3.7 Flash)...", "info");
+            showToast("Test connessione AI Coach in corso (Gemini 3.7 Flash)...", "info");
 
             const result = await callGeminiAPI({
                 contents: [{ parts: [{ text: "Rispondi esclusivamente con la parola 'OK' se sei attivo e pronto." }] }]
             }, key);
 
             if (result.ok) {
-                showToast(`🟢 Connessione a Google Gemini (${result.modelUsed}) riuscita!`, "success");
+                showToast(`🟢 Connessione ad AI Coach Gemini (${result.modelUsed}) riuscita!`, "success");
                 updateSettingsStatusBadges();
             } else {
                 showToast(`Errore Gemini: ${result.error}`, "error");
