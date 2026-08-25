@@ -1,4 +1,4 @@
-const CACHE_NAME = 'shottracker-v1.1.0';
+const CACHE_NAME = 'shottracker-v1.2.0';
 
 const PRECACHE_ASSETS = [
   './',
