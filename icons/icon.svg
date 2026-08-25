@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F172A" />
+      <stop offset="100%" stop-color="#020617" />
+    </linearGradient>
+    <linearGradient id="ballGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FB923C" />
+      <stop offset="50%" stop-color="#EA580C" />
+      <stop offset="100%" stop-color="#C2410C" />
+    </linearGradient>
+    <radialGradient id="glowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#EA580C" stop-opacity="0.45" />
+      <stop offset="100%" stop-color="#EA580C" stop-opacity="0" />
+    </radialGradient>
+    <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="24" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+
+  <!-- Background Squircle -->
+  <rect x="16" y="16" width="480" height="480" rx="108" fill="url(#bgGrad)" stroke="#1E293B" stroke-width="4" />
+
+  <!-- Ambient Glow -->
+  <circle cx="256" cy="256" r="210" fill="url(#glowGrad)" />
+
+  <!-- Basketball Base -->
+  <g filter="url(#glow)">
+    <circle cx="256" cy="256" r="170" fill="url(#ballGrad)" stroke="#0F172A" stroke-width="12" />
+  </g>
+
+  <!-- Seams -->
+  <!-- Vertical centerline -->
+  <line x1="256" y1="86" x2="256" y2="426" stroke="#0F172A" stroke-width="10" stroke-linecap="round" />
+  <!-- Horizontal centerline -->
+  <line x1="86" y1="256" x2="426" y2="256" stroke="#0F172A" stroke-width="10" stroke-linecap="round" />
+  <!-- Left curved seam -->
+  <path d="M 175 110 C 230 190 230 322 175 402" fill="none" stroke="#0F172A" stroke-width="10" stroke-linecap="round" />
+  <!-- Right curved seam -->
+  <path d="M 337 110 C 282 190 282 322 337 402" fill="none" stroke="#0F172A" stroke-width="10" stroke-linecap="round" />
+
+  <!-- Analytics Target Reticle Overlay -->
+  <circle cx="256" cy="256" r="76" fill="none" stroke="#FFFFFF" stroke-width="5" stroke-dasharray="14 8" opacity="0.9" />
+  <circle cx="256" cy="256" r="24" fill="none" stroke="#FFFFFF" stroke-width="4" opacity="0.9" />
+  <circle cx="256" cy="256" r="8" fill="#FFFFFF" />
+
+  <!-- Crosshair Marks -->
+  <line x1="165" y1="256" x2="195" y2="256" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+  <line x1="317" y1="256" x2="347" y2="256" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+  <line x1="256" y1="165" x2="256" y2="195" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+  <line x1="256" y1="317" x2="256" y2="347" stroke="#FFFFFF" stroke-width="5" stroke-linecap="round" />
+</svg>
