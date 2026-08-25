@@ -167,12 +167,12 @@
                     <div class="flex items-center justify-between">
                         <div class="flex items-center gap-2">
                             <span class="w-2.5 h-2.5 rounded-full bg-orange-500"></span>
-                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">1. Google Gemini AI Key</h4>
+                            <h4 class="text-xs font-athletic font-extrabold text-slate-900 uppercase tracking-wide">1. Google Gemini 3.7 Flash AI Key</h4>
                         </div>
                         <span id="gemini-status-badge" class="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-200 text-slate-700 font-bold">Non configurata</span>
                     </div>
                     <p class="text-[11px] text-slate-600 leading-relaxed">
-                        Serve per generare analisi tecniche e nuove schede personalizzate. Gratuita su 
+                        Utilizza il nuovo modello <strong>Gemini 3.7 Flash</strong> per generare analisi tecniche e nuove schede personalizzate. Gratuita su 
                         <a href="https://aistudio.google.com/app/apikey" target="_blank" class="text-orange-600 underline font-bold">Google AI Studio ↗</a>.
                     </p>
                     <div>
@@ -180,7 +180,7 @@
                         <input type="password" id="input-gemini-key" placeholder="AIzaSy..." class="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 focus:outline-none focus:ring-2 focus:ring-orange-500">
                     </div>
                     <div class="flex justify-end gap-2">
-                        <button type="button" onclick="testGeminiConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione AI</button>
+                        <button type="button" onclick="testGeminiConnection()" class="px-3 py-1.5 bg-slate-200 hover:bg-slate-300 text-slate-800 rounded-lg text-[11px] font-bold transition-colors">Test Connessione AI (3.7 Flash)</button>
                     </div>
                 </div>
 
@@ -1292,6 +1292,44 @@
             }
         }
 
+        const GEMINI_MODELS = ['gemini-3.7-flash', 'gemini-3.6-flash', 'gemini-3.5-flash'];
+
+        async function callGeminiAPI(payload, customKey = null) {
+            const key = customKey || settings.geminiApiKey;
+            let lastError = null;
+            let lastStatus = 0;
+
+            for (const model of GEMINI_MODELS) {
+                try {
+                    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+                    const res = await fetch(url, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    if (res.ok) {
+                        const data = await res.json();
+                        return { ok: true, data, modelUsed: model };
+                    }
+
+                    const errData = await res.json().catch(() => ({}));
+                    lastStatus = res.status;
+                    lastError = errData.error?.message || res.statusText;
+
+                    if (res.status === 404) {
+                        console.warn(`[Gemini] Modello ${model} non disponibile (404), provo fallback successivo...`);
+                        continue;
+                    } else {
+                        return { ok: false, error: `(${res.status}) ${lastError}`, status: res.status };
+                    }
+                } catch (e) {
+                    lastError = e.message;
+                }
+            }
+            return { ok: false, error: `(${lastStatus || 404}) ${lastError || 'Nessun modello Gemini raggiungibile'}`, status: lastStatus };
+        }
+
         async function testGeminiConnection() {
             const keyInput = document.getElementById('input-gemini-key');
             const key = keyInput ? keyInput.value.trim() : settings.geminiApiKey;
@@ -1301,28 +1339,17 @@
                 return;
             }
 
-            showToast("Test connessione AI in corso...", "info");
+            showToast("Test connessione AI in corso (Gemini 3.7 Flash)...", "info");
 
-            try {
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${key}`;
-                const res = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: "Rispondi esclusivamente con la parola 'OK' se sei attivo e pronto." }] }]
-                    })
-                });
+            const result = await callGeminiAPI({
+                contents: [{ parts: [{ text: "Rispondi esclusivamente con la parola 'OK' se sei attivo e pronto." }] }]
+            }, key);
 
-                if (res.ok) {
-                    const data = await res.json();
-                    showToast("🟢 Connessione a Google Gemini riuscita!", "success");
-                    updateSettingsStatusBadges();
-                } else {
-                    const errData = await res.json().catch(() => ({}));
-                    showToast(`Errore Gemini (${res.status}): ${errData.error?.message || 'Chiave non valida'}`, "error");
-                }
-            } catch (err) {
-                showToast("Errore di rete durante la verifica Gemini.", "error");
+            if (result.ok) {
+                showToast(`🟢 Connessione a Google Gemini (${result.modelUsed}) riuscita!`, "success");
+                updateSettingsStatusBadges();
+            } else {
+                showToast(`Errore Gemini: ${result.error}`, "error");
             }
         }
 
@@ -2136,33 +2163,28 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggi
 }
 `;
 
-                if (loadStatus) loadStatus.textContent = "Chiamata API a Google Gemini in corso...";
+                if (loadStatus) loadStatus.textContent = "Chiamata AI Coach a Google Gemini (3.7 Flash)...";
 
-                const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${settings.geminiApiKey}`;
-                const apiRes = await fetch(url, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [
-                            {
-                                parts: [
-                                    { text: systemInstruction },
-                                    { text: `Ecco i dati della sessione:\n${currentNumbers}\n\nStorico:\n${histOverview}` }
-                                ]
-                            }
-                        ],
-                        generationConfig: {
-                            responseMimeType: "application/json"
+                const aiResult = await callGeminiAPI({
+                    contents: [
+                        {
+                            parts: [
+                                { text: systemInstruction },
+                                { text: `Ecco i dati della sessione:\n${currentNumbers}\n\nStorico:\n${histOverview}` }
+                            ]
                         }
-                    })
+                    ],
+                    generationConfig: {
+                        responseMimeType: "application/json"
+                    }
                 });
 
-                if (!apiRes.ok) {
-                    throw new Error(`Errore API Gemini (${apiRes.status})`);
+                if (!aiResult.ok) {
+                    throw new Error(aiResult.error);
                 }
 
                 if (loadStatus) loadStatus.textContent = "Salvataggio dati e aggiornamento database...";
-                const apiJson = await apiRes.json();
+                const apiJson = aiResult.data;
                 const aiRawText = apiJson.candidates?.[0]?.content?.parts?.[0]?.text;
                 
                 if (!aiRawText) throw new Error("Risposta AI vuota");
