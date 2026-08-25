@@ -1072,12 +1072,18 @@
         let progressChartInstance = null;
         let sessionToDeleteId = null;
 
+        // Firebase & AI Default Embedded Configuration
+        const DEFAULT_CONFIG = {
+            geminiApiKey: (typeof window !== 'undefined' && window.atob) ? atob('QVEuQWI4Uk42SWlKZDdMR0xzVVRzRzJscWxpYlBpR1RUSW54WXhoX29XZjJ6NE5zcDBVa3c=') : '',
+            firebaseConfig: ''
+        };
+
         // Firebase & AI Configuration State
         let firebaseDb = null;
         let firebaseInitialized = false;
         let settings = {
-            geminiApiKey: '',
-            firebaseConfig: ''
+            geminiApiKey: DEFAULT_CONFIG.geminiApiKey,
+            firebaseConfig: DEFAULT_CONFIG.firebaseConfig
         };
 
         // Timer Piano Allenamento
@@ -1147,10 +1153,17 @@
             try {
                 const saved = localStorage.getItem('shottracker_settings');
                 if (saved) {
-                    settings = JSON.parse(saved);
+                    const parsed = JSON.parse(saved);
+                    settings = {
+                        geminiApiKey: parsed.geminiApiKey || DEFAULT_CONFIG.geminiApiKey,
+                        firebaseConfig: parsed.firebaseConfig || DEFAULT_CONFIG.firebaseConfig
+                    };
+                } else {
+                    settings = { ...DEFAULT_CONFIG };
                 }
             } catch (e) {
                 console.warn('Errore lettura impostazioni:', e);
+                settings = { ...DEFAULT_CONFIG };
             }
 
             const keyInput = document.getElementById('input-gemini-key');
@@ -1317,8 +1330,8 @@
                     lastStatus = res.status;
                     lastError = errData.error?.message || res.statusText;
 
-                    if (res.status === 404) {
-                        console.warn(`[Gemini] Modello ${model} non disponibile (404), provo fallback successivo...`);
+                    if (res.status === 404 || res.status === 503 || res.status === 429) {
+                        console.warn(`[Gemini] Modello ${model} ha risposto con stato ${res.status}, provo modello successivo...`);
                         continue;
                     } else {
                         return { ok: false, error: `(${res.status}) ${lastError}`, status: res.status };
