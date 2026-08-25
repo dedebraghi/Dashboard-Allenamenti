@@ -2505,6 +2505,43 @@
             showAiBgBanner(`AI Coach al lavoro: analisi balistica e calibrazione nuova scheda...`);
 
             try {
+                // 1. Prova prima l'esecuzione Serverless in Cloud (keepalive garantisce l'invio anche se l'app viene chiusa)
+                try {
+                    const serverlessRes = await fetch('/api/generate-plan', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            sessionData,
+                            playerNotes: playerNotes || sessionData.noteAtleta || '',
+                            sessionsHistory: sessions.slice(0, 5),
+                            geminiKey: settings.geminiApiKey,
+                            firebaseApiKey: settings.firebaseConfig?.apiKey
+                        }),
+                        keepalive: true
+                    });
+
+                    if (serverlessRes.ok) {
+                        const serverlessData = await serverlessRes.json();
+                        if (serverlessData.ok) {
+                            sessionData.aiStatus = 'completed';
+                            if (serverlessData.insight) sessionData.insight = serverlessData.insight;
+                            await saveSessionToDb(sessionData);
+                            if (serverlessData.nextPlan) {
+                                await savePlanToDb(serverlessData.nextPlan);
+                            }
+                            await initApp();
+                            hideAiBgBanner();
+                            showToast(`🎉 Nuova Scheda #${serverlessData.nextPlan?.number || ''} generata in Cloud dal Coach AI!`, "success");
+                            if (!isAutoResumed && serverlessData.insight) {
+                                showAiFeedback(serverlessData.insight, serverlessData.nextPlan);
+                            }
+                            return;
+                        }
+                    }
+                } catch (err) {
+                    console.log('[Serverless] Endpoint non disponibile o in esecuzione statica, proseguo con fallback client...');
+                }
+
                 // Calcola statistiche storiche per il prompt
                 let histOverview = `Storico giocatore su ${sessions.length} sessioni registrate:\n`;
                 sessions.slice(0, 5).forEach((s) => {
