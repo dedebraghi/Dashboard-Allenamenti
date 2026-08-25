@@ -2712,6 +2712,67 @@
                 }
 
                 // Calcola statistiche storiche per il prompt
+                // Calcolo Medie Globali Storico Carriera
+                let total3Made = 0, total3Att = 0;
+                let totalFtMade = 0, totalFtAtt = 0;
+                let totalPatMade = 0, totalPatAtt = 0;
+                const spotTotals = {
+                    angoloSX: { made: 0, att: 0 },
+                    guardiaSX: { made: 0, att: 0 },
+                    punta: { made: 0, att: 0 },
+                    guardiaDX: { made: 0, att: 0 },
+                    angoloDX: { made: 0, att: 0 },
+                    gomitoSX: { made: 0, att: 0 },
+                    gomitoDX: { made: 0, att: 0 }
+                };
+
+                sessions.forEach(s => {
+                    if (s.tri) {
+                        ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
+                            const sp = s.tri[k];
+                            if (sp && sp.att > 0) {
+                                spotTotals[k].made += (sp.made || 0);
+                                spotTotals[k].att += sp.att;
+                                total3Made += (sp.made || 0);
+                                total3Att += sp.att;
+                            }
+                        });
+                    }
+                    if (s.pat) {
+                        ['gomitoSX', 'gomitoDX'].forEach(k => {
+                            const sp = s.pat[k];
+                            if (sp && sp.att > 0) {
+                                spotTotals[k].made += (sp.made || 0);
+                                spotTotals[k].att += sp.att;
+                                totalPatMade += (sp.made || 0);
+                                totalPatAtt += sp.att;
+                            }
+                        });
+                    }
+                    if (s.liberi && s.liberi.att > 0) {
+                        totalFtMade += (s.liberi.made || 0);
+                        totalFtAtt += s.liberi.att;
+                    }
+                });
+
+                const globalAverages = {
+                    sessioniTotali: sessions.length,
+                    tiroDa3Totale: `${total3Made}/${total3Att} (${total3Att > 0 ? Math.round((total3Made/total3Att)*100) : 0}%)`,
+                    dettaglio3PuntiPerSpot: {
+                        angoloSX: `${spotTotals.angoloSX.made}/${spotTotals.angoloSX.att} (${spotTotals.angoloSX.att > 0 ? Math.round((spotTotals.angoloSX.made/spotTotals.angoloSX.att)*100) : 0}%)`,
+                        guardiaSX: `${spotTotals.guardiaSX.made}/${spotTotals.guardiaSX.att} (${spotTotals.guardiaSX.att > 0 ? Math.round((spotTotals.guardiaSX.made/spotTotals.guardiaSX.att)*100) : 0}%)`,
+                        punta: `${spotTotals.punta.made}/${spotTotals.punta.att} (${spotTotals.punta.att > 0 ? Math.round((spotTotals.punta.made/spotTotals.punta.att)*100) : 0}%)`,
+                        guardiaDX: `${spotTotals.guardiaDX.made}/${spotTotals.guardiaDX.att} (${spotTotals.guardiaDX.att > 0 ? Math.round((spotTotals.guardiaDX.made/spotTotals.guardiaDX.att)*100) : 0}%)`,
+                        angoloDX: `${spotTotals.angoloDX.made}/${spotTotals.angoloDX.att} (${spotTotals.angoloDX.att > 0 ? Math.round((spotTotals.angoloDX.made/spotTotals.angoloDX.att)*100) : 0}%)`
+                    },
+                    patTotale: `${totalPatMade}/${totalPatAtt} (${totalPatAtt > 0 ? Math.round((totalPatMade/totalPatAtt)*100) : 0}%)`,
+                    dettaglioPATPerGomito: {
+                        gomitoSX: `${spotTotals.gomitoSX.made}/${spotTotals.gomitoSX.att} (${spotTotals.gomitoSX.att > 0 ? Math.round((spotTotals.gomitoSX.made/spotTotals.gomitoSX.att)*100) : 0}%)`,
+                        gomitoDX: `${spotTotals.gomitoDX.made}/${spotTotals.gomitoDX.att} (${spotTotals.gomitoDX.att > 0 ? Math.round((spotTotals.gomitoDX.made/spotTotals.gomitoDX.att)*100) : 0}%)`
+                    },
+                    tiriLiberiTotale: `${totalFtMade}/${totalFtAtt} (${totalFtAtt > 0 ? Math.round((totalFtMade/totalFtAtt)*100) : 0}%)`
+                };
+
                 let histOverview = `Storico giocatore su ${sessions.length} sessioni registrate:\n`;
                 sessions.slice(0, 5).forEach((s) => {
                     const s3 = s.tri?.angoloSX?.att > 0 ? `${s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made}/${s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att}` : 'N/D';
@@ -2728,27 +2789,33 @@
                     noteAtleta: playerNotes || sessionData.noteAtleta || ''
                 }, null, 2);
 
+                const globalAveragesJson = JSON.stringify(globalAverages, null, 2);
+
                 const completedSessionsCount = sessions.length;
                 const nextPlanNumber = completedSessionsCount + 1;
                 const nextSessionNumber = completedSessionsCount;
 
                 const systemInstruction = `
 Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
-Il tuo compito è:
-1) Analizzare accuratamente la sessione di tiro odierna (Sessione #${nextSessionNumber} del ${sessionData.date}) incrociandola con lo storico balistico.
-2) Generare un'analisi balistica tecnica ("insight") con osservazioni puntuali su meccanica, parabola, rilascio negli angoli, tenuta cardiaca nei liberi e perno nei gomiti.
-3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber} e titolo "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}", calibrata specificamente sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo drill specifici sugli spot dove ha tirato peggio, e consolidando i punti di forza).
+Il tuo compito fondamentale è:
+1) Analizzare accuratamente la sessione di tiro odierna (Sessione #${nextSessionNumber} del ${sessionData.date}) confrontandola puntualmente con la MEDIA GLOBALE STORICA del giocatore e il trend cronologico.
+2) ESPRIMERE UN GIUDIZIO TECNICO SULLE OSSERVAZIONI BALISTICHE DELLA MEDIA:
+   - Valutare la prestazione odierna rispetto alla media carriera (quali spot sono stabilmente sopra/sotto media, progressione o regressione biomeccanica).
+   - Evidenziare asimmetrie (es. angolo SX vs angolo DX, gomito SX vs gomito DX), tenuta mentale nei tiri liberi in apnea e qualità della parabola.
+3) USARE QUESTI GIUDIZI SULLA MEDIA PER COSTRUIRE IL NUOVO ALLENAMENTO ("nextPlan" #${nextPlanNumber}):
+   - Progetta la nuova scheda calibrandola direttamente sulle debolezze strutturali della media (es. sovraccarico mirato su spot deboli o modifiche alle serie) e consolidando le certezze.
+   - Sei libero di variare le regole operative, i protocolli cardio, le combinazioni di tiro, il numero di serie e i focus biomeccanici specifici per stimolare l'adattamento dell'atleta.
 4) IMPORTANTE: Includere sia le 5 fasi descrittive ("phases") per l'atleta, sia l'oggetto strutturato "drills" con l'elenco esatto di serie e tentativi (att) per ogni spot e fase, in modo che la scheda Workout Live interattiva possa renderizzare 1:1 esattamente ogni tiro prescritto.
 
 Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) che rispetti rigorosamente questo schema:
 {
   "insight": {
-    "title": "Analisi Puntuale Sessione #${nextSessionNumber} (${sessionData.date})",
-    "summary": "Sintesi tecnica generale di 2-3 frasi sulle prestazioni odierne.",
+    "title": "Analisi Puntuale Sessione #${nextSessionNumber} (${sessionData.date}) • Confronto con Media Storica",
+    "summary": "Sintesi tecnica generale di 2-3 frasi con giudizio esplicito sul rendimento rispetto alla media carriera.",
     "sections": [
-      { "heading": "Tiro da 3 Punti (XX% Totale - X/X)", "content": "Analisi dettagliata per spot e serie..." },
-      { "heading": "Palleggio Arresto e Tiro - P.A.T. (XX% Totale - X/X)", "content": "Analisi footwork e perno sui gomiti..." },
-      { "heading": "Tiri Liberi & Tenuta sotto sforzo (XX% Totale - X/X)", "content": "Analisi tenuta in apnea e serie finali..." }
+      { "heading": "Tiro da 3 Punti (XX% Oggi vs XX% Media Globale)", "content": "Giudizio balistico dettagliato per spot, parabola e rilascio a confronto con la media..." },
+      { "heading": "Palleggio Arresto e Tiro - P.A.T. (XX% Oggi vs XX% Media Globale)", "content": "Analisi footwork, perno sui gomiti e confronto con la media..." },
+      { "heading": "Tiri Liberi & Tenuta Sotto Sforzo (XX% Oggi vs XX% Media Globale)", "content": "Analisi tenuta in apnea e confronto con la media..." }
     ]
   },
   "nextPlan": {
@@ -2868,7 +2935,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                         {
                             parts: [
                                 { text: systemInstruction },
-                                { text: `Ecco i dati della sessione:\n${currentNumbers}\n\nStorico:\n${histOverview}` }
+                                { text: `DATI SESSIONE ODIERNA:\n${currentNumbers}\n\nMEDIE GLOBALI STORICHE CARRIERA:\n${globalAveragesJson}\n\nULTIMI ALLENAMENTI REGISTRATI:\n${histOverview}` }
                             ]
                         }
                     ],
