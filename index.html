@@ -412,6 +412,29 @@
                 </div>
             </div>
         </div>
+
+        <!-- Banner Richiesta Notifiche Push (Attivabile con 1 tocco) -->
+        <div id="notification-prompt-banner" class="hidden mb-6 p-4 rounded-xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 border border-indigo-500/40 shadow-lg text-white">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div class="flex items-center gap-3">
+                    <span class="w-8 h-8 rounded-lg bg-indigo-600/30 border border-indigo-500/50 flex items-center justify-center text-indigo-300 shrink-0 text-base">
+                        🔔
+                    </span>
+                    <div>
+                        <div class="text-xs font-bold font-athletic uppercase tracking-wider text-indigo-300">Ricevi Notifiche sul Telefono</div>
+                        <div class="text-[11px] text-slate-300 font-medium">Vuoi ricevere una notifica push quando il Coach AI completa l'analisi della nuova scheda?</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2 self-start sm:self-auto">
+                    <button type="button" onclick="enablePushNotificationsFromBanner()" class="px-3.5 py-1.5 bg-orange-600 hover:bg-orange-500 text-white rounded-lg text-xs font-bold shadow-md transition-all active:scale-95 cursor-pointer">
+                        Attiva Notifiche 📲
+                    </button>
+                    <button type="button" onclick="dismissNotificationBanner()" class="p-1.5 text-slate-400 hover:text-white text-xs font-bold" title="Nascondi">
+                        ✕
+                    </button>
+                </div>
+            </div>
+        </div>
         
         <!-- ================= TAB: DASHBOARD ================= -->
         <section id="tab-dashboard" class="space-y-6">
@@ -1246,6 +1269,8 @@
                 loadSessionDetail('average');
             }
 
+            checkNotificationBanner();
+
             // Ripresa automatica in background se esistono sessioni con AI in sospeso
             setTimeout(() => {
                 checkAndResumePendingAiSessions();
@@ -1375,6 +1400,38 @@
             } catch (e) {
                 console.warn('[Push] Errore notifica standard:', e);
             }
+        }
+
+        function checkNotificationBanner() {
+            const banner = document.getElementById('notification-prompt-banner');
+            if (!banner) return;
+            const dismissed = localStorage.getItem('shottracker_notif_banner_dismissed');
+            if (!("Notification" in window) || Notification.permission === 'granted' || Notification.permission === 'denied' || dismissed === 'true') {
+                banner.classList.add('hidden');
+            } else {
+                banner.classList.remove('hidden');
+            }
+        }
+
+        async function enablePushNotificationsFromBanner() {
+            const granted = await requestNotificationPermission();
+            const banner = document.getElementById('notification-prompt-banner');
+            if (banner) banner.classList.add('hidden');
+            if (granted) {
+                await sendDeviceNotification(
+                    '🏀 ShotTracker • Notifiche Attivate',
+                    'Fantastico! Riceverai un avviso appena il Coach AI completerà ogni nuova scheda.'
+                );
+                showToast("🔔 Notifiche attivate con successo!", "success");
+            } else {
+                showToast("Permesso notifiche non concesso.", "info");
+            }
+        }
+
+        function dismissNotificationBanner() {
+            const banner = document.getElementById('notification-prompt-banner');
+            if (banner) banner.classList.add('hidden');
+            localStorage.setItem('shottracker_notif_banner_dismissed', 'true');
         }
 
         async function testNotificationFlow() {
@@ -1540,109 +1597,106 @@
         // =========================================================================
 
         async function loadSessionsData() {
-            // 1. Prova da Firebase Cloud se configurato
-            if (firebaseDb) {
-                try {
-                    const snap = await firebaseDb.collection('sessions').orderBy('date', 'desc').get();
-                    if (!snap.empty) {
-                        const cloudSessions = [];
-                        snap.forEach(doc => cloudSessions.push(doc.data()));
-                        if (cloudSessions.length > 0) {
-                            sessions = cloudSessions;
-                            localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
-                            console.log(`[Sync] Caricate ${sessions.length} sessioni da Firestore.`);
-                            return;
-                        }
-                    }
-                } catch (e) {
-                    console.warn('[Sync] Fallito caricamento Firestore, passo a localStorage:', e);
-                }
-            }
-
-            // 2. Prova da LocalStorage
-            try {
-                const saved = localStorage.getItem(`${appId}-sessions`);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        sessions = parsed;
-                        return;
-                    }
-                }
-            } catch (e) {}
-
-            // 3. Fallback iniziale dai file data/
+            let baseSessions = [];
             try {
                 const res = await fetch('data/sessions.json');
                 if (res.ok) {
                     const indexList = await res.json();
-                    const fetched = [];
                     for (const item of indexList) {
                         try {
                             const sRes = await fetch(item.file);
-                            if (sRes.ok) fetched.push(await sRes.json());
+                            if (sRes.ok) baseSessions.push(await sRes.json());
                         } catch (err) {}
-                    }
-                    if (fetched.length > 0) {
-                        sessions = fetched;
-                        localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
-                    }
-                }
-            } catch (e) {
-                sessions = [];
-            }
-        }
-
-        async function loadPlansData() {
-            // 1. Prova da Firestore
-            if (firebaseDb) {
-                try {
-                    const snap = await firebaseDb.collection('plans').get();
-                    if (!snap.empty) {
-                        const cloudPlans = [];
-                        snap.forEach(doc => cloudPlans.push(doc.data()));
-                        if (cloudPlans.length > 0) {
-                            plans = cloudPlans;
-                            localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
-                            console.log(`[Sync] Caricati ${plans.length} piani da Firestore.`);
-                            return;
-                        }
-                    }
-                } catch (e) {}
-            }
-
-            // 2. Prova da LocalStorage
-            try {
-                const saved = localStorage.getItem(`${appId}-plans`);
-                if (saved) {
-                    const parsed = JSON.parse(saved);
-                    if (Array.isArray(parsed) && parsed.length > 0) {
-                        plans = parsed;
-                        return;
                     }
                 }
             } catch (e) {}
 
-            // 3. Fallback iniziale da data/
+            let cloudSessions = [];
+            if (firebaseDb) {
+                try {
+                    const snap = await firebaseDb.collection('sessions').orderBy('date', 'desc').get();
+                    if (!snap.empty) {
+                        snap.forEach(doc => cloudSessions.push(doc.data()));
+                    }
+                } catch (e) {
+                    console.warn('[Sync] Fallito caricamento Firestore:', e);
+                }
+            }
+
+            let localSessions = [];
+            try {
+                const saved = localStorage.getItem(`${appId}-sessions`);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) localSessions = parsed;
+                }
+            } catch (e) {}
+
+            const sMap = new Map();
+            baseSessions.forEach(s => sMap.set(s.id, s));
+            localSessions.forEach(s => sMap.set(s.id, s));
+            cloudSessions.forEach(s => sMap.set(s.id, s));
+
+            sessions = Array.from(sMap.values()).sort((a, b) => new Date(b.date) - new Date(a.date));
+            localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+        }
+
+        async function loadPlansData() {
+            let basePlans = [];
             try {
                 const res = await fetch('data/plans.json');
                 if (res.ok) {
                     const indexList = await res.json();
-                    const fetched = [];
                     for (const item of indexList) {
                         try {
                             const pRes = await fetch(item.file);
-                            if (pRes.ok) fetched.push(await pRes.json());
+                            if (pRes.ok) basePlans.push(await pRes.json());
                         } catch (err) {}
                     }
-                    if (fetched.length > 0) {
-                        plans = fetched;
-                        localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
-                    }
                 }
-            } catch (e) {
-                plans = [];
+            } catch (e) {}
+
+            let cloudPlans = [];
+            if (firebaseDb) {
+                try {
+                    const snap = await firebaseDb.collection('plans').get();
+                    if (!snap.empty) {
+                        snap.forEach(doc => cloudPlans.push(doc.data()));
+                    }
+                } catch (e) {}
             }
+
+            let localPlans = [];
+            try {
+                const saved = localStorage.getItem(`${appId}-plans`);
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    if (Array.isArray(parsed)) localPlans = parsed;
+                }
+            } catch (e) {}
+
+            // Unisci tutti i piani garantendo nessun duplicato e sanitizzando piano-6 errato -> piano-5
+            const planMap = new Map();
+            basePlans.forEach(p => planMap.set(p.id, p));
+            localPlans.forEach(p => {
+                if (p.id === 'piano-6' && !planMap.has('piano-5')) {
+                    p.id = 'piano-5';
+                    p.number = 5;
+                    if (p.title) p.title = p.title.replace(/#?6/g, '#5');
+                }
+                if (p.id !== 'piano-6') planMap.set(p.id, p);
+            });
+            cloudPlans.forEach(p => {
+                if (p.id === 'piano-6' && !planMap.has('piano-5')) {
+                    p.id = 'piano-5';
+                    p.number = 5;
+                    if (p.title) p.title = p.title.replace(/#?6/g, '#5');
+                }
+                if (p.id !== 'piano-6') planMap.set(p.id, p);
+            });
+
+            plans = Array.from(planMap.values()).sort((a, b) => (a.number || 0) - (b.number || 0));
+            localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
         }
 
         async function saveSessionToDb(newSession) {
@@ -2674,9 +2728,9 @@
                     noteAtleta: playerNotes || sessionData.noteAtleta || ''
                 }, null, 2);
 
-                const nextSessionNumber = sessions.length;
-                const maxPlanNum = plans.reduce((max, p) => Math.max(max, p.number || 0), 0);
-                const nextPlanNumber = Math.max(maxPlanNum + 1, nextSessionNumber + 1);
+                const completedSessionsCount = sessions.length;
+                const nextPlanNumber = completedSessionsCount + 1;
+                const nextSessionNumber = completedSessionsCount;
 
                 const systemInstruction = `
 Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
@@ -2875,9 +2929,9 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
         }
 
         async function generateLocalFallbackPlan(sessionData) {
-            const nextSessionNumber = sessions.length;
-            const maxPlanNum = plans.reduce((max, p) => Math.max(max, p.number || 0), 0);
-            const nextPlanNumber = Math.max(maxPlanNum + 1, nextSessionNumber + 1);
+            const completedSessionsCount = sessions.length;
+            const nextPlanNumber = completedSessionsCount + 1;
+            const nextSessionNumber = completedSessionsCount;
 
             // Calcolo spot deboli
             const tri = sessionData.tri || {};

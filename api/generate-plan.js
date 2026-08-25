@@ -116,8 +116,10 @@ module.exports = async function handler(req, res) {
             noteAtleta: playerNotes || sessionData.noteAtleta || ''
         }, null, 2);
 
-        const nextSessionNumber = historyList.length + 1;
-        const nextPlanNumber = nextSessionNumber + 1;
+        const completedSessionsCount = historyList.length;
+        const currentSessionNumber = completedSessionsCount;
+        const nextPlanNumber = completedSessionsCount + 1;
+        const nextSessionNumber = currentSessionNumber;
 
         const systemInstruction = `
 Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
