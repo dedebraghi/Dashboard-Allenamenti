@@ -393,7 +393,7 @@
     </header>
 
     <!-- Contenuto Principale -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 pb-24 md:pb-6">
 
         <!-- Global Background Task / AI Coach Status Banner -->
         <div id="ai-coach-bg-banner" class="hidden mb-6 p-4 rounded-xl bg-gradient-to-r from-orange-950 via-slate-900 to-slate-900 border border-orange-500/40 shadow-lg text-white">
@@ -521,7 +521,7 @@
                     </div>
 
                     <!-- Diagramma Campo Basket Tactico (Dark Theme Pro) -->
-                    <div class="relative w-full aspect-[4/3] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center p-3 shadow-inner court-grid-pattern">
+                    <div class="relative w-full aspect-[4/3] min-h-[310px] sm:min-h-[380px] bg-slate-950 rounded-xl border border-slate-800 overflow-hidden flex items-center justify-center p-2 sm:p-3 shadow-inner court-grid-pattern">
                         <!-- Court SVG Vector Lines -->
                         <svg class="absolute inset-0 w-full h-full text-slate-500 opacity-80" viewBox="0 0 100 80" fill="none" stroke="currentColor" stroke-width="0.7">
                             <!-- Out of Bounds -->
@@ -542,50 +542,50 @@
                             <path d="M 12,16 A 41 41 0 0 0 88,16" stroke-width="1.1" stroke="#94A3B8" />
                         </svg>
 
-                        <!-- Hotspot Badges (Interattivi) -->
-                        <div class="absolute top-[7%] left-[6%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloSX', 'Angolo Sinistro (3PT)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Angolo SX</span>
-                            <div id="hotspot-angoloSX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <!-- Hotspot Badges (Interattivi con spaziatura bilanciata anti-sovrapposizione) -->
+                        <div class="absolute top-[6%] left-[4%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloSX', 'Angolo Sinistro (3PT)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Angolo SX</span>
+                            <div id="hotspot-angoloSX" class="w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] sm:text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[38%] left-[16%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaSX', 'Guardia Sinistra (3PT)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Guardia SX</span>
-                            <div id="hotspot-guardiaSX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[44%] left-[7%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaSX', 'Guardia Sinistra (3PT)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Guardia SX</span>
+                            <div id="hotspot-guardiaSX" class="w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] sm:text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[62%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('punta', 'Punta (3PT)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Punta</span>
-                            <div id="hotspot-punta" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[66%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('punta', 'Punta (3PT)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Punta</span>
+                            <div id="hotspot-punta" class="w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] sm:text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[38%] right-[16%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaDX', 'Guardia Destra (3PT)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Guardia DX</span>
-                            <div id="hotspot-guardiaDX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[44%] right-[7%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('guardiaDX', 'Guardia Destra (3PT)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Guardia DX</span>
+                            <div id="hotspot-guardiaDX" class="w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] sm:text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[7%] right-[6%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloDX', 'Angolo Destro (3PT)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-1">Angolo DX</span>
-                            <div id="hotspot-angoloDX" class="w-12 h-12 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[6%] right-[4%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('angoloDX', 'Angolo Destro (3PT)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Angolo DX</span>
+                            <div id="hotspot-angoloDX" class="w-9 h-9 sm:w-11 sm:h-11 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] sm:text-xs font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[29%] left-[32%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoSX', 'Gomito Sinistro')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Gomito SX</span>
-                            <div id="hotspot-gomitoSX" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[22%] left-[22%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoSX', 'Gomito Sinistro')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Gomito SX</span>
+                            <div id="hotspot-gomitoSX" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[30%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('liberi', 'Tiro Libero (Lunetta)')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Lunetta</span>
-                            <div id="hotspot-liberi" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[32%] left-1/2 transform -translate-x-1/2 flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('liberi', 'Tiro Libero (Lunetta)')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1.5 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Lunetta</span>
+                            <div id="hotspot-liberi" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
 
-                        <div class="absolute top-[29%] right-[32%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoDX', 'Gomito Destro')">
-                            <span class="text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-1">Gomito DX</span>
-                            <div id="hotspot-gomitoDX" class="w-10 h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
+                        <div class="absolute top-[22%] right-[22%] flex flex-col items-center group cursor-pointer z-10" onclick="openPositionModal('gomitoDX', 'Gomito Destro')">
+                            <span class="text-[8px] sm:text-[9px] text-slate-300 font-mono font-bold bg-slate-900/90 border border-slate-700 px-1 py-0.5 rounded mb-0.5 sm:mb-1 whitespace-nowrap shadow-xs">Gomito DX</span>
+                            <div id="hotspot-gomitoDX" class="w-8 h-8 sm:w-10 sm:h-10 rounded-lg border border-slate-700 bg-slate-900 text-white flex items-center justify-center text-[9px] sm:text-[10px] font-black transition-transform group-hover:scale-105 shadow-md">-%</div>
                         </div>
                     </div>
                     
                     <!-- Legenda Tiers Pro -->
-                    <div class="grid grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-100 text-center text-[11px] font-extrabold">
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mt-4 pt-3 border-t border-slate-100 text-center text-[10px] sm:text-[11px] font-extrabold">
                         <div class="bg-emerald-50 text-emerald-800 py-1.5 px-2 rounded border border-emerald-200">
                             ≥ 50% Elite
                         </div>
@@ -702,18 +702,18 @@
                     </div>
 
                     <!-- Configurazione Rapida Data & Scheda -->
-                    <div class="flex flex-wrap items-center gap-3 bg-slate-900/90 border border-slate-800 p-3.5 rounded-xl">
-                        <div>
+                    <div class="grid grid-cols-2 sm:grid-cols-12 gap-3 w-full lg:w-auto bg-slate-900/90 border border-slate-800 p-3.5 rounded-xl">
+                        <div class="col-span-1 sm:col-span-3">
                             <label for="workout-date" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Data</label>
-                            <input type="date" id="workout-date" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <input type="date" id="workout-date" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
-                        <div>
+                        <div class="col-span-1 sm:col-span-3">
                             <label for="workout-duration" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Durata (Min)</label>
-                            <input type="number" id="workout-duration" value="60" min="15" max="180" step="5" class="w-20 bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
+                            <input type="number" id="workout-duration" value="60" min="15" max="180" step="5" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
-                        <div>
+                        <div class="col-span-2 sm:col-span-6 min-w-0">
                             <label for="workout-plan-ref" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Scheda Seguito</label>
-                            <select id="workout-plan-ref" onchange="onWorkoutPlanChange(this.value)" class="bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer">
+                            <select id="workout-plan-ref" onchange="onWorkoutPlanChange(this.value)" class="w-full max-w-full truncate bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer">
                                 <!-- Popolato dinamicamente -->
                             </select>
                         </div>
@@ -1129,24 +1129,29 @@
 
         <!-- ================= TAB: STORICO ================= -->
         <section id="tab-history" class="hidden space-y-5">
-            <div class="flex items-center justify-between">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <div>
-                    <h2 class="text-xl font-athletic font-extrabold text-slate-900 tracking-wide">Storico Sessioni</h2>
-                    <p class="text-xs text-slate-500 font-medium">Archivio completo degli allenamenti registrati.</p>
+                    <h2 class="text-xl font-athletic font-extrabold text-slate-900 tracking-wide">Storico Sessioni & Report Coach</h2>
+                    <p class="text-xs text-slate-500 font-medium">Tocca qualsiasi riga per aprire l'analisi balistica dettagliata e il Report AI del Coach.</p>
+                </div>
+                <div class="text-[10px] font-mono font-bold text-orange-600 bg-orange-50 border border-orange-200 px-2.5 py-1 rounded-md self-start sm:self-auto flex items-center gap-1.5 shadow-xs">
+                    <span>💡</span>
+                    <span>Tocca una riga per aprire il Report</span>
                 </div>
             </div>
 
             <div class="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-xs">
                 <div class="overflow-x-auto">
-                    <table class="w-full border-collapse">
+                    <table class="w-full border-collapse whitespace-nowrap sm:whitespace-normal">
                         <thead>
                             <tr class="border-b border-slate-200 bg-slate-50 text-[11px] font-extrabold uppercase tracking-wider text-slate-500">
-                                <th class="py-3 px-5 text-left">Data</th>
-                                <th class="py-3 px-5 text-center">Durata</th>
-                                <th class="py-3 px-5 text-center">3PT %</th>
-                                <th class="py-3 px-5 text-center">Tiri Liberi %</th>
-                                <th class="py-3 px-5 text-center">P.A.T. %</th>
-                                <th class="py-3 px-5 text-right">Azioni</th>
+                                <th class="py-3.5 px-4 sm:px-5 text-left">Data & Sessione</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-center">Durata</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-center">3PT %</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-center">Tiri Liberi %</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-center">P.A.T. %</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-center">Report Coach</th>
+                                <th class="py-3.5 px-3 sm:px-5 text-right">Azioni</th>
                             </tr>
                         </thead>
                         <tbody id="history-table-body" class="divide-y divide-slate-100 text-xs font-semibold text-slate-700">
@@ -3889,7 +3894,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             }
 
             const isGomito = id.includes('gomito') || id.includes('liberi');
-            const sizeClasses = isGomito ? 'w-10 h-10 text-[10px]' : 'w-12 h-12 text-xs';
+            const sizeClasses = isGomito ? 'w-8 h-8 sm:w-10 sm:h-10 text-[9px] sm:text-[10px]' : 'w-9 h-9 sm:w-11 sm:h-11 text-[10px] sm:text-xs';
 
             el.className = `${sizeClasses} rounded-lg border-2 flex items-center justify-center font-athletic font-extrabold transition-all duration-200 hover:scale-105 shadow-md ${tierClasses}`;
         }
@@ -4111,45 +4116,191 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             tbody.innerHTML = '';
 
             if (sessions.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="text-center py-8 text-slate-400 font-medium">Nessuna sessione registrata nello storico.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center py-8 text-slate-400 font-medium">Nessuna sessione registrata nello storico.</td></tr>`;
                 return;
             }
 
             const sortedSessions = [...sessions].sort((a, b) => new Date(b.date) - new Date(a.date));
 
-            sortedSessions.forEach(s => {
-                const s3ptMade = s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made;
-                const s3ptAtt = s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att;
+            sortedSessions.forEach((s, idx) => {
+                const s3ptMade = s.tri ? (s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made) : 0;
+                const s3ptAtt = s.tri ? (s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att) : 0;
                 const s3ptP = s3ptAtt > 0 ? Math.round((s3ptMade / s3ptAtt) * 100) : 0;
 
-                const sFTP = s.liberi.att > 0 ? Math.round((s.liberi.made / s.liberi.att) * 100) : 0;
+                const sFTP = (s.liberi && s.liberi.att > 0) ? Math.round((s.liberi.made / s.liberi.att) * 100) : 0;
 
-                const sPATMade = s.pat.gomitoSX.made + s.pat.gomitoDX.made;
-                const sPATAtt = s.pat.gomitoSX.att + s.pat.gomitoDX.att;
+                const sPATMade = s.pat ? (s.pat.gomitoSX.made + s.pat.gomitoDX.made) : 0;
+                const sPATAtt = s.pat ? (s.pat.gomitoSX.att + s.pat.gomitoDX.att) : 0;
                 const sPATP = sPATAtt > 0 ? Math.round((sPATMade / sPATAtt) * 100) : 0;
 
+                const hasAiReport = Boolean(s.insight && (s.insight.summary || s.insight.title));
+
                 const row = document.createElement('tr');
-                row.className = "hover:bg-slate-50/80 transition-colors";
+                row.className = "hover:bg-orange-50/50 cursor-pointer transition-colors group";
+                row.title = "Tocca per visualizzare il Report e l'analisi balistica del Coach AI";
+                row.onclick = function(e) {
+                    if (e.target.closest('button[data-action="delete"]')) return;
+                    openSessionReport(s.id);
+                };
+
                 row.innerHTML = `
-                    <td class="py-3.5 px-5 text-left text-slate-900 font-bold">${formatDate(s.date)}</td>
-                    <td class="py-3.5 px-5 text-center text-slate-500 font-mono">${s.duration} min</td>
-                    <td class="py-3.5 px-5 text-center">
+                    <td class="py-3.5 px-4 sm:px-5 text-left">
+                        <div class="flex items-center gap-2.5">
+                            <span class="w-2.5 h-2.5 rounded-full ${hasAiReport ? 'bg-orange-500 shadow-sm shadow-orange-500/50' : 'bg-slate-300'}"></span>
+                            <div>
+                                <span class="font-bold text-slate-900 block group-hover:text-orange-600 transition-colors">${formatDate(s.date)}</span>
+                                <span class="text-[10px] text-slate-400 font-mono">Sessione #${sortedSessions.length - idx}</span>
+                            </div>
+                        </div>
+                    </td>
+                    <td class="py-3.5 px-3 sm:px-5 text-center text-slate-500 font-mono">${s.duration || 60} min</td>
+                    <td class="py-3.5 px-3 sm:px-5 text-center">
                         <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(s3ptP)}">${s3ptP}%</span>
                     </td>
-                    <td class="py-3.5 px-5 text-center">
+                    <td class="py-3.5 px-3 sm:px-5 text-center">
                         <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(sFTP)}">${sFTP}%</span>
                     </td>
-                    <td class="py-3.5 px-5 text-center">
+                    <td class="py-3.5 px-3 sm:px-5 text-center">
                         <span class="px-2.5 py-0.5 rounded text-[11px] font-mono ${getPercentBadgeClass(sPATP)}">${sPATP}%</span>
                     </td>
-                    <td class="py-3.5 px-5 text-right">
-                        <button onclick="askDeleteSession('${s.id}')" class="text-slate-400 hover:text-red-600 transition-colors p-1 rounded hover:bg-slate-100" title="Elimina sessione">
+                    <td class="py-3.5 px-3 sm:px-5 text-center">
+                        <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[10px] font-bold ${hasAiReport ? 'bg-orange-100 text-orange-800 border border-orange-300/80 shadow-xs' : 'bg-slate-100 text-slate-700 border border-slate-200'}">
+                            <span>${hasAiReport ? '🤖 Report AI' : '📊 Dettaglio'}</span>
+                        </span>
+                    </td>
+                    <td class="py-3.5 px-3 sm:px-5 text-right">
+                        <button data-action="delete" onclick="event.stopPropagation(); askDeleteSession('${s.id}')" class="text-slate-400 hover:text-red-600 transition-colors p-1.5 rounded-lg hover:bg-red-50" title="Elimina sessione">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
                         </button>
                     </td>
                 `;
                 tbody.appendChild(row);
             });
+        }
+
+        function openSessionReport(sessionId) {
+            const s = sessions.find(item => item.id === sessionId);
+            if (!s) return;
+
+            const modal = document.getElementById('ai-feedback-modal');
+            const titleEl = document.getElementById('ai-feedback-modal-title');
+            const bodyEl = document.getElementById('ai-feedback-modal-body');
+
+            if (titleEl) {
+                titleEl.textContent = `Report Coach • ${formatDate(s.date)}`;
+            }
+
+            const s3ptMade = s.tri ? (s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made) : 0;
+            const s3ptAtt = s.tri ? (s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att) : 0;
+            const s3ptP = s3ptAtt > 0 ? Math.round((s3ptMade / s3ptAtt) * 100) : 0;
+
+            const sFTP = (s.liberi && s.liberi.att > 0) ? Math.round((s.liberi.made / s.liberi.att) * 100) : 0;
+
+            const sPATMade = s.pat ? (s.pat.gomitoSX.made + s.pat.gomitoDX.made) : 0;
+            const sPATAtt = s.pat ? (s.pat.gomitoSX.att + s.pat.gomitoDX.att) : 0;
+            const sPATP = sPATAtt > 0 ? Math.round((sPATMade / sPATAtt) * 100) : 0;
+
+            const formShMade = s.drills?.formShooting ? s.drills.formShooting.reduce((a, b) => a + (b.made || 0), 0) : 0;
+            const formShAtt = s.drills?.formShooting ? s.drills.formShooting.reduce((a, b) => a + (b.att || 0), 0) : 0;
+
+            const totalMade = s3ptMade + (s.liberi?.made || 0) + sPATMade + formShMade;
+            const totalAtt = s3ptAtt + (s.liberi?.att || 0) + sPATAtt + formShAtt;
+            const totalP = totalAtt > 0 ? Math.round((totalMade / totalAtt) * 100) : 0;
+
+            // Box riepilogativo KPI sessione
+            let html = `
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-slate-950 text-white p-3 rounded-xl border border-slate-800 shadow-sm">
+                    <div class="text-center p-1.5 bg-slate-900 rounded-lg">
+                        <span class="text-[9px] uppercase font-mono text-slate-400 font-bold block">Totale Tiri</span>
+                        <span class="text-base font-athletic font-black text-white">${totalP}%</span>
+                        <span class="text-[10px] text-slate-400 font-mono">(${totalMade}/${totalAtt})</span>
+                    </div>
+                    <div class="text-center p-1.5 bg-slate-900 rounded-lg">
+                        <span class="text-[9px] uppercase font-mono text-indigo-400 font-bold block">Tiro da 3</span>
+                        <span class="text-base font-athletic font-black text-indigo-400">${s3ptP}%</span>
+                        <span class="text-[10px] text-slate-400 font-mono">(${s3ptMade}/${s3ptAtt})</span>
+                    </div>
+                    <div class="text-center p-1.5 bg-slate-900 rounded-lg">
+                        <span class="text-[9px] uppercase font-mono text-emerald-400 font-bold block">Tiri Liberi</span>
+                        <span class="text-base font-athletic font-black text-emerald-400">${sFTP}%</span>
+                        <span class="text-[10px] text-slate-400 font-mono">(${s.liberi?.made || 0}/${s.liberi?.att || 0})</span>
+                    </div>
+                    <div class="text-center p-1.5 bg-slate-900 rounded-lg">
+                        <span class="text-[9px] uppercase font-mono text-amber-400 font-bold block">P.A.T. Gomiti</span>
+                        <span class="text-base font-athletic font-black text-amber-400">${sPATP}%</span>
+                        <span class="text-[10px] text-slate-400 font-mono">(${sPATMade}/${sPATAtt})</span>
+                    </div>
+                </div>
+            `;
+
+            // Note atleta se presenti
+            if (s.noteAtleta && s.noteAtleta.trim()) {
+                html += `
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                        <span class="text-[10px] font-mono uppercase tracking-wider text-slate-500 font-bold block">📝 Note dell'Atleta</span>
+                        <p class="text-xs text-slate-700 italic font-medium">"${s.noteAtleta}"</p>
+                    </div>
+                `;
+            }
+
+            // Se la sessione ha l'insight salvato dall'AI Coach
+            if (s.insight && (s.insight.summary || s.insight.title)) {
+                html += `
+                    <div class="bg-orange-50 border border-orange-200 rounded-xl p-3.5 space-y-1.5">
+                        <span class="text-[11px] font-athletic font-extrabold uppercase tracking-wider text-orange-950 flex items-center gap-1.5">
+                            <span>🤖</span>
+                            <span>Valutazione del Coach AI</span>
+                        </span>
+                        <p class="text-xs text-orange-900 leading-relaxed font-medium">${s.insight.summary || ''}</p>
+                    </div>
+                `;
+
+                if (s.insight.sections && s.insight.sections.length > 0) {
+                    html += `<div class="space-y-2 pt-1">`;
+                    s.insight.sections.forEach(sec => {
+                        html += `
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                                <span class="text-[11px] font-bold text-slate-900 flex items-center gap-1.5">
+                                    <span class="w-1.5 h-1.5 rounded-full bg-orange-500"></span>
+                                    <span>${sec.heading}</span>
+                                </span>
+                                <p class="text-xs text-slate-600 leading-relaxed">${sec.content}</p>
+                            </div>
+                        `;
+                    });
+                    html += `</div>`;
+                }
+            } else {
+                // Generazione analitica automatica per sessioni pregresse
+                const spotSummary = [
+                    { name: 'Angolo SX', made: s.tri?.angoloSX?.made || 0, att: s.tri?.angoloSX?.att || 0 },
+                    { name: 'Guardia SX', made: s.tri?.guardiaSX?.made || 0, att: s.tri?.guardiaSX?.att || 0 },
+                    { name: 'Punta', made: s.tri?.punta?.made || 0, att: s.tri?.punta?.att || 0 },
+                    { name: 'Guardia DX', made: s.tri?.guardiaDX?.made || 0, att: s.tri?.guardiaDX?.att || 0 },
+                    { name: 'Angolo DX', made: s.tri?.angoloDX?.made || 0, att: s.tri?.angoloDX?.att || 0 }
+                ];
+                
+                const validSpots = spotSummary.filter(x => x.att > 0);
+                const bestSpot = [...validSpots].sort((a, b) => (b.made/b.att) - (a.made/a.att))[0];
+                const worstSpot = [...validSpots].sort((a, b) => (a.made/a.att) - (b.made/b.att))[0];
+
+                html += `
+                    <div class="bg-orange-50 border border-orange-200 rounded-xl p-3.5 space-y-1.5">
+                        <span class="text-[11px] font-athletic font-extrabold uppercase tracking-wider text-orange-950 flex items-center gap-1.5">
+                            <span>📊</span>
+                            <span>Analisi Tecnica della Sessione</span>
+                        </span>
+                        <p class="text-xs text-orange-900 leading-relaxed font-medium">
+                            Allenamento svolto con volume di tiro totale su ${totalAtt} tentativi complessivi.
+                            ${bestSpot ? `Punto di forza balistico: <strong>${bestSpot.name}</strong> (${Math.round((bestSpot.made/bestSpot.att)*100)}%). ` : ''}
+                            ${worstSpot ? `Area di compensazione prioritaria: <strong>${worstSpot.name}</strong> (${Math.round((worstSpot.made/worstSpot.att)*100)}%).` : ''}
+                        </p>
+                    </div>
+                `;
+            }
+
+            if (bodyEl) bodyEl.innerHTML = html;
+            if (modal) modal.classList.remove('hidden');
         }
 
         function getPercentBadgeClass(percent) {
