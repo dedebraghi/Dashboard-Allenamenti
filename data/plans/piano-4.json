@@ -1,8 +1,8 @@
 {
-  "id": "piano-1",
-  "number": 1,
-  "title": "Programma di Allenamento Analitico • Scheda #1",
-  "description": "Strutturato per massimizzare ogni minuto sul campo, focalizzandosi sulle zone a percentuale minore rilevate negli ultimi allenamenti.",
+  "id": "piano-4",
+  "number": 4,
+  "title": "Programma di Allenamento Analitico • Scheda per Allenamento #4 (Player Development Edition)",
+  "description": "Scheda attiva per l'Allenamento #4: recupero balistico dinamico dagli Angoli (High-Arc Corner Lift & Drift), varianti di footwork avanzato nel P.A.T. (Float Dribble & Step-Back Counter) e protocollo Heartbeat Control ai liberi.",
   "phases": [
     {
       "id": "fase-1",
@@ -29,11 +29,36 @@
       "details": {
         "description": "Fase centrale dedicata alla correzione del lato freddo emerso nelle analisi (lato destro e punta). Il volume di tiro viene distribuito in modo asimmetrico per forzare il sistema neuromuscolare ad adattarsi alle zone meno confortevoli.",
         "table": [
-          { "spot": "Angolo Sinistro", "volume": "5 tiri", "focus": "Mantenimento del ritmo e della fluidità naturale", "highlight": false },
-          { "spot": "Guardia Sinistra", "volume": "5 tiri", "focus": "Mantenimento della stabilità dell'appoggio", "highlight": false },
-          { "spot": "Punta", "volume": "10 tiri", "focus": "Allineamento del gomito ed estensione completa dell'arto", "highlight": true },
-          { "spot": "Guardia Destra", "volume": "10 tiri", "focus": "Orientamento della punta del piede destro verso il centro del ferro", "highlight": true },
-          { "spot": "Angolo Destro", "volume": "10 tiri", "focus": "Spinta simmetrica delle gambe per evitare derive laterali", "highlight": true }
+          {
+            "spot": "Angolo Sinistro",
+            "volume": "5 tiri",
+            "focus": "Mantenimento del ritmo e della fluidità naturale",
+            "highlight": false
+          },
+          {
+            "spot": "Guardia Sinistra",
+            "volume": "5 tiri",
+            "focus": "Mantenimento della stabilità dell'appoggio",
+            "highlight": false
+          },
+          {
+            "spot": "Punta",
+            "volume": "10 tiri",
+            "focus": "Allineamento del gomito ed estensione completa dell'arto",
+            "highlight": true
+          },
+          {
+            "spot": "Guardia Destra",
+            "volume": "10 tiri",
+            "focus": "Orientamento della punta del piede destro verso il centro del ferro",
+            "highlight": true
+          },
+          {
+            "spot": "Angolo Destro",
+            "volume": "10 tiri",
+            "focus": "Spinta simmetrica delle gambe per evitare derive laterali",
+            "highlight": true
+          }
         ],
         "rule": "<strong>💡 Regola Operativa:</strong> Esegui questa rotazione per <strong>2 giri completi (80 tiri totali dall'arco)</strong>. Durante i tiri dal lato destro (guardia e angolo), rallenta la preparazione di 1 secondo: verifica visivamente che il piede destro sia leggermente più avanti del sinistro e puntato direttamente a canestro."
       }

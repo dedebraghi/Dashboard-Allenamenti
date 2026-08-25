@@ -628,9 +628,9 @@
             <div class="bg-slate-950 text-white rounded-2xl p-6 shadow-xl border border-slate-800 relative overflow-hidden">
                 <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div>
-                        <div class="inline-flex items-center gap-2 bg-orange-600/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
+                        <div id="workout-mode-badge" class="inline-flex items-center gap-2 bg-orange-600/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider mb-2">
                             <span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span>
-                            Sessione Attiva al Campo
+                            <span>Sessione Attiva al Campo</span>
                         </div>
                         <h2 class="text-2xl font-athletic font-extrabold text-white tracking-wide uppercase">Scheda di Allenamento Interattiva</h2>
                         <p class="text-xs text-slate-300 font-medium max-w-2xl mt-1 leading-relaxed">
@@ -711,8 +711,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 font-extrabold flex items-center justify-center text-xs">1</span>
                             <div>
-                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 1: Form Shooting & Attivazione</h3>
-                                <p class="text-[11px] text-slate-500 font-medium">Riscaldamento a 1 mano, parabole ravvicinate e prime serie</p>
+                                <h3 id="live-phase-1-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 1: Form Shooting & Attivazione</h3>
+                                <p id="live-phase-1-subtitle" class="text-[11px] text-slate-500 font-medium">Riscaldamento a 1 mano, parabole ravvicinate e prime serie</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -724,7 +724,7 @@
                         <!-- Serie generate dinamicamente -->
                     </div>
 
-                    <div class="flex items-center justify-between pt-2">
+                    <div id="workout-add-formshooting-btn-container" class="flex items-center justify-between pt-2">
                         <button type="button" onclick="addWorkoutSerie('formshooting')" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-blue-50 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             <span>Aggiungi Serie Form Shooting</span>
@@ -738,8 +738,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 font-extrabold flex items-center justify-center text-xs">2</span>
                             <div>
-                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 2: Tiro da 3 Punti (Compensazione per Spot)</h3>
-                                <p class="text-[11px] text-slate-500 font-medium">Registra serie e tiri per ciascuno dei 5 spot dall'arco</p>
+                                <h3 id="live-phase-2-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 2: Tiro da 3 Punti (Compensazione per Spot)</h3>
+                                <p id="live-phase-2-subtitle" class="text-[11px] text-slate-500 font-medium">Registra serie e tiri per ciascuno dei 5 spot dall'arco</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -759,9 +759,11 @@
                                 <span id="workout-spot-summary-angoloSX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-angoloSX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutSpotSerie('angoloSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
-                                + Aggiungi Serie
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutSpotSerie('angoloSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                    + Aggiungi Serie Angolo SX
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Spot 2: Guardia SX -->
@@ -774,9 +776,11 @@
                                 <span id="workout-spot-summary-guardiaSX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-guardiaSX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutSpotSerie('guardiaSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
-                                + Aggiungi Serie
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutSpotSerie('guardiaSX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                    + Aggiungi Serie Guardia SX
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Spot 3: Punta -->
@@ -789,9 +793,11 @@
                                 <span id="workout-spot-summary-punta" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-punta" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutSpotSerie('punta')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
-                                + Aggiungi Serie
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutSpotSerie('punta')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                    + Aggiungi Serie Punta
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Spot 4: Guardia DX -->
@@ -804,9 +810,11 @@
                                 <span id="workout-spot-summary-guardiaDX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-guardiaDX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutSpotSerie('guardiaDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
-                                + Aggiungi Serie
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutSpotSerie('guardiaDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                    + Aggiungi Serie Guardia DX
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Spot 5: Angolo DX -->
@@ -819,9 +827,11 @@
                                 <span id="workout-spot-summary-angoloDX" class="text-[11px] font-mono font-bold text-indigo-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-angoloDX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutSpotSerie('angoloDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
-                                + Aggiungi Serie
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutSpotSerie('angoloDX')" class="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-indigo-50 transition-colors">
+                                    + Aggiungi Serie Angolo DX
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -832,8 +842,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-amber-50 text-amber-600 font-extrabold flex items-center justify-center text-xs">3</span>
                             <div>
-                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 3: Palleggio Arresto & Tiro (Gomiti Lunetta)</h3>
-                                <p class="text-[11px] text-slate-500 font-medium">Arresti a due tempi con perno su piede interno</p>
+                                <h3 id="live-phase-3-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 3: Palleggio Arresto & Tiro (Gomiti Lunetta)</h3>
+                                <p id="live-phase-3-subtitle" class="text-[11px] text-slate-500 font-medium">Arresti a due tempi con perno su piede interno</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -849,9 +859,11 @@
                                 <span id="workout-spot-summary-gomitoSX" class="text-[11px] font-mono font-bold text-amber-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-gomitoSX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutPatSerie('gomitoSX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
-                                + Aggiungi Serie Gomito SX
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutPatSerie('gomitoSX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
+                                    + Aggiungi Serie Gomito SX
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Gomito DX -->
@@ -861,9 +873,11 @@
                                 <span id="workout-spot-summary-gomitoDX" class="text-[11px] font-mono font-bold text-amber-700 bg-white px-2 py-0.5 rounded border border-slate-200">0/0 (0%)</span>
                             </div>
                             <div id="workout-series-container-gomitoDX" class="space-y-2"></div>
-                            <button type="button" onclick="addWorkoutPatSerie('gomitoDX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
-                                + Aggiungi Serie Gomito DX
-                            </button>
+                            <div class="workout-add-spot-btn-wrapper">
+                                <button type="button" onclick="addWorkoutPatSerie('gomitoDX')" class="text-[11px] font-bold text-amber-600 hover:text-amber-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-amber-50 transition-colors">
+                                    + Aggiungi Serie Gomito DX
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -874,8 +888,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 font-extrabold flex items-center justify-center text-xs">4</span>
                             <div>
-                                <h3 class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 4: Tiri Liberi & Sotto Sforzo</h3>
-                                <p class="text-[11px] text-slate-500 font-medium">Blocchi e cicli ad alta intensità a fine sessione</p>
+                                <h3 id="live-phase-4-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 4: Tiri Liberi & Sotto Sforzo</h3>
+                                <p id="live-phase-4-subtitle" class="text-[11px] text-slate-500 font-medium">Blocchi e cicli ad alta intensità a fine sessione</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -887,7 +901,7 @@
                         <!-- Blocchi liberi generati dinamicamente -->
                     </div>
 
-                    <div class="flex items-center justify-between pt-1">
+                    <div id="workout-add-ft-btn-container" class="flex items-center justify-between pt-1">
                         <button type="button" onclick="addWorkoutFtBlock()" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-emerald-50 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
                             <span>Aggiungi Blocco / Serie Liberi</span>
@@ -896,35 +910,44 @@
                 </div>
 
                 <!-- 5. Sezione Chiusura Sessione & AI Coach Generator -->
-                <div class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 text-white shadow-2xl space-y-5">
-                    <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
-                        <div class="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-600/40">
-                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                <div id="workout-action-box" class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 border border-slate-800 rounded-2xl p-6 text-white shadow-2xl space-y-5">
+                    <div id="workout-live-controls" class="space-y-5">
+                        <div class="flex items-center gap-3 pb-3 border-b border-slate-800">
+                            <div class="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center shadow-lg shadow-orange-600/40">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9" stroke-width="2"/><path d="M12 3a9 9 0 0 0 0 18" stroke-width="1.8"/><path d="M3 12h18" stroke-width="1.8"/></svg>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-athletic font-extrabold uppercase tracking-wide text-white">Chiusura Workout & AI Coach</h3>
+                                <p class="text-xs text-slate-400 font-medium">Salva i record nel database e genera la prossima scheda di allenamento adattata</p>
+                            </div>
                         </div>
+
+                        <!-- Note Opzionali per il Coach AI -->
                         <div>
-                            <h3 class="text-lg font-athletic font-extrabold uppercase tracking-wide text-white">Chiusura Workout & AI Coach</h3>
-                            <p class="text-xs text-slate-400 font-medium">Salva i record nel database e genera la prossima scheda di allenamento adattata</p>
+                            <label for="workout-player-notes" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
+                                Note per il Coach AI (Opzionale)
+                            </label>
+                            <textarea id="workout-player-notes" rows="2" placeholder="Es. Ho sentito un calo fisico negli ultimi 15 min; Vorrei concentrarmi sul pull-up da destra; La prossima sessione durerà 45 min..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"></textarea>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
+                            <button type="button" onclick="saveWorkoutSessionOnly()" class="px-5 py-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center justify-center gap-2">
+                                <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
+                                <span>Salva Solo Dati (Senza AI)</span>
+                            </button>
+                            <button type="button" onclick="saveWorkoutWithAICoach()" class="px-6 py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-xl shadow-orange-600/30 transition-all transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                                <span class="uppercase tracking-wider">Salva & Genera Prossima Scheda con AI</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Note Opzionali per il Coach AI -->
-                    <div>
-                        <label for="workout-player-notes" class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1.5">
-                            Note per il Coach AI (Opzionale)
-                        </label>
-                        <textarea id="workout-player-notes" rows="2" placeholder="Es. Ho sentito un calo fisico negli ultimi 15 min; Vorrei concentrarmi sul pull-up da destra; La prossima sessione durerà 45 min..." class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition-all"></textarea>
-                    </div>
-
-                    <!-- Action Buttons -->
-                    <div class="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-3">
-                        <button type="button" onclick="saveWorkoutSessionOnly()" class="px-5 py-3 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-all flex items-center justify-center gap-2">
-                            <svg class="w-4 h-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"/></svg>
-                            <span>Salva Solo Dati (Senza AI)</span>
-                        </button>
-                        <button type="button" onclick="saveWorkoutWithAICoach()" class="px-6 py-3.5 rounded-xl text-xs font-bold bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white shadow-xl shadow-orange-600/30 transition-all transform hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-2.5 cursor-pointer">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-                            <span class="uppercase tracking-wider">Salva & Genera Prossima Scheda con AI</span>
-                        </button>
+                    <div id="workout-archive-notice" class="hidden p-4 bg-slate-900/90 border border-slate-800 rounded-xl text-center space-y-1.5">
+                        <div class="flex items-center justify-center gap-2 text-indigo-400 font-bold text-xs uppercase tracking-wider">
+                            <span>📁 Sessione Archiviata nello Storico</span>
+                        </div>
+                        <p class="text-xs text-slate-400 font-medium">Questa sessione è già stata completata ed è visualizzata in modalità di consultazione (sola lettura). Per compilare un nuovo allenamento, seleziona la scheda attiva più recente dal menu a tendina in alto.</p>
                     </div>
                 </div>
 
@@ -1558,8 +1581,20 @@
         }
 
         // =========================================================================
-        // 3. SCHEDA DI ALLENAMENTO INTERATTIVA (WORKOUT LIVE MODE)
+        // 3. SCHEDA DI ALLENAMENTO INTERATTIVA (WORKOUT LIVE & ARCHIVIO MODE)
         // =========================================================================
+
+        let isWorkoutReadOnly = false;
+
+        function findSessionForPlan(planId) {
+            if (!planId) return null;
+            const matchByPlan = sessions.find(s => s.planId === planId);
+            if (matchByPlan) return matchByPlan;
+
+            if (planId === 'piano-2') return sessions.find(s => s.date === '2026-07-23');
+            if (planId === 'piano-3') return sessions.find(s => s.date === '2026-07-29');
+            return null;
+        }
 
         function populateWorkoutPlanSelector() {
             const selector = document.getElementById('workout-plan-ref');
@@ -1574,43 +1609,268 @@
                 return;
             }
 
+            // Ordina dal più recente in alto
             const sortedPlans = [...plans].sort((a, b) => (b.number || 0) - (a.number || 0));
             sortedPlans.forEach(p => {
                 const opt = document.createElement('option');
                 opt.value = p.id;
-                opt.textContent = `Scheda #${p.number || p.id}: ${(p.title || '').replace('Programma di Allenamento Analitico • ', '')}`;
+                const completedSession = findSessionForPlan(p.id);
+                if (completedSession) {
+                    opt.textContent = `📁 Scheda per Allenamento #${p.number || p.id} (Svolta il ${formatDate(completedSession.date)})`;
+                } else {
+                    opt.textContent = `🔥 Scheda per Allenamento #${p.number || p.id} (Attiva da Compilare)`;
+                }
                 selector.appendChild(opt);
             });
 
-            if (sortedPlans.length > 0) {
-                selector.value = sortedPlans[0].id;
-                currentWorkout.planId = sortedPlans[0].id;
-            }
+            // Seleziona la scheda attiva più recente di default (non ancora completata)
+            const activePlan = sortedPlans.find(p => !findSessionForPlan(p.id)) || sortedPlans[0];
+            selector.value = activePlan.id;
+            onWorkoutPlanChange(activePlan.id);
         }
 
         function onWorkoutPlanChange(planId) {
             currentWorkout.planId = planId;
-            showToast(`Scheda di riferimento impostata su #${planId}`, "info");
-        }
+            const targetPlan = plans.find(p => p.id === planId) || plans[0];
+            const pastSession = findSessionForPlan(planId);
 
-        function initWorkoutSheet() {
+            const badge = document.getElementById('workout-mode-badge');
+            const liveControls = document.getElementById('workout-live-controls');
+            const archiveNotice = document.getElementById('workout-archive-notice');
             const dateInput = document.getElementById('workout-date');
-            if (dateInput) {
-                dateInput.value = currentWorkout.date;
-                dateInput.onchange = (e) => currentWorkout.date = e.target.value;
-            }
-
             const durInput = document.getElementById('workout-duration');
-            if (durInput) {
-                durInput.value = currentWorkout.duration;
-                durInput.onchange = (e) => currentWorkout.duration = parseInt(e.target.value, 10) || 60;
+
+            if (pastSession) {
+                // ================= MODALITA ARCHIVIO READ-ONLY =================
+                isWorkoutReadOnly = true;
+                if (badge) {
+                    badge.className = "inline-flex items-center gap-2 bg-indigo-600/20 text-indigo-300 border border-indigo-500/30 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider mb-2";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-indigo-400"></span><span>📁 Archivio Sessione Svolta (${formatDate(pastSession.date)})</span>`;
+                }
+                if (liveControls) liveControls.classList.add('hidden');
+                if (archiveNotice) archiveNotice.classList.remove('hidden');
+                if (dateInput) {
+                    dateInput.value = pastSession.date;
+                    dateInput.disabled = true;
+                }
+                if (durInput) {
+                    durInput.value = pastSession.duration;
+                    durInput.disabled = true;
+                }
+
+                currentWorkout.date = pastSession.date;
+                currentWorkout.duration = pastSession.duration;
+
+                // Form shooting
+                if (pastSession.formShooting) {
+                    currentWorkout.formShooting = [{ made: pastSession.formShooting.made, att: pastSession.formShooting.att }];
+                } else {
+                    currentWorkout.formShooting = [{ made: 22, att: 30 }];
+                }
+
+                // 3PT
+                currentWorkout.tri = {};
+                ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
+                    const spot = pastSession.tri[k];
+                    if (spot && spot.series) {
+                        const shotsPerS = Math.round(spot.att / spot.series.length);
+                        currentWorkout.tri[k] = spot.series.map(v => ({ made: v, att: shotsPerS }));
+                    } else if (spot) {
+                        currentWorkout.tri[k] = [{ made: spot.made, att: spot.att }];
+                    } else {
+                        currentWorkout.tri[k] = [{ made: 0, att: 10 }];
+                    }
+                });
+
+                // PAT
+                currentWorkout.pat = {};
+                ['gomitoSX', 'gomitoDX'].forEach(k => {
+                    const spot = pastSession.pat[k];
+                    if (spot && spot.series) {
+                        const shotsPerS = Math.round(spot.att / spot.series.length);
+                        currentWorkout.pat[k] = spot.series.map(v => ({ made: v, att: shotsPerS }));
+                    } else if (spot) {
+                        currentWorkout.pat[k] = [{ made: spot.made, att: spot.att }];
+                    } else {
+                        currentWorkout.pat[k] = [{ made: 0, att: 15 }];
+                    }
+                });
+
+                // Liberi
+                if (pastSession.liberi && pastSession.liberi.blocks) {
+                    currentWorkout.liberi = pastSession.liberi.blocks.map((block, bIdx) => {
+                        let blockAtt = (block.length > 0) ? block.length * 3 : 15;
+                        if (pastSession.liberi.att === 30 && pastSession.liberi.blocks.length === 2) blockAtt = (bIdx === 0) ? 10 : 20;
+                        else if (pastSession.liberi.att === 40 && pastSession.liberi.blocks.length === 3) blockAtt = (bIdx === 0) ? 10 : 15;
+                        const shotsPerSub = block.length > 0 ? Math.max(1, Math.round(blockAtt / block.length)) : 2;
+                        const bTitle = (bIdx === 0) ? "Attivazione Lunetta" : `Protocollo Sotto Sforzo (Blocco ${bIdx})`;
+                        return {
+                            title: bTitle,
+                            series: block.map(v => ({ made: v, att: shotsPerSub }))
+                        };
+                    });
+                } else {
+                    currentWorkout.liberi = [
+                        { title: "Attivazione Lunetta", series: [{ made: pastSession.liberi?.made || 0, att: pastSession.liberi?.att || 10 }] }
+                    ];
+                }
+
+            } else {
+                // ================= MODALITA LIVE COMPILABILE (SCHEDA ATTIVA) =================
+                isWorkoutReadOnly = false;
+                if (badge) {
+                    badge.className = "inline-flex items-center gap-2 bg-orange-600/20 text-orange-400 border border-orange-500/30 px-3 py-1 rounded-full text-[11px] font-mono font-bold uppercase tracking-wider mb-2";
+                    badge.innerHTML = `<span class="w-2 h-2 rounded-full bg-orange-500 animate-ping"></span><span>🔥 Scheda #${targetPlan?.number || ''} Attiva (Pronta da Compilare)</span>`;
+                }
+                if (liveControls) liveControls.classList.remove('hidden');
+                if (archiveNotice) archiveNotice.classList.add('hidden');
+                if (dateInput) {
+                    dateInput.value = new Date().toISOString().split('T')[0];
+                    dateInput.disabled = false;
+                    currentWorkout.date = dateInput.value;
+                }
+                if (durInput) {
+                    durInput.value = 60;
+                    durInput.disabled = false;
+                    currentWorkout.duration = 60;
+                }
+
+                // Inizializza i canestri fatti a 0 e i tentativi estratti dal piano
+                initFreshWorkoutFromPlan(targetPlan);
             }
 
+            // Aggiorna titoli delle fasi e bottoni add
+            updatePhaseHeadersFromPlan(targetPlan);
+            updateAddButtonsVisibility();
+
+            // Renderizza le tabelle
             renderWorkoutFormShooting();
             renderWorkout3ptSpots();
             renderWorkoutPatSpots();
             renderWorkoutLiberi();
             updateWorkoutLiveKpis();
+        }
+
+        function initFreshWorkoutFromPlan(plan) {
+            // 1. Form shooting: 3 serie da 10 con made = 0
+            currentWorkout.formShooting = [
+                { made: 0, att: 10 },
+                { made: 0, att: 10 },
+                { made: 0, att: 10 }
+            ];
+
+            // 2. 3PT: default per spot con made = 0
+            currentWorkout.tri = {
+                angoloSX: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
+                guardiaSX: [{ made: 0, att: 10 }],
+                punta: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
+                guardiaDX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
+                angoloDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }]
+            };
+
+            // Se il piano ha tabella dettagliata, allinea le serie e i target di tiro
+            if (plan && plan.phases && plan.phases[1]?.details?.table) {
+                const table = plan.phases[1].details.table;
+                const spotMapping = {
+                    'Angolo Sinistro': 'angoloSX',
+                    'Guardia Sinistra': 'guardiaSX',
+                    'Punta': 'punta',
+                    'Guardia Destra': 'guardiaDX',
+                    'Angolo Destro': 'angoloDX'
+                };
+                table.forEach(row => {
+                    const k = spotMapping[row.spot];
+                    if (k) {
+                        const volMatch = row.volume.match(/(\d+)/);
+                        const vol = volMatch ? parseInt(volMatch[1], 10) : 10;
+                        if (vol <= 10) {
+                            currentWorkout.tri[k] = [{ made: 0, att: vol }];
+                        } else if (vol <= 15) {
+                            currentWorkout.tri[k] = [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }];
+                        } else {
+                            currentWorkout.tri[k] = [{ made: 0, att: 10 }, { made: 0, att: 10 }];
+                        }
+                    }
+                });
+            }
+
+            // 3. PAT: 2 serie da 15 per gomito
+            currentWorkout.pat = {
+                gomitoSX: [{ made: 0, att: 15 }, { made: 0, att: 15 }],
+                gomitoDX: [{ made: 0, att: 15 }, { made: 0, att: 15 }]
+            };
+
+            // 4. Liberi: Attivazione 10 tiri + 2 blocchi sotto sforzo da 5 serie da 3 tiri
+            currentWorkout.liberi = [
+                {
+                    title: "Attivazione Lunetta Breath-Control",
+                    series: [{ made: 0, att: 10 }]
+                },
+                {
+                    title: "Protocollo Heartbeat Pressure (Blocco 1)",
+                    series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
+                },
+                {
+                    title: "Protocollo Heartbeat Pressure (Blocco 2)",
+                    series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
+                }
+            ];
+        }
+
+        function updatePhaseHeadersFromPlan(plan) {
+            if (!plan || !plan.phases) return;
+
+            const p1 = plan.phases[0];
+            if (p1) {
+                const titleEl = document.getElementById('live-phase-1-title');
+                const subEl = document.getElementById('live-phase-1-subtitle');
+                if (titleEl) titleEl.textContent = p1.name;
+                if (subEl) subEl.textContent = `${p1.objective || ''} • ${p1.focus || ''}`;
+            }
+
+            const p2 = plan.phases[1];
+            if (p2) {
+                const titleEl = document.getElementById('live-phase-2-title');
+                const subEl = document.getElementById('live-phase-2-subtitle');
+                if (titleEl) titleEl.textContent = p2.name;
+                if (subEl) subEl.textContent = `${p2.objective || ''} • ${p2.focus || ''}`;
+            }
+
+            const p3 = plan.phases[2];
+            if (p3) {
+                const titleEl = document.getElementById('live-phase-3-title');
+                const subEl = document.getElementById('live-phase-3-subtitle');
+                if (titleEl) titleEl.textContent = p3.name;
+                if (subEl) subEl.textContent = `${p3.objective || ''} • ${p3.focus || ''}`;
+            }
+
+            const p4 = plan.phases[3];
+            if (p4) {
+                const titleEl = document.getElementById('live-phase-4-title');
+                const subEl = document.getElementById('live-phase-4-subtitle');
+                if (titleEl) titleEl.textContent = p4.name;
+                if (subEl) subEl.textContent = `${p4.objective || ''} • ${p4.focus || ''}`;
+            }
+        }
+
+        function updateAddButtonsVisibility() {
+            const addFormBtn = document.getElementById('workout-add-formshooting-btn-container');
+            const addFtBtn = document.getElementById('workout-add-ft-btn-container');
+            const spotAddBtns = document.querySelectorAll('.workout-add-spot-btn-wrapper');
+
+            if (isWorkoutReadOnly) {
+                if (addFormBtn) addFormBtn.classList.add('hidden');
+                if (addFtBtn) addFtBtn.classList.add('hidden');
+                spotAddBtns.forEach(el => el.classList.add('hidden'));
+            } else {
+                if (addFormBtn) addFormBtn.classList.remove('hidden');
+                if (addFtBtn) addFtBtn.classList.remove('hidden');
+                spotAddBtns.forEach(el => el.classList.remove('hidden'));
+            }
+        }
+
+        function initWorkoutSheet() {
+            populateWorkoutPlanSelector();
         }
 
         function renderWorkoutFormShooting() {
@@ -1622,32 +1882,45 @@
                 const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
                 const row = document.createElement('div');
                 row.className = "flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl";
-                row.innerHTML = `
-                    <div class="flex items-center gap-2">
-                        <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
-                        <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
-                    </div>
-                    <div class="flex items-center gap-2">
-                        <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Fatti</span>
-                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
-                            <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'made', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
-                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', 1)" class="w-6 h-6 rounded bg-blue-600 hover:bg-blue-700 font-black text-xs text-white flex items-center justify-center">+</button>
+                
+                if (isWorkoutReadOnly) {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                         </div>
-                        <span class="text-slate-400 font-bold">/</span>
-                        <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
-                            <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Tentati</span>
-                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
-                            <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'att', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
-                            <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-900 font-black text-xs text-white flex items-center justify-center">+</button>
+                        <div class="text-xs font-mono font-bold text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
+                            ${serie.made} / ${serie.att} canestri
                         </div>
-                        ${currentWorkout.formShooting.length > 1 ? `
-                            <button type="button" onclick="removeWorkoutSerie('formshooting', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                            </button>
-                        ` : ''}
-                    </div>
-                `;
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
+                                <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Fatti</span>
+                                <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                                <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'made', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', 1)" class="w-6 h-6 rounded bg-blue-600 hover:bg-blue-700 font-black text-xs text-white flex items-center justify-center">+</button>
+                            </div>
+                            <span class="text-slate-400 font-bold">/</span>
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
+                                <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Tentati</span>
+                                <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                                <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'att', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-900 font-black text-xs text-white flex items-center justify-center">+</button>
+                            </div>
+                            ${currentWorkout.formShooting.length > 1 ? `
+                                <button type="button" onclick="removeWorkoutSerie('formshooting', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                                </button>
+                            ` : ''}
+                        </div>
+                    `;
+                }
                 container.appendChild(row);
             });
         }
@@ -1664,30 +1937,43 @@
                     const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
                     const row = document.createElement('div');
                     row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-white border border-slate-200 rounded-lg";
-                    row.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
-                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
-                                <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
-                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
-                                <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
-                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold">+</button>
+                    
+                    if (isWorkoutReadOnly) {
+                        row.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
-                            <span class="text-slate-400 font-bold text-xs">/</span>
-                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
-                                <span class="text-[9px] font-bold text-slate-500">Tent:</span>
-                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
-                                <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
-                                <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                            <div class="text-xs font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
+                                ${serie.made} / ${serie.att}
                             </div>
-                            ${series.length > 1 ? `
-                                <button type="button" onclick="removeWorkoutSerie('tri', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
-                            ` : ''}
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        row.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                    <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
+                                    <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                    <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                    <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-indigo-600 hover:bg-indigo-700 text-white text-[10px] font-bold">+</button>
+                                </div>
+                                <span class="text-slate-400 font-bold text-xs">/</span>
+                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                    <span class="text-[9px] font-bold text-slate-500">Tent:</span>
+                                    <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                    <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('tri', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                    <button type="button" onclick="adjustWorkoutSerie('tri', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                                </div>
+                                ${series.length > 1 ? `
+                                    <button type="button" onclick="removeWorkoutSerie('tri', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
                     container.appendChild(row);
                 });
             });
@@ -1705,30 +1991,43 @@
                     const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
                     const row = document.createElement('div');
                     row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-white border border-slate-200 rounded-lg";
-                    row.innerHTML = `
-                        <div class="flex items-center gap-2">
-                            <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
-                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
-                                <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
-                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
-                                <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
-                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold">+</button>
+                    
+                    if (isWorkoutReadOnly) {
+                        row.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
-                            <span class="text-slate-400 font-bold text-xs">/</span>
-                            <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
-                                <span class="text-[9px] font-bold text-slate-500">Tent:</span>
-                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
-                                <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
-                                <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                            <div class="text-xs font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
+                                ${serie.made} / ${serie.att}
                             </div>
-                            ${series.length > 1 ? `
-                                <button type="button" onclick="removeWorkoutSerie('pat', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
-                            ` : ''}
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        row.innerHTML = `
+                            <div class="flex items-center gap-2">
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                            </div>
+                            <div class="flex items-center gap-1.5">
+                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                    <span class="text-[9px] font-bold text-slate-500">Fatti:</span>
+                                    <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                    <input type="number" min="0" max="50" value="${serie.made}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'made', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                    <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'made', 1)" class="w-5 h-5 rounded bg-amber-600 hover:bg-amber-700 text-white text-[10px] font-bold">+</button>
+                                </div>
+                                <span class="text-slate-400 font-bold text-xs">/</span>
+                                <div class="flex items-center gap-1 bg-slate-50 border border-slate-200 rounded px-1 py-0.5">
+                                    <span class="text-[9px] font-bold text-slate-500">Tent:</span>
+                                    <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', -1)" class="w-5 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                    <input type="number" min="1" max="50" value="${serie.att}" onchange="setWorkoutSerieVal('pat', '${spotKey}', ${idx}, 'att', this.value)" class="w-8 text-center text-xs font-mono font-bold bg-transparent">
+                                    <button type="button" onclick="adjustWorkoutSerie('pat', '${spotKey}', ${idx}, 'att', 1)" class="w-5 h-5 rounded bg-slate-700 hover:bg-slate-800 text-white text-[10px] font-bold">+</button>
+                                </div>
+                                ${series.length > 1 ? `
+                                    <button type="button" onclick="removeWorkoutSerie('pat', '${spotKey}', ${idx})" class="p-1 text-slate-300 hover:text-red-600 transition-colors">✕</button>
+                                ` : ''}
+                            </div>
+                        `;
+                    }
                     container.appendChild(row);
                 });
             });
@@ -1757,28 +2056,41 @@
 
                 block.series.forEach((serie, sIdx) => {
                     const sPct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
-                    html += `
-                        <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
-                            <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
-                            <div class="flex items-center gap-1">
-                                <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-[10px]">-</button>
-                                <input type="number" min="0" max="20" value="${serie.made}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'made', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-transparent">
-                                <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', 1)" class="w-5 h-5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px]">+</button>
-                                <span class="text-slate-300 font-bold">/</span>
-                                <input type="number" min="1" max="20" value="${serie.att}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'att', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded">
+                    if (isWorkoutReadOnly) {
+                        html += `
+                            <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
+                                <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
+                                <span class="text-xs font-mono font-bold text-slate-900">${serie.made}/${serie.att}</span>
+                                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${getPercentBadgeClass(sPct)}">${sPct}%</span>
                             </div>
-                        </div>
-                    `;
+                        `;
+                    } else {
+                        html += `
+                            <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
+                                <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
+                                <div class="flex items-center gap-1">
+                                    <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-[10px]">-</button>
+                                    <input type="number" min="0" max="20" value="${serie.made}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'made', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-transparent">
+                                    <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', 1)" class="w-5 h-5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px]">+</button>
+                                    <span class="text-slate-300 font-bold">/</span>
+                                    <input type="number" min="1" max="20" value="${serie.att}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'att', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded">
+                                </div>
+                            </div>
+                        `;
+                    }
                 });
 
-                html += `
-                    </div>
-                    <div class="flex justify-end pt-1">
-                        <button type="button" onclick="addWorkoutFtSubSerie(${bIdx})" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 py-0.5 px-2 rounded hover:bg-emerald-100/50">
-                            + Aggiungi Ripetizione al Blocco
-                        </button>
-                    </div>
-                `;
+                html += `</div>`;
+
+                if (!isWorkoutReadOnly) {
+                    html += `
+                        <div class="flex justify-end pt-1">
+                            <button type="button" onclick="addWorkoutFtSubSerie(${bIdx})" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 py-0.5 px-2 rounded hover:bg-emerald-100/50">
+                                + Aggiungi Ripetizione al Blocco
+                            </button>
+                        </div>
+                    `;
+                }
 
                 blockEl.innerHTML = html;
                 container.appendChild(blockEl);
@@ -1853,6 +2165,7 @@
 
         // Metodi di Modifica Serie
         function adjustWorkoutSerie(cat, spot, idx, field, delta) {
+            if (isWorkoutReadOnly) return;
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
             else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
@@ -1871,6 +2184,7 @@
         }
 
         function setWorkoutSerieVal(cat, spot, idx, field, val) {
+            if (isWorkoutReadOnly) return;
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
             else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
@@ -1890,14 +2204,16 @@
         }
 
         function addWorkoutSerie(cat, spot) {
+            if (isWorkoutReadOnly) return;
             if (cat === 'formshooting') {
-                currentWorkout.formShooting.push({ made: 8, att: 10 });
+                currentWorkout.formShooting.push({ made: 0, att: 10 });
                 renderWorkoutFormShooting();
             }
             updateWorkoutLiveKpis();
         }
 
         function removeWorkoutSerie(cat, spot, idx) {
+            if (isWorkoutReadOnly) return;
             if (cat === 'formshooting' && currentWorkout.formShooting.length > 1) {
                 currentWorkout.formShooting.splice(idx, 1);
                 renderWorkoutFormShooting();
@@ -1912,20 +2228,23 @@
         }
 
         function addWorkoutSpotSerie(spotKey) {
+            if (isWorkoutReadOnly) return;
             if (!currentWorkout.tri[spotKey]) currentWorkout.tri[spotKey] = [];
-            currentWorkout.tri[spotKey].push({ made: 5, att: 10 });
+            currentWorkout.tri[spotKey].push({ made: 0, att: 5 });
             renderWorkout3ptSpots();
             updateWorkoutLiveKpis();
         }
 
         function addWorkoutPatSerie(spotKey) {
+            if (isWorkoutReadOnly) return;
             if (!currentWorkout.pat[spotKey]) currentWorkout.pat[spotKey] = [];
-            currentWorkout.pat[spotKey].push({ made: 3, att: 5 });
+            currentWorkout.pat[spotKey].push({ made: 0, att: 5 });
             renderWorkoutPatSpots();
             updateWorkoutLiveKpis();
         }
 
         function adjustWorkoutFtSerie(bIdx, sIdx, field, delta) {
+            if (isWorkoutReadOnly) return;
             const s = currentWorkout.liberi[bIdx].series[sIdx];
             if (!s) return;
             s[field] = Math.max(0, s[field] + delta);
@@ -1935,6 +2254,7 @@
         }
 
         function setWorkoutFtSerieVal(bIdx, sIdx, field, val) {
+            if (isWorkoutReadOnly) return;
             const s = currentWorkout.liberi[bIdx].series[sIdx];
             if (!s) return;
             const parsed = parseInt(val, 10);
@@ -1945,18 +2265,20 @@
         }
 
         function addWorkoutFtSubSerie(bIdx) {
+            if (isWorkoutReadOnly) return;
             const block = currentWorkout.liberi[bIdx];
             if (block) {
-                block.series.push({ made: 2, att: 2 });
+                block.series.push({ made: 0, att: 3 });
                 renderWorkoutLiberi();
                 updateWorkoutLiveKpis();
             }
         }
 
         function addWorkoutFtBlock() {
+            if (isWorkoutReadOnly) return;
             currentWorkout.liberi.push({
                 title: `Protocollo Sotto Sforzo (Blocco ${currentWorkout.liberi.length})`,
-                series: [{ made: 2, att: 2 }, { made: 2, att: 2 }, { made: 2, att: 2 }]
+                series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
             });
             renderWorkoutLiberi();
             updateWorkoutLiveKpis();
@@ -2015,6 +2337,7 @@
                 id: sessionId,
                 date: dateVal,
                 duration: durVal,
+                planId: currentWorkout.planId || 'piano-4',
                 formShooting: { made: formMade, att: formAtt },
                 tri: triData,
                 pat: patData,
@@ -2074,19 +2397,21 @@
                     noteAtleta: playerNotes
                 }, null, 2);
 
-                const nextPlanNumber = plans.length + 1;
+                const nextSessionNumber = sessions.length + 1;
+                const maxPlanNum = plans.reduce((max, p) => Math.max(max, p.number || 0), 0);
+                const nextPlanNumber = Math.max(maxPlanNum + 1, nextSessionNumber + 1);
 
                 const systemInstruction = `
 Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
 Il tuo compito è:
-1) Analizzare accuratamente la sessione di tiro odierna incrociandola con lo storico.
+1) Analizzare accuratamente la sessione di tiro odierna (Sessione #${nextSessionNumber} del ${sessionData.date}) incrociandola con lo storico.
 2) Generare un'analisi balistica tecnica ("insight") con osservazioni su meccanica, affaticamento, parabola e perno nei gomiti.
-3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber}, adattata sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo varianti sugli spot dove ha tirato peggio, e mantenendo ritmo dove è stato costante).
+3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber} e titolo "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}", adattata sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo drill specifici sugli spot dove ha tirato peggio, e consolidando i punti di forza).
 
-Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggiuntivo) che rispetti questo schema:
+Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiuntivo) che rispetti questo schema:
 {
   "insight": {
-    "title": "Titolo Analisi Puntuale (es. Analisi Puntuale Sessione #X)",
+    "title": "Analisi Puntuale Sessione #${nextSessionNumber} (${sessionData.date})",
     "summary": "Sintesi tecnica generale di 2-3 frasi sulle prestazioni odierne.",
     "sections": [
       { "heading": "Tiro da 3 Punti (XX% Totale - X/X)", "content": "Analisi dettagliata per spot e serie..." },
@@ -2097,7 +2422,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggi
   "nextPlan": {
     "id": "piano-${nextPlanNumber}",
     "number": ${nextPlanNumber},
-    "title": "Programma di Allenamento Analitico • Scheda #${nextPlanNumber}",
+    "title": "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}",
     "description": "Descrizione tecnica dell'obiettivo della scheda adattata.",
     "phases": [
       {
@@ -2114,7 +2439,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggi
       },
       {
         "id": "fase-2",
-        "name": "Fase 2: Compensazione (Tiro da 3)",
+        "name": "Fase 2: Compensazione Dinamica (Tiro da 3)",
         "time": "10 - 30 min",
         "objective": "Obiettivo...",
         "focus": "Focus...",
@@ -2148,7 +2473,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggi
       },
       {
         "id": "fase-4",
-        "name": "Fase 4: Fatica (Tiri Liberi)",
+        "name": "Fase 4: Resilienza & Fatica (Tiri Liberi)",
         "time": "45 - 55 min",
         "objective": "Obiettivo...",
         "focus": "Focus...",
@@ -2162,13 +2487,14 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o codice aggi
       },
       {
         "id": "fase-5",
-        "name": "Fase 5: Defaticamento & Visualizzazione",
+        "name": "Fase 5: Defaticamento & Anchoring Mentale",
         "time": "55 - 60 min",
-        "objective": "Obiettivo...",
-        "focus": "Focus...",
+        "objective": "Decompressione e pattern motori",
+        "focus": "Visualizzazione e stretching",
         "badgeColor": "slate",
         "details": {
-          "description": "Allungamento e visualizzazione retina..."
+          "description": "Allungamento e visualizzazione retina...",
+          "note": "Visualizzazione della Parabola..."
         }
       }
     ]

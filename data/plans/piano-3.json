@@ -1,93 +1,118 @@
 {
   "id": "piano-3",
   "number": 3,
-  "title": "Programma di Allenamento Analitico • Scheda #3 (Player Development Edition)",
-  "description": "Scheda ad alto valore evolutivo: recupero balistico dinamico dagli Angoli (High-Arc Corner Lift & Drift), varianti di footwork avanzato nel P.A.T. (Float Dribble & Step-Back Counter) e protocollo Heartbeat Control ai liberi.",
+  "title": "Programma di Allenamento Analitico • Scheda per Allenamento #3",
+  "description": "Strutturato per massimizzare ogni minuto sul campo, focalizzandosi sulle zone a percentuale minore rilevate negli ultimi allenamenti.",
   "phases": [
     {
       "id": "fase-1",
-      "name": "Fase 1: Attivazione & High-Arc Pocket Control",
+      "name": "Fase 1: Attivazione & Sensibilità",
       "time": "0 - 10 min",
-      "objective": "Riscaldamento, caricamento polpastrello ed elevazione della parabola ad alta traiettoria",
-      "focus": "Form Shooting High-Arc Routine e sincronizzazione respiratoria diaframmatica",
+      "objective": "Riscaldamento e sensibilizzazione del polpastrello",
+      "focus": "Allineamento gomito-spalla-piede",
       "badgeColor": "blue",
       "details": {
-        "description": "Esercitazione di sensibilizzazione per sbloccare la rigidezza delle braccia e garantire un arco ad alta traiettoria dagli angoli stretti.",
+        "description": "L'allenamento inizia a brevissima distanza dal canestro, entro l'area dei tre secondi. Esegui tiri ad una sola mano (senza l'ausilio della mano di guida), concentrandoti esclusivamente sul rilascio finale delle dita e sulla rotazione impressa alla palla.",
         "bullets": [
-          "<strong>High-Arc Form Shooting (0-5 min):</strong> 3 serie da 10 tiri ad una sola mano (centro, angolo SX, angolo DX). Rilascio sopra la linea delle sopracciglia con finale spezza-polso morbido ad alta parabola d'aria.",
-          "<strong>Attivazione Lunetta Breath-Control (5-10 min):</strong> 10 tiri liberi sequenziali applicando 2 espirazioni profonde prima del piegamento delle ginocchia."
+          "<strong>Form Shooting:</strong> Esegui l'operazione da 3 posizioni ravvicinate, compiendo un passo indietro solo dopo aver realizzato 3 canestri consecutivi puliti (senza toccare il ferro).",
+          "<strong>Attivazione Liberi (Min 5-10):</strong> Allo scadere del 5° minuto, spostati sulla linea dei tiri liberi per <strong>10 tiri totali</strong>. Cura la precisione millimetrica della routine: rimbalzo palla, respiro profondo, caricamento e rilascio fluido."
         ]
       }
     },
     {
       "id": "fase-2",
-      "name": "Fase 2: Compensazione Dinamica (Tiro da 3)",
+      "name": "Fase 2: Compensazione (Tiro da 3)",
       "time": "10 - 30 min",
-      "objective": "Risoluzione delle debolezze negli Angoli (SX 10% e DX 30% in S3) con drill dinamici di Catch&Shoot e Drift",
-      "focus": "Variabilità degli stimoli motori, rilascio in movimento e bilanciamento della spinta",
+      "objective": "Focus su Punta (25%) e Guardia DX (20%)",
+      "focus": "Rotazione del busto, spinta delle gambe e follow-through solido",
       "badgeColor": "indigo",
       "details": {
-        "description": "Rotazione balistica da 80 tiri dall'arco strutturata con esercitazioni dinamiche evolutive per stimolare il giocatore su situazioni di gara reali.",
+        "description": "Fase centrale dedicata alla correzione del lato freddo emerso nelle analisi (lato destro e punta). Il volume di tiro viene distribuito in modo asimmetrico per forzare il sistema neuromuscolare ad adattarsi alle zone meno confortevoli.",
         "table": [
-          { "spot": "Angolo Sinistro", "volume": "20 tiri", "focus": "10 Catch&Shoot fisso High-Arc + 10 Step-In dagli 0° (ricezione in scivolamento e tiro rapido)", "highlight": true },
-          { "spot": "Guardia Sinistra", "volume": "10 tiri", "focus": "Rhythm Transition 3s (mantenimento del picco 60% S3)", "highlight": false },
-          { "spot": "Punta", "volume": "15 tiri", "focus": "Pound Dribble Balance 3 (1 palleggio forte di caricamento dal centro)", "highlight": false },
-          { "spot": "Guardia Destra", "volume": "15 tiri", "focus": "Wing Side-Step & Sway (1 palleggio laterale a destra per bilanciare l'asse spalla-bacino)", "highlight": true },
-          { "spot": "Angolo Destro", "volume": "20 tiri", "focus": "10 Catch&Shoot fisso + 10 Corner Drift (ricezione in movimento angolare verso il fondo)", "highlight": true }
+          {
+            "spot": "Angolo Sinistro",
+            "volume": "5 tiri",
+            "focus": "Mantenimento del ritmo e della fluidità naturale",
+            "highlight": false
+          },
+          {
+            "spot": "Guardia Sinistra",
+            "volume": "5 tiri",
+            "focus": "Mantenimento della stabilità dell'appoggio",
+            "highlight": false
+          },
+          {
+            "spot": "Punta",
+            "volume": "10 tiri",
+            "focus": "Allineamento del gomito ed estensione completa dell'arto",
+            "highlight": true
+          },
+          {
+            "spot": "Guardia Destra",
+            "volume": "10 tiri",
+            "focus": "Orientamento della punta del piede destro verso il centro del ferro",
+            "highlight": true
+          },
+          {
+            "spot": "Angolo Destro",
+            "volume": "10 tiri",
+            "focus": "Spinta simmetrica delle gambe per evitare derive laterali",
+            "highlight": true
+          }
         ],
-        "rule": "<strong>💡 Regola Operativa:</strong> Esegui la rotazione da <strong>80 tiri totali</strong>. Negli angoli, alterna 5 tiri da fermo a 5 tiri in movimento dinamico (Step-In / Drift) per abituare il corpo alla stabilità dei piedi sotto pressione."
+        "rule": "<strong>💡 Regola Operativa:</strong> Esegui questa rotazione per <strong>2 giri completi (80 tiri totali dall'arco)</strong>. Durante i tiri dal lato destro (guardia e angolo), rallenta la preparazione di 1 secondo: verifica visivamente che il piede destro sia leggermente più avanti del sinistro e puntato direttamente a canestro."
       }
     },
     {
       "id": "fase-3",
-      "name": "Fase 3: Footwork Pro & Unlocks (P.A.T.)",
+      "name": "Fase 3: Footwork (P.A.T.)",
       "time": "30 - 45 min",
-      "objective": "Affinamento del P.A.T. con varianti di palleggio dal vivo (Float Dribble & Step-Back Counter) sui gomiti",
-      "focus": "Arresto a due tempi: da Guardia SX perno su piede interno DESTRO; da Guardia DX perno su piede interno SINISTRO",
+      "objective": "Equilibrio nell'arresto sui gomiti (Gomito DX 33%)",
+      "focus": "Arresto a due tempi: da Guardia SX a Gomito SX perno con piede interno DESTRO; da Guardia DX perno con piede interno SINISTRO",
       "badgeColor": "amber",
       "details": {
-        "description": "Evoluzione del lavoro sui gomiti (46.7% in S3) introducendo stimoli di palleggio reale per sviluppare il giocatore nel gioco a metà campo (Totale 60 tiri).",
+        "description": "Lavoro sulla dinamica del Palleggio Arresto e Tiro nei gomiti della lunetta. Partenza in palleggio forte dalla posizione di guardia simulando il superamento di un difensore, seguita da un arresto deciso e tiro immediato.",
         "split": [
           {
-            "title": "1ª Metà: Guardia SX → Gomito SX (30 Tiri: 2 serie da 15)",
-            "text": "<strong>15 tiri Heavy Dribble:</strong> arresto a 2 tempi (piede esterno SX per frenare, interno DX per decollare).<br><strong>15 tiri Float Dribble Cross-Over:</strong> esitazione in palleggio, cambio di mano rapido ed arresto perno interno DX al gomito."
+            "title": "1ª Metà: Guardia SX → Gomito SX (15 Tiri: 3 serie x 5 ripetizioni)",
+            "text": "Palleggiando verso destra (centro campo), usa l'arresto a 2 tempi: pianta prima il <strong>piede sinistro (esterno)</strong> per frenare l'inerzia laterale, seguito dal <strong>piede destro (interno)</strong> orientato verso il canestro per l'elevazione."
           },
           {
-            "title": "2ª Metà: Guardia DX → Gomito DX (30 Tiri: 2 serie da 15)",
-            "text": "<strong>15 tiri Heavy Dribble:</strong> arresto a 2 tempi (piede esterno DX per assorbire, interno SX per decollare).<br><strong>15 tiri Step-Back Counter:</strong> palleggio aggressivo in penetrazione, stacco secco sul piede esterno DX e tiro verticale dal perno interno SX."
+            "title": "2ª Metà: Guardia DX → Gomito DX (15 Tiri: 3 serie x 5 ripetizioni)",
+            "text": "Palleggiando verso sinistra (centro campo), pianta prima il <strong>piede destro (esterno)</strong> per assorbire l'energia cinetica, seguito dal <strong>piede sinistro (interno)</strong> per chiudere l'arresto e dare la spinta verticale."
           }
         ]
       }
     },
     {
       "id": "fase-4",
-      "name": "Fase 4: Heartbeat Control & Fatica (Tiri Liberi)",
+      "name": "Fase 4: Fatica (Tiri Liberi)",
       "time": "45 - 55 min",
-      "objective": "Gestione del battito cardiaco sotto sforzo e superamento della flessione nella seconda metà del blocco",
-      "focus": "Routine di respirazione diaframmatica sotto forte carico cardiovascolare",
+      "objective": "Mantenimento quota 75%+ a stanchezza accumulata",
+      "focus": "Routine di respirazione uniforme prima del rilascio",
       "badgeColor": "emerald",
       "details": {
-        "description": "Protocollo ad alta intensità per azzerare il calo registrato nella Sessione #3 (passato dall'80% nel Blocco 1 al 66.7% nel Blocco 2).",
-        "protocolTitle": "Protocollo Heartbeat Pressure (30 tiri liberi totali):",
+        "description": "Simulazione delle condizioni di fine partita unendo stress fisico a quello psicologico. Non si tirano blocchi statici: il protocollo unisce transizioni ad alta intensità a momenti di apnea.",
+        "protocolTitle": "Protocollo Sotto Sforzo (10 cicli = 20 tiri liberi totali):",
         "steps": [
-          "Esegui <strong>2 scivolamenti difensivi laterali</strong> bordo area + <strong>1 scatto a tutto campo</strong> a massima velocità.",
-          "Vai in lunetta ed imponiti <strong>10 secondi di recupero respiratorio in posizione eretta</strong> prima di iniziare la serie.",
-          "Esegui <strong>3 tiri liberi</strong> ad altissima concentrazione.",
-          "Ripeti per un totale di <strong>10 serie</strong> (30 tiri liberi complessivi in 2 blocchi da 5)."
+          "Esegui uno <strong>scatto a tutto campo</strong> (andata e ritorno).",
+          "Posizionati immediatamente sulla lunetta e tira esattamente <strong>2 tiri liberi</strong>.",
+          "Effettua un recupero attivo camminando fino a metà campo e ritorno.",
+          "Ripeti per un totale di <strong>10 passaggi</strong> (20 liberi totali)."
         ],
-        "note": "<em>Obiettivo Tecnico: Domare il battito cardiaco elevato prima del rilascio per garantire ripetibilità meccanica anche a gambe stanche.</em>"
+        "note": "<em>Obiettivo Tecnico: Forzare il corpo a stabilizzare il battito cardiaco attraverso espirazioni profonde e controllate prima del rilascio.</em>"
       }
     },
     {
       "id": "fase-5",
-      "name": "Fase 5: Defaticamento & Anchoring Mentale",
+      "name": "Fase 5: Defaticamento & Visualizzazione",
       "time": "55 - 60 min",
-      "objective": "Decompressione muscolare e fissaggio neurale delle soluzioni di gioco apprese",
-      "focus": "Stretching catena posteriore e visualizzazione attiva delle nuove soluzioni da 3 e dal palleggio",
+      "objective": "Consolidamento mentale ed elasticità muscolare",
+      "focus": "Visualizzazione della parabola e rilassamento muscolare",
       "badgeColor": "slate",
       "details": {
-        "description": "5 minuti di defaticamento per ripercorrere mentalmente i rilasci riusciti durante la sessione.",
-        "note": "<strong>Visualizzazione della Parabola:</strong> Allungamento spalle e catena posteriore. Ripassa mentalmente le parabole ad alto arco dagli angoli e gli arresti a 2 tempi sui gomiti per fissare il pattern motorio evolutivo."
+        "description": "5 minuti di defaticamento attivo direttamente sul campo. Mentre esegui esercizi di allungamento statico per la catena posteriore, polpacci e spalle, <strong>mantieni lo sguardo fisso sulla retina del canestro</strong>.",
+        "note": "<strong>Visualizzazione della Parabola:</strong> Ripercorri mentalmente i canestri realizzati durante la sessione, focalizzandoti sulla sensazione fisica del rilascio perfetto del polpastrello e sulla parabola ideale della palla per fissare i pattern motori corretti."
       }
     }
   ]
