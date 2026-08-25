@@ -2,7 +2,36 @@
   "id": "piano-3",
   "number": 3,
   "title": "Programma di Allenamento Analitico • Scheda per Allenamento #3",
-  "description": "Strutturato per massimizzare ogni minuto sul campo, focalizzandosi sulle zone a percentuale minore rilevate negli ultimi allenamenti.",
+  "description": "Strutturato per consolidare le percentuali dall'arco e testare la tenuta in apnea sui tiri liberi.",
+  "drills": {
+    "formShooting": [
+      { "spot": "Ravvicinato Pos. 1", "att": 10 },
+      { "spot": "Ravvicinato Pos. 2", "att": 10 },
+      { "spot": "Ravvicinato Pos. 3", "att": 10 }
+    ],
+    "attivazioneLiberi": [
+      { "spot": "Lunetta Attivazione", "att": 10 }
+    ],
+    "tri": {
+      "angoloSX": [{ "att": 5 }, { "att": 5 }],
+      "guardiaSX": [{ "att": 10 }, { "att": 10 }],
+      "punta": [{ "att": 10 }, { "att": 10 }],
+      "guardiaDX": [{ "att": 10 }, { "att": 10 }],
+      "angoloDX": [{ "att": 5 }, { "att": 5 }]
+    },
+    "pat": {
+      "gomitoSX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }],
+      "gomitoDX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }]
+    },
+    "faticaLiberi": {
+      "cycles": 10,
+      "shotsPerCycle": 3,
+      "series": [
+        { "att": 3 }, { "att": 3 }, { "att": 3 }, { "att": 3 }, { "att": 3 },
+        { "att": 3 }, { "att": 3 }, { "att": 3 }, { "att": 3 }, { "att": 3 }
+      ]
+    }
+  },
   "phases": [
     {
       "id": "fase-1",

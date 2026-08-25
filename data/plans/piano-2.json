@@ -3,6 +3,35 @@
   "number": 2,
   "title": "Programma di Allenamento Analitico • Scheda per Allenamento #2",
   "description": "Strutturato per massimizzare ogni minuto sul campo, focalizzandosi sulle zone a percentuale minore rilevate negli ultimi allenamenti.",
+  "drills": {
+    "formShooting": [
+      { "spot": "Ravvicinato 1", "att": 10 },
+      { "spot": "Ravvicinato 2", "att": 10 },
+      { "spot": "Ravvicinato 3", "att": 10 }
+    ],
+    "attivazioneLiberi": [
+      { "spot": "Lunetta Attivazione", "att": 10 }
+    ],
+    "tri": {
+      "angoloSX": [{ "att": 5 }, { "att": 5 }],
+      "guardiaSX": [{ "att": 5 }, { "att": 5 }],
+      "punta": [{ "att": 10 }, { "att": 10 }],
+      "guardiaDX": [{ "att": 10 }, { "att": 10 }],
+      "angoloDX": [{ "att": 10 }, { "att": 10 }]
+    },
+    "pat": {
+      "gomitoSX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }],
+      "gomitoDX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }]
+    },
+    "faticaLiberi": {
+      "cycles": 10,
+      "shotsPerCycle": 2,
+      "series": [
+        { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 },
+        { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }
+      ]
+    }
+  },
   "phases": [
     {
       "id": "fase-1",

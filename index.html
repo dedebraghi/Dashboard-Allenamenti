@@ -714,7 +714,7 @@
                             <span class="w-7 h-7 rounded-lg bg-blue-50 text-blue-600 font-extrabold flex items-center justify-center text-xs">1</span>
                             <div>
                                 <h3 id="live-phase-1-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 1: Form Shooting & Attivazione</h3>
-                                <p id="live-phase-1-subtitle" class="text-[11px] text-slate-500 font-medium">Riscaldamento a 1 mano, parabole ravvicinate e prime serie</p>
+                                <p id="live-phase-1-subtitle" class="text-[11px] text-slate-500 font-medium">Riscaldamento a 1 mano e 10 tiri liberi di attivazione routine</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -722,15 +722,42 @@
                         </div>
                     </div>
 
-                    <div id="workout-formshooting-series-container" class="space-y-2.5">
-                        <!-- Serie generate dinamicamente -->
+                    <!-- 1.1 Form Shooting Ravvicinato -->
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-blue-500"></span>
+                                1.1 Form Shooting (Ravvicinato)
+                            </span>
+                            <span id="live-sub-formshooting-summary" class="text-[11px] font-mono font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">0/0 (0%)</span>
+                        </div>
+                        <div id="workout-formshooting-series-container" class="space-y-2">
+                            <!-- Serie generate dinamicamente -->
+                        </div>
+                        <div id="workout-add-formshooting-btn-container" class="flex items-center justify-start pt-1">
+                            <button type="button" onclick="addWorkoutSerie('formshooting')" class="text-[11px] font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-blue-50 transition-colors">
+                                + Aggiungi Serie Form Shooting
+                            </button>
+                        </div>
                     </div>
 
-                    <div id="workout-add-formshooting-btn-container" class="flex items-center justify-between pt-2">
-                        <button type="button" onclick="addWorkoutSerie('formshooting')" class="text-xs font-bold text-blue-600 hover:text-blue-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-blue-50 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <span>Aggiungi Serie Form Shooting</span>
-                        </button>
+                    <!-- 1.2 Attivazione Tiri Liberi Routine (Min 5-10) -->
+                    <div class="pt-3 border-t border-slate-100 space-y-2">
+                        <div class="flex items-center justify-between">
+                            <span class="text-xs font-bold text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
+                                <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                1.2 Attivazione Lunetta Routine (10 Tiri)
+                            </span>
+                            <span id="live-card-attivazione-ft-summary" class="text-[11px] font-mono font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded">0/0 (0%)</span>
+                        </div>
+                        <div id="workout-attivazione-liberi-container" class="space-y-2">
+                            <!-- Serie attivazione liberi generata dinamicamente -->
+                        </div>
+                        <div id="workout-add-attivazione-liberi-btn-container" class="flex items-center justify-start pt-1">
+                            <button type="button" onclick="addWorkoutSerie('attivazioneLiberi')" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-emerald-50 transition-colors">
+                                + Aggiungi Serie Attivazione Liberi
+                            </button>
+                        </div>
                     </div>
                 </div>
 
@@ -890,8 +917,8 @@
                         <div class="flex items-center gap-3">
                             <span class="w-7 h-7 rounded-lg bg-emerald-50 text-emerald-600 font-extrabold flex items-center justify-center text-xs">4</span>
                             <div>
-                                <h3 id="live-phase-4-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 4: Tiri Liberi & Sotto Sforzo</h3>
-                                <p id="live-phase-4-subtitle" class="text-[11px] text-slate-500 font-medium">Blocchi e cicli ad alta intensità a fine sessione</p>
+                                <h3 id="live-phase-4-title" class="text-base font-athletic font-extrabold text-slate-900 uppercase tracking-wide">Fase 4: Fatica & Resilienza (Tiri Liberi)</h3>
+                                <p id="live-phase-4-subtitle" class="text-[11px] text-slate-500 font-medium">Protocollo sotto sforzo ad alta intensità a fine sessione (es. 10 cicli x 2 tiri)</p>
                             </div>
                         </div>
                         <div class="flex items-center gap-2">
@@ -899,14 +926,13 @@
                         </div>
                     </div>
 
-                    <div id="workout-ft-blocks-container" class="space-y-3">
-                        <!-- Blocchi liberi generati dinamicamente -->
+                    <div id="workout-fatica-liberi-container" class="space-y-2">
+                        <!-- Cicli/Serie generati dinamicamente -->
                     </div>
 
-                    <div id="workout-add-ft-btn-container" class="flex items-center justify-between pt-1">
-                        <button type="button" onclick="addWorkoutFtBlock()" class="text-xs font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1.5 py-1 px-2.5 rounded-lg hover:bg-emerald-50 transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            <span>Aggiungi Blocco / Serie Liberi</span>
+                    <div id="workout-add-ft-btn-container" class="flex items-center justify-start pt-1">
+                        <button type="button" onclick="addWorkoutSerie('faticaLiberi')" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 flex items-center gap-1 py-0.5 px-2 rounded hover:bg-emerald-50 transition-colors">
+                            + Aggiungi Ciclo / Serie Sotto Sforzo
                         </button>
                     </div>
                 </div>
@@ -1122,26 +1148,27 @@
             duration: 60,
             planId: '',
             formShooting: [
-                { made: 10, att: 10 },
-                { made: 8, att: 10 },
-                { made: 9, att: 10 }
+                { made: 0, att: 10 },
+                { made: 0, att: 10 },
+                { made: 0, att: 10 }
             ],
-            formShootingLiberi: { made: 8, att: 10 },
+            attivazioneLiberi: [
+                { made: 0, att: 10 }
+            ],
             tri: {
-                angoloSX: [{ made: 4, att: 5 }, { made: 4, att: 5 }],
-                guardiaSX: [{ made: 3, att: 5 }, { made: 4, att: 5 }],
-                punta: [{ made: 6, att: 10 }, { made: 5, att: 10 }],
-                guardiaDX: [{ made: 5, att: 10 }, { made: 6, att: 10 }],
-                angoloDX: [{ made: 4, att: 10 }, { made: 5, att: 10 }]
+                angoloSX: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
+                guardiaSX: [{ made: 0, att: 5 }, { made: 0, att: 5 }],
+                punta: [{ made: 0, att: 5 }, { made: 0, att: 5 }],
+                guardiaDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
+                angoloDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }]
             },
             pat: {
-                gomitoSX: [{ made: 3, att: 5 }, { made: 2, att: 5 }, { made: 3, att: 5 }, { made: 2, att: 5 }, { made: 3, att: 5 }, { made: 3, att: 5 }],
-                gomitoDX: [{ made: 3, att: 5 }, { made: 3, att: 5 }, { made: 4, att: 5 }, { made: 2, att: 5 }, { made: 4, att: 5 }, { made: 3, att: 5 }]
+                gomitoSX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
+                gomitoDX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }]
             },
-            liberi: [
-                { title: "Attivazione Liberi", series: [{ made: 7, att: 10 }] },
-                { title: "Protocollo Sotto Sforzo (Blocco 1)", series: [{ made: 3, att: 3 }, { made: 3, att: 3 }, { made: 3, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }] },
-                { title: "Protocollo Sotto Sforzo (Blocco 2)", series: [{ made: 3, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }, { made: 2, att: 3 }] }
+            faticaLiberi: [
+                { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 },
+                { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }
             ]
         };
 
@@ -1614,16 +1641,21 @@
                     dateInput.disabled = true;
                 }
                 if (durInput) {
-                    durInput.value = pastSession.duration;
+                    durInput.value = pastSession.duration || 60;
                     durInput.disabled = true;
                 }
 
                 currentWorkout.date = pastSession.date;
-                currentWorkout.duration = pastSession.duration;
+                currentWorkout.duration = pastSession.duration || 60;
 
                 // Form shooting
                 if (pastSession.formShooting) {
-                    currentWorkout.formShooting = [{ made: pastSession.formShooting.made, att: pastSession.formShooting.att }];
+                    if (pastSession.formShooting.series && Array.isArray(pastSession.formShooting.series)) {
+                        const shotsPerS = Math.round(pastSession.formShooting.att / pastSession.formShooting.series.length);
+                        currentWorkout.formShooting = pastSession.formShooting.series.map(v => ({ made: v, att: shotsPerS }));
+                    } else {
+                        currentWorkout.formShooting = [{ made: pastSession.formShooting.made, att: pastSession.formShooting.att }];
+                    }
                 } else {
                     currentWorkout.formShooting = [{ made: 22, att: 30 }];
                 }
@@ -1656,23 +1688,21 @@
                     }
                 });
 
-                // Liberi
-                if (pastSession.liberi && pastSession.liberi.blocks) {
-                    currentWorkout.liberi = pastSession.liberi.blocks.map((block, bIdx) => {
-                        let blockAtt = (block.length > 0) ? block.length * 3 : 15;
-                        if (pastSession.liberi.att === 30 && pastSession.liberi.blocks.length === 2) blockAtt = (bIdx === 0) ? 10 : 20;
-                        else if (pastSession.liberi.att === 40 && pastSession.liberi.blocks.length === 3) blockAtt = (bIdx === 0) ? 10 : 15;
-                        const shotsPerSub = block.length > 0 ? Math.max(1, Math.round(blockAtt / block.length)) : 2;
-                        const bTitle = (bIdx === 0) ? "Attivazione Lunetta" : `Protocollo Sotto Sforzo (Blocco ${bIdx})`;
-                        return {
-                            title: bTitle,
-                            series: block.map(v => ({ made: v, att: shotsPerSub }))
-                        };
-                    });
-                } else {
-                    currentWorkout.liberi = [
-                        { title: "Attivazione Lunetta", series: [{ made: pastSession.liberi?.made || 0, att: pastSession.liberi?.att || 10 }] }
-                    ];
+                // Attivazione Liberi & Fatica Liberi
+                if (pastSession.liberi && pastSession.liberi.blocks && pastSession.liberi.blocks.length >= 2) {
+                    const b0 = pastSession.liberi.blocks[0];
+                    const b0Att = (pastSession.liberi.att === 30 || pastSession.liberi.att === 40) ? 10 : Math.round(pastSession.liberi.att / pastSession.liberi.blocks.length);
+                    const shotsPerB0 = Math.max(1, Math.round(b0Att / b0.length));
+                    currentWorkout.attivazioneLiberi = b0.map(v => ({ made: v, att: shotsPerB0 }));
+
+                    const restBlocks = pastSession.liberi.blocks.slice(1);
+                    const faticaFlat = restBlocks.flat();
+                    const faticaAtt = pastSession.liberi.att - b0Att;
+                    const shotsPerFat = faticaFlat.length > 0 ? Math.max(1, Math.round(faticaAtt / faticaFlat.length)) : 2;
+                    currentWorkout.faticaLiberi = faticaFlat.map(v => ({ made: v, att: shotsPerFat }));
+                } else if (pastSession.liberi) {
+                    currentWorkout.attivazioneLiberi = [{ made: Math.min(pastSession.liberi.made, 10), att: 10 }];
+                    currentWorkout.faticaLiberi = [{ made: Math.max(0, pastSession.liberi.made - 10), att: Math.max(0, pastSession.liberi.att - 10) }];
                 }
 
             } else {
@@ -1703,78 +1733,93 @@
             updatePhaseHeadersFromPlan(targetPlan);
             updateAddButtonsVisibility();
 
-            // Renderizza le tabelle
+            // Renderizza le sezioni
             renderWorkoutFormShooting();
+            renderWorkoutAttivazioneLiberi();
             renderWorkout3ptSpots();
             renderWorkoutPatSpots();
-            renderWorkoutLiberi();
+            renderWorkoutFaticaLiberi();
             updateWorkoutLiveKpis();
         }
 
         function initFreshWorkoutFromPlan(plan) {
-            // 1. Form shooting: 3 serie da 10 con made = 0
-            currentWorkout.formShooting = [
-                { made: 0, att: 10 },
-                { made: 0, att: 10 },
-                { made: 0, att: 10 }
-            ];
-
-            // 2. 3PT: default per spot con made = 0
-            currentWorkout.tri = {
-                angoloSX: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
-                guardiaSX: [{ made: 0, att: 10 }],
-                punta: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
-                guardiaDX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
-                angoloDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }]
-            };
-
-            // Se il piano ha tabella dettagliata, allinea le serie e i target di tiro
-            if (plan && plan.phases && plan.phases[1]?.details?.table) {
-                const table = plan.phases[1].details.table;
-                const spotMapping = {
-                    'Angolo Sinistro': 'angoloSX',
-                    'Guardia Sinistra': 'guardiaSX',
-                    'Punta': 'punta',
-                    'Guardia Destra': 'guardiaDX',
-                    'Angolo Destro': 'angoloDX'
-                };
-                table.forEach(row => {
-                    const k = spotMapping[row.spot];
-                    if (k) {
-                        const volMatch = row.volume.match(/(\d+)/);
-                        const vol = volMatch ? parseInt(volMatch[1], 10) : 10;
-                        if (vol <= 10) {
-                            currentWorkout.tri[k] = [{ made: 0, att: vol }];
-                        } else if (vol <= 15) {
-                            currentWorkout.tri[k] = [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }];
-                        } else {
-                            currentWorkout.tri[k] = [{ made: 0, att: 10 }, { made: 0, att: 10 }];
-                        }
-                    }
-                });
+            // 1. Form shooting
+            if (plan?.drills?.formShooting && Array.isArray(plan.drills.formShooting)) {
+                currentWorkout.formShooting = plan.drills.formShooting.map(d => ({ made: 0, att: d.att || 10, spot: d.spot || '' }));
+            } else {
+                currentWorkout.formShooting = [
+                    { made: 0, att: 10 },
+                    { made: 0, att: 10 },
+                    { made: 0, att: 10 }
+                ];
             }
 
-            // 3. PAT: 2 serie da 15 per gomito
-            currentWorkout.pat = {
-                gomitoSX: [{ made: 0, att: 15 }, { made: 0, att: 15 }],
-                gomitoDX: [{ made: 0, att: 15 }, { made: 0, att: 15 }]
-            };
+            // 2. Attivazione Liberi (Fase 1)
+            if (plan?.drills?.attivazioneLiberi && Array.isArray(plan.drills.attivazioneLiberi)) {
+                currentWorkout.attivazioneLiberi = plan.drills.attivazioneLiberi.map(d => ({ made: 0, att: d.att || 10 }));
+            } else {
+                currentWorkout.attivazioneLiberi = [{ made: 0, att: 10 }];
+            }
 
-            // 4. Liberi: Attivazione 10 tiri + 2 blocchi sotto sforzo da 5 serie da 3 tiri
-            currentWorkout.liberi = [
-                {
-                    title: "Attivazione Lunetta Breath-Control",
-                    series: [{ made: 0, att: 10 }]
-                },
-                {
-                    title: "Protocollo Heartbeat Pressure (Blocco 1)",
-                    series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
-                },
-                {
-                    title: "Protocollo Heartbeat Pressure (Blocco 2)",
-                    series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
+            // 3. 3PT (Fase 2)
+            const spots = ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'];
+            currentWorkout.tri = {};
+            if (plan?.drills?.tri) {
+                spots.forEach(sp => {
+                    const seriesList = plan.drills.tri[sp] || [{ att: 10 }];
+                    currentWorkout.tri[sp] = seriesList.map(s => ({ made: 0, att: s.att || 10 }));
+                });
+            } else {
+                currentWorkout.tri = {
+                    angoloSX: [{ made: 0, att: 5 }, { made: 0, att: 5 }],
+                    guardiaSX: [{ made: 0, att: 5 }, { made: 0, att: 5 }],
+                    punta: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
+                    guardiaDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }],
+                    angoloDX: [{ made: 0, att: 10 }, { made: 0, att: 10 }]
+                };
+                if (plan?.phases && plan.phases[1]?.details?.table) {
+                    const table = plan.phases[1].details.table;
+                    const spotMapping = {
+                        'Angolo Sinistro': 'angoloSX',
+                        'Guardia Sinistra': 'guardiaSX',
+                        'Punta': 'punta',
+                        'Guardia Destra': 'guardiaDX',
+                        'Angolo Destro': 'angoloDX'
+                    };
+                    table.forEach(row => {
+                        const k = spotMapping[row.spot];
+                        if (k) {
+                            const volMatch = row.volume.match(/(\d+)/);
+                            const vol = volMatch ? parseInt(volMatch[1], 10) : 10;
+                            currentWorkout.tri[k] = [{ made: 0, att: vol }, { made: 0, att: vol }];
+                        }
+                    });
                 }
-            ];
+            }
+
+            // 4. PAT (Fase 3)
+            currentWorkout.pat = {};
+            if (plan?.drills?.pat) {
+                ['gomitoSX', 'gomitoDX'].forEach(sp => {
+                    const seriesList = plan.drills.pat[sp] || [{ att: 5 }, { att: 5 }, { att: 5 }];
+                    currentWorkout.pat[sp] = seriesList.map(s => ({ made: 0, att: s.att || 5 }));
+                });
+            } else {
+                currentWorkout.pat = {
+                    gomitoSX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }],
+                    gomitoDX: [{ made: 0, att: 5 }, { made: 0, att: 5 }, { made: 0, att: 5 }]
+                };
+            }
+
+            // 5. Fatica Liberi (Fase 4)
+            if (plan?.drills?.faticaLiberi?.series && Array.isArray(plan.drills.faticaLiberi.series)) {
+                currentWorkout.faticaLiberi = plan.drills.faticaLiberi.series.map(s => ({ made: 0, att: s.att || 2 }));
+            } else {
+                currentWorkout.faticaLiberi = [
+                    { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 },
+                    { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }, { made: 0, att: 2 }
+                ];
+            }
         }
 
         function updatePhaseHeadersFromPlan(plan) {
@@ -1815,16 +1860,19 @@
 
         function updateAddButtonsVisibility() {
             const addFormBtn = document.getElementById('workout-add-formshooting-btn-container');
-            const addFtBtn = document.getElementById('workout-add-ft-btn-container');
+            const addAttFtBtn = document.getElementById('workout-add-attivazione-liberi-btn-container');
+            const addFatFtBtn = document.getElementById('workout-add-ft-btn-container');
             const spotAddBtns = document.querySelectorAll('.workout-add-spot-btn-wrapper');
 
             if (isWorkoutReadOnly) {
                 if (addFormBtn) addFormBtn.classList.add('hidden');
-                if (addFtBtn) addFtBtn.classList.add('hidden');
+                if (addAttFtBtn) addAttFtBtn.classList.add('hidden');
+                if (addFatFtBtn) addFatFtBtn.classList.add('hidden');
                 spotAddBtns.forEach(el => el.classList.add('hidden'));
             } else {
                 if (addFormBtn) addFormBtn.classList.remove('hidden');
-                if (addFtBtn) addFtBtn.classList.remove('hidden');
+                if (addAttFtBtn) addAttFtBtn.classList.remove('hidden');
+                if (addFatFtBtn) addFatFtBtn.classList.remove('hidden');
                 spotAddBtns.forEach(el => el.classList.remove('hidden'));
             }
         }
@@ -1838,15 +1886,15 @@
             if (!container) return;
             container.innerHTML = '';
 
-            currentWorkout.formShooting.forEach((serie, idx) => {
+            (currentWorkout.formShooting || []).forEach((serie, idx) => {
                 const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
                 const row = document.createElement('div');
-                row.className = "flex flex-wrap items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl";
+                row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-slate-50 border border-slate-200 rounded-xl";
                 
                 if (isWorkoutReadOnly) {
                     row.innerHTML = `
                         <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
+                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1} ${serie.spot ? `(${serie.spot})` : ''}</span>
                             <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                         </div>
                         <div class="text-xs font-mono font-bold text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
@@ -1856,27 +1904,75 @@
                 } else {
                     row.innerHTML = `
                         <div class="flex items-center gap-2">
-                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1}</span>
+                            <span class="text-xs font-bold text-slate-800">Serie ${idx + 1} ${serie.spot ? `(${serie.spot})` : ''}</span>
                             <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                         </div>
-                        <div class="flex items-center gap-2">
-                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Fatti</span>
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5">
+                                <span class="text-[9px] font-bold text-slate-500 uppercase px-1">Fatti</span>
                                 <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
-                                <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'made', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'made', this.value)" class="w-9 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
                                 <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'made', 1)" class="w-6 h-6 rounded bg-blue-600 hover:bg-blue-700 font-black text-xs text-white flex items-center justify-center">+</button>
                             </div>
                             <span class="text-slate-400 font-bold">/</span>
-                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-1">
-                                <span class="text-[10px] font-bold text-slate-500 uppercase px-1">Tentati</span>
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5">
+                                <span class="text-[9px] font-bold text-slate-500 uppercase px-1">Tent</span>
                                 <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
-                                <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'att', this.value)" class="w-10 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('formshooting', null, ${idx}, 'att', this.value)" class="w-9 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
                                 <button type="button" onclick="adjustWorkoutSerie('formshooting', null, ${idx}, 'att', 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-900 font-black text-xs text-white flex items-center justify-center">+</button>
                             </div>
                             ${currentWorkout.formShooting.length > 1 ? `
-                                <button type="button" onclick="removeWorkoutSerie('formshooting', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">
-                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                                </button>
+                                <button type="button" onclick="removeWorkoutSerie('formshooting', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">✕</button>
+                            ` : ''}
+                        </div>
+                    `;
+                }
+                container.appendChild(row);
+            });
+        }
+
+        function renderWorkoutAttivazioneLiberi() {
+            const container = document.getElementById('workout-attivazione-liberi-container');
+            if (!container) return;
+            container.innerHTML = '';
+
+            (currentWorkout.attivazioneLiberi || []).forEach((serie, idx) => {
+                const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                const row = document.createElement('div');
+                row.className = "flex flex-wrap items-center justify-between gap-2 p-2 bg-emerald-50/50 border border-emerald-200/80 rounded-xl";
+
+                if (isWorkoutReadOnly) {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-800">Routine Liberi ${idx + 1}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="text-xs font-mono font-bold text-slate-900 bg-white border border-slate-200 px-3 py-1 rounded-lg">
+                            ${serie.made} / ${serie.att}
+                        </div>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs font-bold text-slate-800">Routine Liberi ${idx + 1}</span>
+                            <span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="flex items-center gap-1.5">
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5">
+                                <span class="text-[9px] font-bold text-slate-500 uppercase px-1">Fatti</span>
+                                <button type="button" onclick="adjustWorkoutSerie('attivazioneLiberi', null, ${idx}, 'made', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                                <input type="number" min="0" max="100" value="${serie.made}" onchange="setWorkoutSerieVal('attivazioneLiberi', null, ${idx}, 'made', this.value)" class="w-9 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <button type="button" onclick="adjustWorkoutSerie('attivazioneLiberi', null, ${idx}, 'made', 1)" class="w-6 h-6 rounded bg-emerald-600 hover:bg-emerald-700 font-black text-xs text-white flex items-center justify-center">+</button>
+                            </div>
+                            <span class="text-slate-400 font-bold">/</span>
+                            <div class="flex items-center gap-1 bg-white border border-slate-300 rounded-lg p-0.5">
+                                <span class="text-[9px] font-bold text-slate-500 uppercase px-1">Tent</span>
+                                <button type="button" onclick="adjustWorkoutSerie('attivazioneLiberi', null, ${idx}, 'att', -1)" class="w-6 h-6 rounded bg-slate-100 hover:bg-slate-200 font-black text-xs text-slate-800 flex items-center justify-center">-</button>
+                                <input type="number" min="1" max="100" value="${serie.att}" onchange="setWorkoutSerieVal('attivazioneLiberi', null, ${idx}, 'att', this.value)" class="w-9 text-center text-xs font-mono font-bold text-slate-900 focus:outline-none">
+                                <button type="button" onclick="adjustWorkoutSerie('attivazioneLiberi', null, ${idx}, 'att', 1)" class="w-6 h-6 rounded bg-slate-800 hover:bg-slate-900 font-black text-xs text-white flex items-center justify-center">+</button>
+                            </div>
+                            ${currentWorkout.attivazioneLiberi.length > 1 ? `
+                                <button type="button" onclick="removeWorkoutSerie('attivazioneLiberi', null, ${idx})" class="p-1 text-slate-400 hover:text-red-600 transition-colors" title="Rimuovi serie">✕</button>
                             ` : ''}
                         </div>
                     `;
@@ -1901,7 +1997,7 @@
                     if (isWorkoutReadOnly) {
                         row.innerHTML = `
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">Giro / Serie ${idx + 1}</span>
                                 <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
                             <div class="text-xs font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
@@ -1911,7 +2007,7 @@
                     } else {
                         row.innerHTML = `
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">Giro / Serie ${idx + 1}</span>
                                 <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
                             <div class="flex items-center gap-1.5">
@@ -1955,7 +2051,7 @@
                     if (isWorkoutReadOnly) {
                         row.innerHTML = `
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">Serie ${idx + 1}</span>
                                 <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
                             <div class="text-xs font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2 py-0.5 rounded">
@@ -1965,7 +2061,7 @@
                     } else {
                         row.innerHTML = `
                             <div class="flex items-center gap-2">
-                                <span class="text-[11px] font-bold text-slate-700 font-mono">S${idx + 1}</span>
+                                <span class="text-[11px] font-bold text-slate-700 font-mono">Serie ${idx + 1}</span>
                                 <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
                             </div>
                             <div class="flex items-center gap-1.5">
@@ -1993,68 +2089,53 @@
             });
         }
 
-        function renderWorkoutLiberi() {
-            const container = document.getElementById('workout-ft-blocks-container');
+        function renderWorkoutFaticaLiberi() {
+            const container = document.getElementById('workout-fatica-liberi-container');
             if (!container) return;
             container.innerHTML = '';
 
-            currentWorkout.liberi.forEach((block, bIdx) => {
-                let bMade = 0, bAtt = 0;
-                block.series.forEach(s => { bMade += s.made; bAtt += s.att; });
-                const bPct = bAtt > 0 ? Math.round((bMade / bAtt) * 100) : 0;
+            const grid = document.createElement('div');
+            grid.className = "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-2.5";
 
-                const blockEl = document.createElement('div');
-                blockEl.className = "bg-slate-50/90 border border-slate-200 rounded-xl p-3.5 space-y-3";
-                
-                let html = `
-                    <div class="flex items-center justify-between pb-2 border-b border-slate-200/80">
-                        <span class="text-xs font-bold text-slate-900">${block.title}</span>
-                        <span class="text-[11px] font-mono font-bold text-emerald-700 bg-white px-2 py-0.5 rounded border border-slate-200">${bMade}/${bAtt} (${bPct}%)</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2">
-                `;
+            (currentWorkout.faticaLiberi || []).forEach((serie, idx) => {
+                const pct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
+                const card = document.createElement('div');
+                card.className = "p-2.5 bg-white border border-slate-200 rounded-xl space-y-1.5 shadow-2xs";
 
-                block.series.forEach((serie, sIdx) => {
-                    const sPct = serie.att > 0 ? Math.round((serie.made / serie.att) * 100) : 0;
-                    if (isWorkoutReadOnly) {
-                        html += `
-                            <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
-                                <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
-                                <span class="text-xs font-mono font-bold text-slate-900">${serie.made}/${serie.att}</span>
-                                <span class="text-[9px] font-mono font-bold px-1.5 py-0.2 rounded ${getPercentBadgeClass(sPct)}">${sPct}%</span>
+                if (isWorkoutReadOnly) {
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-extrabold uppercase text-slate-600 font-mono">Ciclo ${idx + 1}</span>
+                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="text-xs font-mono font-bold text-slate-900 bg-slate-50 border border-slate-200 px-2 py-1 rounded text-center">
+                            ${serie.made} / ${serie.att}
+                        </div>
+                    `;
+                } else {
+                    card.innerHTML = `
+                        <div class="flex items-center justify-between">
+                            <span class="text-[10px] font-extrabold uppercase text-slate-600 font-mono">Ciclo ${idx + 1}</span>
+                            <span class="text-[9px] font-mono px-1.5 py-0.2 rounded ${getPercentBadgeClass(pct)} font-bold">${pct}%</span>
+                        </div>
+                        <div class="flex items-center justify-between gap-1">
+                            <div class="flex items-center gap-0.5 bg-slate-50 border border-slate-200 rounded p-0.5">
+                                <button type="button" onclick="adjustWorkoutSerie('faticaLiberi', null, ${idx}, 'made', -1)" class="w-4 h-5 rounded bg-slate-200 hover:bg-slate-300 text-[10px] font-bold">-</button>
+                                <input type="number" min="0" max="20" value="${serie.made}" onchange="setWorkoutSerieVal('faticaLiberi', null, ${idx}, 'made', this.value)" class="w-6 text-center text-xs font-mono font-bold bg-transparent">
+                                <button type="button" onclick="adjustWorkoutSerie('faticaLiberi', null, ${idx}, 'made', 1)" class="w-4 h-5 rounded bg-emerald-600 hover:bg-emerald-700 text-white text-[10px] font-bold">+</button>
                             </div>
-                        `;
-                    } else {
-                        html += `
-                            <div class="flex items-center justify-between p-2 bg-white border border-slate-200 rounded-lg">
-                                <span class="text-[10px] font-bold text-slate-600 font-mono">S${sIdx + 1}</span>
-                                <div class="flex items-center gap-1">
-                                    <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', -1)" class="w-5 h-5 rounded bg-slate-100 hover:bg-slate-200 font-bold text-[10px]">-</button>
-                                    <input type="number" min="0" max="20" value="${serie.made}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'made', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-transparent">
-                                    <button type="button" onclick="adjustWorkoutFtSerie(${bIdx}, ${sIdx}, 'made', 1)" class="w-5 h-5 rounded bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px]">+</button>
-                                    <span class="text-slate-300 font-bold">/</span>
-                                    <input type="number" min="1" max="20" value="${serie.att}" onchange="setWorkoutFtSerieVal(${bIdx}, ${sIdx}, 'att', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded">
-                                </div>
-                            </div>
-                        `;
-                    }
-                });
-
-                html += `</div>`;
-
-                if (!isWorkoutReadOnly) {
-                    html += `
-                        <div class="flex justify-end pt-1">
-                            <button type="button" onclick="addWorkoutFtSubSerie(${bIdx})" class="text-[11px] font-bold text-emerald-600 hover:text-emerald-700 py-0.5 px-2 rounded hover:bg-emerald-100/50">
-                                + Aggiungi Ripetizione al Blocco
-                            </button>
+                            <span class="text-slate-400 font-bold text-xs">/</span>
+                            <input type="number" min="1" max="20" value="${serie.att}" onchange="setWorkoutSerieVal('faticaLiberi', null, ${idx}, 'att', this.value)" class="w-7 text-center text-xs font-mono font-bold bg-slate-50 border border-slate-200 rounded py-0.5">
+                            ${currentWorkout.faticaLiberi.length > 1 ? `
+                                <button type="button" onclick="removeWorkoutSerie('faticaLiberi', null, ${idx})" class="text-slate-300 hover:text-red-600 p-0.5 text-xs">✕</button>
+                            ` : ''}
                         </div>
                     `;
                 }
-
-                blockEl.innerHTML = html;
-                container.appendChild(blockEl);
+                grid.appendChild(card);
             });
+
+            container.appendChild(grid);
         }
 
         function updateWorkoutLiveKpis() {
@@ -2063,13 +2144,23 @@
             let mPat = 0, aPat = 0;
             let mFt = 0, aFt = 0;
             let mForm = 0, aForm = 0;
+            let mAttFt = 0, aAttFt = 0;
+            let mFatFt = 0, aFatFt = 0;
 
             // Form Shooting
-            currentWorkout.formShooting.forEach(s => { mForm += s.made; aForm += s.att; });
+            (currentWorkout.formShooting || []).forEach(s => { mForm += s.made; aForm += s.att; });
             totalMade += mForm; totalAtt += aForm;
             const formPct = aForm > 0 ? Math.round((mForm / aForm) * 100) : 0;
             const formSummary = document.getElementById('live-card-formshooting-summary');
+            const formSubSummary = document.getElementById('live-sub-formshooting-summary');
             if (formSummary) formSummary.textContent = `${mForm}/${aForm} (${formPct}%)`;
+            if (formSubSummary) formSubSummary.textContent = `${mForm}/${aForm} (${formPct}%)`;
+
+            // Attivazione Liberi
+            (currentWorkout.attivazioneLiberi || []).forEach(s => { mAttFt += s.made; aAttFt += s.att; });
+            const attFtPct = aAttFt > 0 ? Math.round((mAttFt / aAttFt) * 100) : 0;
+            const attFtSummary = document.getElementById('live-card-attivazione-ft-summary');
+            if (attFtSummary) attFtSummary.textContent = `${mAttFt}/${aAttFt} (${attFtPct}%)`;
 
             // 3PT
             ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(spot => {
@@ -2099,28 +2190,39 @@
             const summaryPat = document.getElementById('live-card-pat-summary');
             if (summaryPat) summaryPat.textContent = `${mPat}/${aPat} (${patPct}%)`;
 
-            // Liberi
-            currentWorkout.liberi.forEach(block => {
-                block.series.forEach(s => { mFt += s.made; aFt += s.att; });
-            });
+            // Fatica Liberi
+            (currentWorkout.faticaLiberi || []).forEach(s => { mFatFt += s.made; aFatFt += s.att; });
+            const fatFtPct = aFatFt > 0 ? Math.round((mFatFt / aFatFt) * 100) : 0;
+            const fatFtSummary = document.getElementById('live-card-ft-summary');
+            if (fatFtSummary) fatFtSummary.textContent = `${mFatFt}/${aFatFt} (${fatFtPct}%)`;
+
+            // Totale Liberi (Attivazione + Fatica)
+            mFt = mAttFt + mFatFt;
+            aFt = aAttFt + aFatFt;
             totalMade += mFt; totalAtt += aFt;
             const ftPct = aFt > 0 ? Math.round((mFt / aFt) * 100) : 0;
-            const summaryFt = document.getElementById('live-card-ft-summary');
-            if (summaryFt) summaryFt.textContent = `${mFt}/${aFt} (${ftPct}%)`;
 
             // Ribbon Totali
             const totPct = totalAtt > 0 ? Math.round((totalMade / totalAtt) * 100) : 0;
-            document.getElementById('live-kpi-total-pct').textContent = `${totPct}%`;
-            document.getElementById('live-kpi-total-cnt').textContent = `(${totalMade}/${totalAtt})`;
+            const totalPctEl = document.getElementById('live-kpi-total-pct');
+            const totalCntEl = document.getElementById('live-kpi-total-cnt');
+            if (totalPctEl) totalPctEl.textContent = `${totPct}%`;
+            if (totalCntEl) totalCntEl.textContent = `(${totalMade}/${totalAtt})`;
 
-            document.getElementById('live-kpi-3pt-pct').textContent = `${pt3Pct}%`;
-            document.getElementById('live-kpi-3pt-cnt').textContent = `(${m3}/${a3})`;
+            const pt3PctEl = document.getElementById('live-kpi-3pt-pct');
+            const pt3CntEl = document.getElementById('live-kpi-3pt-cnt');
+            if (pt3PctEl) pt3PctEl.textContent = `${pt3Pct}%`;
+            if (pt3CntEl) pt3CntEl.textContent = `(${m3}/${a3})`;
 
-            document.getElementById('live-kpi-pat-pct').textContent = `${patPct}%`;
-            document.getElementById('live-kpi-pat-cnt').textContent = `(${mPat}/${aPat})`;
+            const patPctEl = document.getElementById('live-kpi-pat-pct');
+            const patCntEl = document.getElementById('live-kpi-pat-cnt');
+            if (patPctEl) patPctEl.textContent = `${patPct}%`;
+            if (patCntEl) patCntEl.textContent = `(${mPat}/${aPat})`;
 
-            document.getElementById('live-kpi-ft-pct').textContent = `${ftPct}%`;
-            document.getElementById('live-kpi-ft-cnt').textContent = `(${mFt}/${aFt})`;
+            const ftPctEl = document.getElementById('live-kpi-ft-pct');
+            const ftCntEl = document.getElementById('live-kpi-ft-cnt');
+            if (ftPctEl) ftPctEl.textContent = `${ftPct}%`;
+            if (ftCntEl) ftCntEl.textContent = `(${mFt}/${aFt})`;
         }
 
         // Metodi di Modifica Serie
@@ -2128,8 +2230,10 @@
             if (isWorkoutReadOnly) return;
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
+            else if (cat === 'attivazioneLiberi') targetObj = currentWorkout.attivazioneLiberi[idx];
             else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
             else if (cat === 'pat') targetObj = currentWorkout.pat[spot][idx];
+            else if (cat === 'faticaLiberi') targetObj = currentWorkout.faticaLiberi[idx];
 
             if (!targetObj) return;
             targetObj[field] = Math.max(0, targetObj[field] + delta);
@@ -2138,8 +2242,10 @@
             }
 
             if (cat === 'formshooting') renderWorkoutFormShooting();
+            else if (cat === 'attivazioneLiberi') renderWorkoutAttivazioneLiberi();
             else if (cat === 'tri') renderWorkout3ptSpots();
             else if (cat === 'pat') renderWorkoutPatSpots();
+            else if (cat === 'faticaLiberi') renderWorkoutFaticaLiberi();
             updateWorkoutLiveKpis();
         }
 
@@ -2147,8 +2253,10 @@
             if (isWorkoutReadOnly) return;
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
+            else if (cat === 'attivazioneLiberi') targetObj = currentWorkout.attivazioneLiberi[idx];
             else if (cat === 'tri') targetObj = currentWorkout.tri[spot][idx];
             else if (cat === 'pat') targetObj = currentWorkout.pat[spot][idx];
+            else if (cat === 'faticaLiberi') targetObj = currentWorkout.faticaLiberi[idx];
 
             if (!targetObj) return;
             const parsed = parseInt(val, 10);
@@ -2158,8 +2266,10 @@
             }
 
             if (cat === 'formshooting') renderWorkoutFormShooting();
+            else if (cat === 'attivazioneLiberi') renderWorkoutAttivazioneLiberi();
             else if (cat === 'tri') renderWorkout3ptSpots();
             else if (cat === 'pat') renderWorkoutPatSpots();
+            else if (cat === 'faticaLiberi') renderWorkoutFaticaLiberi();
             updateWorkoutLiveKpis();
         }
 
@@ -2168,6 +2278,14 @@
             if (cat === 'formshooting') {
                 currentWorkout.formShooting.push({ made: 0, att: 10 });
                 renderWorkoutFormShooting();
+            } else if (cat === 'attivazioneLiberi') {
+                if (!currentWorkout.attivazioneLiberi) currentWorkout.attivazioneLiberi = [];
+                currentWorkout.attivazioneLiberi.push({ made: 0, att: 10 });
+                renderWorkoutAttivazioneLiberi();
+            } else if (cat === 'faticaLiberi') {
+                if (!currentWorkout.faticaLiberi) currentWorkout.faticaLiberi = [];
+                currentWorkout.faticaLiberi.push({ made: 0, att: 2 });
+                renderWorkoutFaticaLiberi();
             }
             updateWorkoutLiveKpis();
         }
@@ -2177,12 +2295,18 @@
             if (cat === 'formshooting' && currentWorkout.formShooting.length > 1) {
                 currentWorkout.formShooting.splice(idx, 1);
                 renderWorkoutFormShooting();
+            } else if (cat === 'attivazioneLiberi' && currentWorkout.attivazioneLiberi.length > 1) {
+                currentWorkout.attivazioneLiberi.splice(idx, 1);
+                renderWorkoutAttivazioneLiberi();
             } else if (cat === 'tri' && currentWorkout.tri[spot].length > 1) {
                 currentWorkout.tri[spot].splice(idx, 1);
                 renderWorkout3ptSpots();
             } else if (cat === 'pat' && currentWorkout.pat[spot].length > 1) {
                 currentWorkout.pat[spot].splice(idx, 1);
                 renderWorkoutPatSpots();
+            } else if (cat === 'faticaLiberi' && currentWorkout.faticaLiberi.length > 1) {
+                currentWorkout.faticaLiberi.splice(idx, 1);
+                renderWorkoutFaticaLiberi();
             }
             updateWorkoutLiveKpis();
         }
@@ -2203,47 +2327,6 @@
             updateWorkoutLiveKpis();
         }
 
-        function adjustWorkoutFtSerie(bIdx, sIdx, field, delta) {
-            if (isWorkoutReadOnly) return;
-            const s = currentWorkout.liberi[bIdx].series[sIdx];
-            if (!s) return;
-            s[field] = Math.max(0, s[field] + delta);
-            if (field === 'made' && s.made > s.att) s.att = s.made;
-            renderWorkoutLiberi();
-            updateWorkoutLiveKpis();
-        }
-
-        function setWorkoutFtSerieVal(bIdx, sIdx, field, val) {
-            if (isWorkoutReadOnly) return;
-            const s = currentWorkout.liberi[bIdx].series[sIdx];
-            if (!s) return;
-            const parsed = parseInt(val, 10);
-            s[field] = isNaN(parsed) ? 0 : Math.max(0, parsed);
-            if (field === 'made' && s.made > s.att) s.att = s.made;
-            renderWorkoutLiberi();
-            updateWorkoutLiveKpis();
-        }
-
-        function addWorkoutFtSubSerie(bIdx) {
-            if (isWorkoutReadOnly) return;
-            const block = currentWorkout.liberi[bIdx];
-            if (block) {
-                block.series.push({ made: 0, att: 3 });
-                renderWorkoutLiberi();
-                updateWorkoutLiveKpis();
-            }
-        }
-
-        function addWorkoutFtBlock() {
-            if (isWorkoutReadOnly) return;
-            currentWorkout.liberi.push({
-                title: `Protocollo Sotto Sforzo (Blocco ${currentWorkout.liberi.length})`,
-                series: [{ made: 0, att: 3 }, { made: 0, att: 3 }, { made: 0, att: 3 }]
-            });
-            renderWorkoutLiberi();
-            updateWorkoutLiveKpis();
-        }
-
         // =========================================================================
         // 4. GENERAZIONE SESSIONE & MOTORE AI COACH (Google Gemini)
         // =========================================================================
@@ -2255,7 +2338,11 @@
 
             // Form shooting aggregato
             let formMade = 0, formAtt = 0;
-            currentWorkout.formShooting.forEach(s => { formMade += s.made; formAtt += s.att; });
+            const formSeries = (currentWorkout.formShooting || []).map(s => {
+                formMade += s.made;
+                formAtt += s.att;
+                return s.made;
+            });
 
             // 3PT
             const triData = {};
@@ -2283,14 +2370,17 @@
                 patData[k] = { made: m, att: a, series: seriesArr };
             });
 
-            // Liberi
+            // Liberi (Blocco 1: Attivazione, Blocco 2: Fatica)
             let ftMade = 0, ftAtt = 0;
-            const ftBlocks = currentWorkout.liberi.map(b => {
-                return b.series.map(s => {
-                    ftMade += s.made;
-                    ftAtt += s.att;
-                    return s.made;
-                });
+            const b1 = (currentWorkout.attivazioneLiberi || []).map(s => {
+                ftMade += s.made;
+                ftAtt += s.att;
+                return s.made;
+            });
+            const b2 = (currentWorkout.faticaLiberi || []).map(s => {
+                ftMade += s.made;
+                ftAtt += s.att;
+                return s.made;
             });
 
             return {
@@ -2298,10 +2388,10 @@
                 date: dateVal,
                 duration: durVal,
                 planId: currentWorkout.planId || 'piano-4',
-                formShooting: { made: formMade, att: formAtt },
+                formShooting: { made: formMade, att: formAtt, series: formSeries },
                 tri: triData,
                 pat: patData,
-                liberi: { made: ftMade, att: ftAtt, blocks: ftBlocks }
+                liberi: { made: ftMade, att: ftAtt, blocks: [b1, b2] }
             };
         }
 
@@ -2354,6 +2444,7 @@
                     tiroDa3: sessionData.tri,
                     palleggioArrestoTiro: sessionData.pat,
                     tiriLiberi: sessionData.liberi,
+                    formShooting: sessionData.formShooting,
                     noteAtleta: playerNotes
                 }, null, 2);
 
@@ -2364,11 +2455,12 @@
                 const systemInstruction = `
 Sei l'AI Shooting Coach d'élite di Davide Braghiroli (ShotTracker Analytics).
 Il tuo compito è:
-1) Analizzare accuratamente la sessione di tiro odierna (Sessione #${nextSessionNumber} del ${sessionData.date}) incrociandola con lo storico.
-2) Generare un'analisi balistica tecnica ("insight") con osservazioni su meccanica, affaticamento, parabola e perno nei gomiti.
-3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber} e titolo "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}", adattata sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo drill specifici sugli spot dove ha tirato peggio, e consolidando i punti di forza).
+1) Analizzare accuratamente la sessione di tiro odierna (Sessione #${nextSessionNumber} del ${sessionData.date}) incrociandola con lo storico balistico.
+2) Generare un'analisi balistica tecnica ("insight") con osservazioni puntuali su meccanica, parabola, rilascio negli angoli, tenuta cardiaca nei liberi e perno nei gomiti.
+3) Generare la PROSSIMA Scheda di Allenamento ("nextPlan") con numero ${nextPlanNumber} e titolo "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}", calibrata specificamente sui punti deboli emersi oggi (ad esempio aumentando il volume o inserendo drill specifici sugli spot dove ha tirato peggio, e consolidando i punti di forza).
+4) IMPORTANTE: Includere sia le 5 fasi descrittive ("phases") per l'atleta, sia l'oggetto strutturato "drills" con l'elenco esatto di serie e tentativi (att) per ogni spot e fase, in modo che la scheda Workout Live interattiva possa renderizzare 1:1 esattamente ogni tiro prescritto.
 
-Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiuntivo) che rispetti questo schema:
+Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) che rispetti rigorosamente questo schema:
 {
   "insight": {
     "title": "Analisi Puntuale Sessione #${nextSessionNumber} (${sessionData.date})",
@@ -2383,7 +2475,36 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiu
     "id": "piano-${nextPlanNumber}",
     "number": ${nextPlanNumber},
     "title": "Programma di Allenamento Analitico • Scheda per Allenamento #${nextPlanNumber}",
-    "description": "Descrizione tecnica dell'obiettivo della scheda adattata.",
+    "description": "Descrizione tecnica dettagliata dell'obiettivo della scheda adattata.",
+    "drills": {
+      "formShooting": [
+        { "spot": "Ravvicinato Pos. 1", "att": 10 },
+        { "spot": "Ravvicinato Pos. 2", "att": 10 },
+        { "spot": "Ravvicinato Pos. 3", "att": 10 }
+      ],
+      "attivazioneLiberi": [
+        { "spot": "Lunetta Attivazione", "att": 10 }
+      ],
+      "tri": {
+        "angoloSX": [{ "att": 10 }, { "att": 10 }],
+        "guardiaSX": [{ "att": 5 }, { "att": 5 }],
+        "punta": [{ "att": 5 }, { "att": 5 }],
+        "guardiaDX": [{ "att": 10 }, { "att": 10 }],
+        "angoloDX": [{ "att": 10 }, { "att": 10 }]
+      },
+      "pat": {
+        "gomitoSX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }],
+        "gomitoDX": [{ "att": 5 }, { "att": 5 }, { "att": 5 }]
+      },
+      "faticaLiberi": {
+        "cycles": 10,
+        "shotsPerCycle": 2,
+        "series": [
+          { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 },
+          { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }, { "att": 2 }
+        ]
+      }
+    },
     "phases": [
       {
         "id": "fase-1",
@@ -2399,7 +2520,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiu
       },
       {
         "id": "fase-2",
-        "name": "Fase 2: Compensazione Dinamica (Tiro da 3)",
+        "name": "Fase 2: Compensazione (Tiro da 3)",
         "time": "10 - 30 min",
         "objective": "Obiettivo...",
         "focus": "Focus...",
@@ -2407,11 +2528,11 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiu
         "details": {
           "description": "Dettaglio...",
           "table": [
-            { "spot": "Angolo Sinistro", "volume": "X tiri", "focus": "...", "highlight": false },
-            { "spot": "Guardia Sinistra", "volume": "X tiri", "focus": "...", "highlight": false },
-            { "spot": "Punta", "volume": "X tiri", "focus": "...", "highlight": true },
-            { "spot": "Guardia Destra", "volume": "X tiri", "focus": "...", "highlight": true },
-            { "spot": "Angolo Destro", "volume": "X tiri", "focus": "...", "highlight": true }
+            { "spot": "Angolo Sinistro", "volume": "10 tiri (x2 giri = 20)", "focus": "...", "highlight": true },
+            { "spot": "Guardia Sinistra", "volume": "5 tiri (x2 giri = 10)", "focus": "...", "highlight": false },
+            { "spot": "Punta", "volume": "5 tiri (x2 giri = 10)", "focus": "...", "highlight": false },
+            { "spot": "Guardia Destra", "volume": "10 tiri (x2 giri = 20)", "focus": "...", "highlight": true },
+            { "spot": "Angolo Destro", "volume": "10 tiri (x2 giri = 20)", "focus": "...", "highlight": true }
           ],
           "rule": "💡 Regola Operativa: ..."
         }
@@ -2426,28 +2547,28 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown o testo aggiu
         "details": {
           "description": "Dettaglio...",
           "split": [
-            { "title": "1ª Metà: Guardia SX → Gomito SX", "text": "..." },
-            { "title": "2ª Metà: Guardia DX → Gomito DX", "text": "..." }
+            { "title": "1ª Metà: Guardia SX → Gomito SX (15 Tiri: 3 serie x 5 ripetizioni)", "text": "..." },
+            { "title": "2ª Metà: Guardia DX → Gomito DX (15 Tiri: 3 serie x 5 ripetizioni)", "text": "..." }
           ]
         }
       },
       {
         "id": "fase-4",
-        "name": "Fase 4: Resilienza & Fatica (Tiri Liberi)",
+        "name": "Fase 4: Fatica & Resilienza (Tiri Liberi)",
         "time": "45 - 55 min",
         "objective": "Obiettivo...",
         "focus": "Focus...",
         "badgeColor": "emerald",
         "details": {
           "description": "Dettaglio...",
-          "protocolTitle": "Protocollo Sotto Sforzo:",
+          "protocolTitle": "Protocollo Sotto Sforzo (10 cicli = 20 tiri liberi totali):",
           "steps": ["Step 1...", "Step 2..."],
           "note": "Obiettivo Tecnico: ..."
         }
       },
       {
         "id": "fase-5",
-        "name": "Fase 5: Defaticamento & Anchoring Mentale",
+        "name": "Fase 5: Defaticamento & Visualizzazione",
         "time": "55 - 60 min",
         "objective": "Decompressione e pattern motori",
         "focus": "Visualizzazione e stretching",
