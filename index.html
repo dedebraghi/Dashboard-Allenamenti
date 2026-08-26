@@ -276,9 +276,18 @@
                 <!-- Popolato dinamicamente -->
             </div>
 
-            <div class="pt-3 border-t border-slate-200 flex items-center justify-between">
-                <button onclick="switchTab('plan'); closeAiFeedbackModal();" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition-colors shadow">Vedi Nuova Scheda 🏀</button>
-                <button onclick="closeAiFeedbackModal()" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs transition-colors">Chiudi & Vai a Dashboard</button>
+            <div class="pt-3 border-t border-slate-200 flex flex-wrap items-center justify-between gap-2">
+                <button id="ai-feedback-btn-plan" onclick="goToPlanFromModal()" class="px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold rounded-lg text-xs transition-colors shadow flex items-center gap-1.5">
+                    <span>🏀 Vai alla Scheda / Piano</span>
+                </button>
+                <div class="flex items-center gap-2">
+                    <button onclick="goToDashboardFromModal()" class="px-3.5 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition-colors">
+                        📊 Dashboard
+                    </button>
+                    <button onclick="closeAiFeedbackModal()" class="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-lg text-xs transition-colors">
+                        Chiudi
+                    </button>
+                </div>
             </div>
         </div>
     </div>
@@ -3321,13 +3330,37 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                 `;
             }
 
+            activeModalPlanId = nextPlan ? nextPlan.id : (plans[plans.length - 1]?.id || null);
+            const planBtn = document.getElementById('ai-feedback-btn-plan');
+            if (planBtn) {
+                planBtn.innerHTML = `<span>🏀 ${nextPlan ? `Vai a Scheda #${nextPlan.number}` : 'Vai alla Scheda / Piano'}</span>`;
+            }
+
             if (bodyEl) bodyEl.innerHTML = html;
             if (modal) modal.classList.remove('hidden');
         }
 
+        let activeModalPlanId = null;
+
         function closeAiFeedbackModal() {
             const modal = document.getElementById('ai-feedback-modal');
             if (modal) modal.classList.add('hidden');
+        }
+
+        function goToPlanFromModal() {
+            closeAiFeedbackModal();
+            switchTab('plan');
+            if (activeModalPlanId) {
+                const planSelect = document.getElementById('plan-selector');
+                if (planSelect) {
+                    planSelect.value = activeModalPlanId;
+                    loadPlanDetail(activeModalPlanId);
+                }
+            }
+        }
+
+        function goToDashboardFromModal() {
+            closeAiFeedbackModal();
             switchTab('dashboard');
         }
 
@@ -4299,6 +4332,14 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             const modal = document.getElementById('ai-feedback-modal');
             const titleEl = document.getElementById('ai-feedback-modal-title');
             const bodyEl = document.getElementById('ai-feedback-modal-body');
+            const planBtn = document.getElementById('ai-feedback-btn-plan');
+
+            const matchedPlan = plans.find(p => p.id === s.planId) || plans.find(p => findSessionForPlan(p.id)?.id === s.id) || plans[plans.length - 1];
+            activeModalPlanId = matchedPlan ? matchedPlan.id : (plans[0]?.id || null);
+
+            if (planBtn) {
+                planBtn.innerHTML = `<span>🏀 ${matchedPlan ? `Vai alla Scheda #${matchedPlan.number || matchedPlan.id}` : 'Vai alla Scheda / Piano'}</span>`;
+            }
 
             if (titleEl) {
                 titleEl.textContent = `Report Coach • ${formatDate(s.date)}`;
