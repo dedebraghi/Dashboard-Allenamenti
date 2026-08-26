@@ -1598,8 +1598,130 @@
         }
 
         // =========================================================================
-        // 2. SINCRONIZZAZIONE DATI IBRIDA (Cloud Firestore ↔ LocalStorage ↔ Static JSON)
+        // 2. SINCRONIZZAZIONE DATI IBRIDA & UNIVERSALE (Cloud Firestore ↔ LocalStorage)
         // =========================================================================
+
+        function jsToFirestoreField(val) {
+            if (val === null || val === undefined) return { nullValue: null };
+            if (typeof val === 'boolean') return { booleanValue: val };
+            if (typeof val === 'number') {
+                return Number.isInteger(val) ? { integerValue: val.toString() } : { doubleValue: val };
+            }
+            if (typeof val === 'string') return { stringValue: val };
+            if (Array.isArray(val)) {
+                const values = val.map(x => {
+                    if (Array.isArray(x)) {
+                        return { mapValue: { fields: { items: jsToFirestoreField(x) } } };
+                    }
+                    return jsToFirestoreField(x);
+                });
+                return { arrayValue: { values } };
+            }
+            if (typeof val === 'object') {
+                const fields = {};
+                for (const [k, v] of Object.entries(val)) {
+                    fields[k] = jsToFirestoreField(v);
+                }
+                return { mapValue: { fields } };
+            }
+            return { stringValue: String(val) };
+        }
+
+        function firestoreFieldToJs(field) {
+            if (!field) return null;
+            if ('nullValue' in field) return null;
+            if ('booleanValue' in field) return field.booleanValue;
+            if ('integerValue' in field) return parseInt(field.integerValue, 10);
+            if ('doubleValue' in field) return parseFloat(field.doubleValue);
+            if ('stringValue' in field) return field.stringValue;
+            if ('arrayValue' in field) {
+                const arr = (field.arrayValue.values || []).map(v => firestoreFieldToJs(v));
+                return arr.map(item => (item && typeof item === 'object' && 'items' in item && Array.isArray(item.items)) ? item.items : item);
+            }
+            if ('mapValue' in field) {
+                const res = {};
+                for (const [k, v] of Object.entries(field.mapValue.fields || {})) {
+                    res[k] = firestoreFieldToJs(v);
+                }
+                return res;
+            }
+            return null;
+        }
+
+        async function writeToFirestoreCloud(collection, docId, data) {
+            // 1. Prova Firestore SDK
+            if (firebaseDb) {
+                try {
+                    await firebaseDb.collection(collection).doc(docId).set(data);
+                    return true;
+                } catch (e) {
+                    console.warn(`[Cloud Sync] SDK fallito su ${collection}/${docId}, tento con REST fallback:`, e);
+                }
+            }
+
+            // 2. Fallback REST API
+            try {
+                const apiKey = 'AIzaSyD7CVArDjCKSdtOmshDa3RB9u8ysenNZTo';
+                const projectId = 'dashboard-allenamenti';
+                const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collection}/${docId}?key=${apiKey}`;
+                const payload = { fields: {} };
+                for (const [k, v] of Object.entries(data)) {
+                    payload.fields[k] = jsToFirestoreField(v);
+                }
+                const res = await fetch(url, {
+                    method: 'PATCH',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                return res.ok;
+            } catch (err) {
+                console.warn(`[Cloud Sync] Errore REST ${collection}/${docId}:`, err);
+                return false;
+            }
+        }
+
+        async function fetchCollectionFromFirestoreCloud(collection) {
+            const docs = [];
+            // 1. Prova Firestore SDK
+            if (firebaseDb) {
+                try {
+                    const snap = await firebaseDb.collection(collection).get();
+                    if (!snap.empty) {
+                        snap.forEach(d => docs.push(d.data()));
+                        return docs;
+                    }
+                } catch (e) {
+                    console.warn(`[Cloud Fetch] SDK fallito su ${collection}, tento con REST:`, e);
+                }
+            }
+
+            // 2. Fallback REST API
+            try {
+                const apiKey = 'AIzaSyD7CVArDjCKSdtOmshDa3RB9u8ysenNZTo';
+                const projectId = 'dashboard-allenamenti';
+                const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/${collection}?key=${apiKey}`;
+                const res = await fetch(url);
+                if (res.ok) {
+                    const json = await res.json();
+                    if (json.documents && Array.isArray(json.documents)) {
+                        json.documents.forEach(docItem => {
+                            const fields = docItem.fields || {};
+                            const obj = {};
+                            for (const [k, v] of Object.entries(fields)) {
+                                obj[k] = firestoreFieldToJs(v);
+                            }
+                            if (obj.id || docItem.name) {
+                                if (!obj.id) obj.id = docItem.name.split('/').pop();
+                                docs.push(obj);
+                            }
+                        });
+                    }
+                }
+            } catch (err) {
+                console.warn(`[Cloud Fetch] Errore REST ${collection}:`, err);
+            }
+            return docs;
+        }
 
         async function loadSessionsData() {
             let baseSessions = [];
@@ -1616,17 +1738,7 @@
                 }
             } catch (e) {}
 
-            let cloudSessions = [];
-            if (firebaseDb) {
-                try {
-                    const snap = await firebaseDb.collection('sessions').orderBy('date', 'desc').get();
-                    if (!snap.empty) {
-                        snap.forEach(doc => cloudSessions.push(doc.data()));
-                    }
-                } catch (e) {
-                    console.warn('[Sync] Fallito caricamento Firestore:', e);
-                }
-            }
+            let cloudSessions = await fetchCollectionFromFirestoreCloud('sessions');
 
             let localSessions = [];
             try {
@@ -1644,6 +1756,15 @@
 
             sessions = Array.from(sMap.values()).sort((a, b) => new Date(b.date) - new Date(a.date));
             localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
+
+            // Sincronizzazione automatica Cloud: carica nel database cloud qualsiasi sessione locale che manca online!
+            const cloudIds = new Set(cloudSessions.map(cs => cs.id));
+            sessions.forEach(s => {
+                if (!cloudIds.has(s.id)) {
+                    console.log('[Cloud Auto-Upload] Sincronizzo sessione locale su Cloud DB:', s.id);
+                    writeToFirestoreCloud('sessions', s.id, s);
+                }
+            });
         }
 
         async function loadPlansData() {
@@ -1661,15 +1782,7 @@
                 }
             } catch (e) {}
 
-            let cloudPlans = [];
-            if (firebaseDb) {
-                try {
-                    const snap = await firebaseDb.collection('plans').get();
-                    if (!snap.empty) {
-                        snap.forEach(doc => cloudPlans.push(doc.data()));
-                    }
-                } catch (e) {}
-            }
+            let cloudPlans = await fetchCollectionFromFirestoreCloud('plans');
 
             let localPlans = [];
             try {
@@ -1702,6 +1815,14 @@
 
             plans = Array.from(planMap.values()).sort((a, b) => (a.number || 0) - (b.number || 0));
             localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
+
+            // Sincronizzazione automatica Cloud per i piani
+            const cloudPlanIds = new Set(cloudPlans.map(cp => cp.id));
+            plans.forEach(p => {
+                if (!cloudPlanIds.has(p.id)) {
+                    writeToFirestoreCloud('plans', p.id, p);
+                }
+            });
         }
 
         async function saveSessionToDb(newSession) {
@@ -1717,15 +1838,8 @@
                 localStorage.setItem(`${appId}-sessions`, JSON.stringify(sessions));
             } catch (e) {}
 
-            // Sincronizza su Firestore Cloud se attivo
-            if (firebaseDb) {
-                try {
-                    await firebaseDb.collection('sessions').doc(newSession.id).set(newSession);
-                    console.log('[Sync] Sessione salvata su Firestore:', newSession.id);
-                } catch (err) {
-                    console.warn('[Sync] Errore scrittura Firestore:', err);
-                }
-            }
+            // Salva istantaneamente su Cloud Firestore
+            await writeToFirestoreCloud('sessions', newSession.id, newSession);
         }
 
         async function savePlanToDb(newPlan) {
@@ -1740,14 +1854,8 @@
                 localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
             } catch (e) {}
 
-            if (firebaseDb) {
-                try {
-                    await firebaseDb.collection('plans').doc(newPlan.id).set(newPlan);
-                    console.log('[Sync] Piano salvato su Firestore:', newPlan.id);
-                } catch (err) {
-                    console.warn('[Sync] Errore scrittura Firestore:', err);
-                }
-            }
+            // Salva istantaneamente su Cloud Firestore
+            await writeToFirestoreCloud('plans', newPlan.id, newPlan);
         }
 
         async function deleteSessionFromDb(sessionId) {
@@ -1761,6 +1869,12 @@
                     await firebaseDb.collection('sessions').doc(sessionId).delete();
                 } catch (err) {}
             }
+            try {
+                const apiKey = 'AIzaSyD7CVArDjCKSdtOmshDa3RB9u8ysenNZTo';
+                const projectId = 'dashboard-allenamenti';
+                const url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/sessions/${sessionId}?key=${apiKey}`;
+                await fetch(url, { method: 'DELETE' });
+            } catch (e) {}
         }
 
         // =========================================================================
