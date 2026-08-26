@@ -3690,9 +3690,6 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             document.getElementById('progress-global-3pt').style.width = `${pt3Percent}%`;
 
             document.getElementById('stat-global-ft').textContent = `${ftPercent}%`;
-            document.getElementById('stat-count-ft').textContent = `${totalFTMade}/${totalFTAtt}`;
-            document.getElementById('progress-global-ft').style.width = `${ftPercent}%`;
-
             document.getElementById('stat-global-pat').textContent = `${patPercent}%`;
             document.getElementById('stat-count-pat').textContent = `${totalPATMade}/${totalPATAtt}`;
             document.getElementById('progress-global-pat').style.width = `${patPercent}%`;
@@ -3702,14 +3699,17 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
         }
 
         function loadSessionDetail(sessionId) {
-            if (sessions.length === 0) return;
+            if (!sessions || sessions.length === 0) return;
 
             let s;
             const isAverage = (sessionId === 'average');
 
             if (isAverage) {
-                document.getElementById('session-badge-title').textContent = "Media Complessiva";
-                document.getElementById('session-badge-title').className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200";
+                const badgeTitle = document.getElementById('session-badge-title');
+                if (badgeTitle) {
+                    badgeTitle.textContent = "Media Complessiva";
+                    badgeTitle.className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-orange-50 text-orange-700 border border-orange-200";
+                }
                 
                 let agg = {
                     tri: {
@@ -3727,60 +3727,94 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                 };
 
                 sessions.forEach(sess => {
-                    ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
-                        agg.tri[k].made += sess.tri[k].made;
-                        agg.tri[k].att += sess.tri[k].att;
-                    });
-                    agg.liberi.made += sess.liberi.made;
-                    agg.liberi.att += sess.liberi.att;
-                    ['gomitoSX', 'gomitoDX'].forEach(k => {
-                        agg.pat[k].made += sess.pat[k].made;
-                        agg.pat[k].att += sess.pat[k].att;
-                    });
+                    if (sess.tri) {
+                        ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
+                            if (sess.tri[k]) {
+                                agg.tri[k].made += Number(sess.tri[k].made || 0);
+                                agg.tri[k].att += Number(sess.tri[k].att || 0);
+                            }
+                        });
+                    }
+                    if (sess.liberi) {
+                        agg.liberi.made += Number(sess.liberi.made || 0);
+                        agg.liberi.att += Number(sess.liberi.att || 0);
+                    }
+                    if (sess.pat) {
+                        ['gomitoSX', 'gomitoDX'].forEach(k => {
+                            if (sess.pat[k]) {
+                                agg.pat[k].made += Number(sess.pat[k].made || 0);
+                                agg.pat[k].att += Number(sess.pat[k].att || 0);
+                            }
+                        });
+                    }
                 });
                 s = agg;
             } else {
                 s = sessions.find(item => item.id === sessionId);
                 if (!s) return;
-                document.getElementById('session-badge-title').textContent = `Sessione del ${formatDate(s.date)}`;
-                document.getElementById('session-badge-title').className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200";
+                const badgeTitle = document.getElementById('session-badge-title');
+                if (badgeTitle) {
+                    badgeTitle.textContent = `Sessione del ${formatDate(s.date)}`;
+                    badgeTitle.className = "text-[11px] font-extrabold px-2.5 py-0.5 rounded bg-indigo-50 text-indigo-700 border border-indigo-200";
+                }
             }
 
-            const angSXP = s.tri.angoloSX.att > 0 ? Math.round((s.tri.angoloSX.made / s.tri.angoloSX.att) * 100) : 0;
-            const guaSXP = s.tri.guardiaSX.att > 0 ? Math.round((s.tri.guardiaSX.made / s.tri.guardiaSX.att) * 100) : 0;
-            const punP = s.tri.punta.att > 0 ? Math.round((s.tri.punta.made / s.tri.punta.att) * 100) : 0;
-            const guaDXP = s.tri.guardiaDX.att > 0 ? Math.round((s.tri.guardiaDX.made / s.tri.guardiaDX.att) * 100) : 0;
-            const angDXP = s.tri.angoloDX.att > 0 ? Math.round((s.tri.angoloDX.made / s.tri.angoloDX.att) * 100) : 0;
+            const getSpotData = (obj, defAtt = 0) => {
+                if (!obj) return { made: 0, att: defAtt, p: 0 };
+                const made = Number(obj.made || 0);
+                const att = Number(obj.att || 0);
+                const p = att > 0 ? Math.round((made / att) * 100) : 0;
+                return { made, att, p };
+            };
 
-            const gomSXP = s.pat.gomitoSX.att > 0 ? Math.round((s.pat.gomitoSX.made / s.pat.gomitoSX.att) * 100) : 0;
-            const gomDXP = s.pat.gomitoDX.att > 0 ? Math.round((s.pat.gomitoDX.made / s.pat.gomitoDX.att) * 100) : 0;
-            const libP = s.liberi.att > 0 ? Math.round((s.liberi.made / s.liberi.att) * 100) : 0;
+            const angSX = getSpotData(s.tri?.angoloSX);
+            const guaSX = getSpotData(s.tri?.guardiaSX);
+            const pun = getSpotData(s.tri?.punta);
+            const guaDX = getSpotData(s.tri?.guardiaDX);
+            const angDX = getSpotData(s.tri?.angoloDX);
 
-            updateHotspotStyle('hotspot-angoloSX', angSXP);
-            updateHotspotStyle('hotspot-guardiaSX', guaSXP);
-            updateHotspotStyle('hotspot-punta', punP);
-            updateHotspotStyle('hotspot-guardiaDX', guaDXP);
-            updateHotspotStyle('hotspot-angoloDX', angDXP);
-            updateHotspotStyle('hotspot-gomitoSX', gomSXP);
-            updateHotspotStyle('hotspot-gomitoDX', gomDXP);
-            updateHotspotStyle('hotspot-liberi', libP);
+            const gomSX = getSpotData(s.pat?.gomitoSX);
+            const gomDX = getSpotData(s.pat?.gomitoDX);
+            const lib = getSpotData(s.liberi);
 
-            const s3ptMade = s.tri.angoloSX.made + s.tri.guardiaSX.made + s.tri.punta.made + s.tri.guardiaDX.made + s.tri.angoloDX.made;
-            const s3ptAtt = s.tri.angoloSX.att + s.tri.guardiaSX.att + s.tri.punta.att + s.tri.guardiaDX.att + s.tri.angoloDX.att;
+            updateHotspotStyle('hotspot-angoloSX', angSX.p);
+            updateHotspotStyle('hotspot-guardiaSX', guaSX.p);
+            updateHotspotStyle('hotspot-punta', pun.p);
+            updateHotspotStyle('hotspot-guardiaDX', guaDX.p);
+            updateHotspotStyle('hotspot-angoloDX', angDX.p);
+            updateHotspotStyle('hotspot-gomitoSX', gomSX.p);
+            updateHotspotStyle('hotspot-gomitoDX', gomDX.p);
+            updateHotspotStyle('hotspot-liberi', lib.p);
+
+            const s3ptMade = angSX.made + guaSX.made + pun.made + guaDX.made + angDX.made;
+            const s3ptAtt = angSX.att + guaSX.att + pun.att + guaDX.att + angDX.att;
             const s3ptP = s3ptAtt > 0 ? Math.round((s3ptMade / s3ptAtt) * 100) : 0;
 
-            const sFTP = s.liberi.att > 0 ? Math.round((s.liberi.made / s.liberi.att) * 100) : 0;
+            const sFTP = lib.p;
 
-            const sPATMade = s.pat.gomitoSX.made + s.pat.gomitoDX.made;
-            const sPATAtt = s.pat.gomitoSX.att + s.pat.gomitoDX.att;
+            const sPATMade = gomSX.made + gomDX.made;
+            const sPATAtt = gomSX.att + gomDX.att;
             const sPATP = sPATAtt > 0 ? Math.round((sPATMade / sPATAtt) * 100) : 0;
 
-            document.getElementById('detail-3pt-stat').textContent = `${s3ptMade}/${s3ptAtt} (${s3ptP}%)`;
-            document.getElementById('detail-ft-stat').textContent = `${s.liberi.made}/${s.liberi.att} (${sFTP}%)`;
-            document.getElementById('detail-pat-stat').textContent = `${sPATMade}/${sPATAtt} (${sPATP}%)`;
+            const d3 = document.getElementById('detail-3pt-stat');
+            const dFT = document.getElementById('detail-ft-stat');
+            const dPAT = document.getElementById('detail-pat-stat');
 
-            renderReportBreakdown(sessionId);
-            generateTechnicalInsight(s, s3ptP, sFTP, sPATP, {angSXP, guaSXP, punP, guaDXP, angDXP}, {gomSXP, gomDXP}, isAverage);
+            if (d3) d3.textContent = `${s3ptMade}/${s3ptAtt} (${s3ptP}%)`;
+            if (dFT) dFT.textContent = `${lib.made}/${lib.att} (${sFTP}%)`;
+            if (dPAT) dPAT.textContent = `${sPATMade}/${sPATAtt} (${sPATP}%)`;
+
+            try {
+                renderReportBreakdown(sessionId);
+            } catch (e) {
+                console.warn('[Breakdown render error]:', e);
+            }
+
+            try {
+                generateTechnicalInsight(s, s3ptP, sFTP, sPATP, { angSXP: angSX.p, guaSXP: guaSX.p, punP: pun.p, guaDXP: guaDX.p, angDXP: angDX.p }, { gomSXP: gomSX.p, gomDXP: gomDX.p }, isAverage);
+            } catch (e) {
+                console.error('[Technical Insight error]:', e);
+            }
         }
 
         function openPositionModal(posKey, posTitle) {
@@ -3789,19 +3823,19 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             const subtitleEl = document.getElementById('position-modal-subtitle');
             const bodyEl = document.getElementById('position-modal-body');
 
-            titleEl.textContent = posTitle;
-            subtitleEl.textContent = `Analisi dettagliata serie per serie across allenamenti`;
-            bodyEl.innerHTML = '';
+            if (titleEl) titleEl.textContent = posTitle;
+            if (subtitleEl) subtitleEl.textContent = `Analisi dettagliata serie per serie across allenamenti`;
+            if (bodyEl) bodyEl.innerHTML = '';
 
-            const selectedSessionVal = document.getElementById('session-selector').value;
+            const selectedSessionVal = document.getElementById('session-selector')?.value || 'average';
             let targetSessions = sessions;
             if (selectedSessionVal !== 'average') {
                 targetSessions = sessions.filter(s => s.id === selectedSessionVal);
             }
 
             if (targetSessions.length === 0) {
-                bodyEl.innerHTML = `<p class="text-xs text-slate-500 font-medium">Nessun dato disponibile per la selezione.</p>`;
-                modal.classList.remove('hidden');
+                if (bodyEl) bodyEl.innerHTML = `<p class="text-xs text-slate-500 font-medium">Nessun dato disponibile per la selezione.</p>`;
+                if (modal) modal.classList.remove('hidden');
                 return;
             }
 
@@ -3816,14 +3850,15 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                 let statsHtml = '';
 
                 if (posKey === 'liberi') {
-                    const lib = session.liberi;
+                    const lib = session.liberi || { made: 0, att: 0 };
                     const pct = lib.att > 0 ? Math.round((lib.made / lib.att) * 100) : 0;
                     htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${lib.made}/${lib.att} (${pct}%)</span></div>`;
                     
-                    if (lib.blocks && lib.blocks.length > 0) {
+                    if (lib.blocks && Array.isArray(lib.blocks) && lib.blocks.length > 0) {
                         statsHtml += `<div class="space-y-2 pt-1">`;
                         lib.blocks.forEach((block, bIdx) => {
-                            const bMade = block.reduce((a, b) => a + b, 0);
+                            if (!Array.isArray(block)) return;
+                            const bMade = block.reduce((a, b) => a + Number(b || 0), 0);
                             let blockAtt = (block.length > 0) ? block.length * 3 : 15;
                             if (lib.att === 30 && lib.blocks.length === 2) {
                                 blockAtt = (bIdx === 0) ? 10 : 20;
@@ -3841,10 +3876,11 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                                 </div>
                                 <div class="grid grid-cols-${block.length > 5 ? 5 : block.length} gap-1.5">`;
                             block.forEach((sVal, sIdx) => {
-                                const sPct = shotsPerSub > 0 ? Math.round((sVal / shotsPerSub) * 100) : 0;
+                                const numVal = Number(sVal || 0);
+                                const sPct = shotsPerSub > 0 ? Math.round((numVal / shotsPerSub) * 100) : 0;
                                 statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
                                     <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                    <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSub}</span>
+                                    <span class="text-xs font-bold text-slate-900">${numVal}/${shotsPerSub}</span>
                                     <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
                                 </div>`;
                             });
@@ -3852,59 +3888,61 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                         });
                         statsHtml += `</div>`;
                     }
-                } else if (['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].includes(posKey)) {
-                    const posData = session.tri[posKey];
-                    const pct = posData.att > 0 ? Math.round((posData.made / posData.att) * 100) : 0;
-                    htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
-
-                    if (posData.series && posData.series.length > 0) {
-                        const shotsPerSeries = Math.round(posData.att / posData.series.length);
-                        const numSeries = posData.series.length;
-                        statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie registrate:</span>
-                            <div class="grid grid-cols-${numSeries > 4 ? 4 : numSeries} gap-1.5">`;
-                        posData.series.forEach((sVal, sIdx) => {
-                            const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
-                            statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
-                                <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSeries}</span>
-                                <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
-                            </div>`;
-                        });
-                        statsHtml += `</div></div>`;
+                } else if (posKey.startsWith('pat-')) {
+                    const patKey = posKey.replace('pat-', '');
+                    const patObj = session.pat ? session.pat[patKey] : null;
+                    if (patObj) {
+                        const pct = patObj.att > 0 ? Math.round((patObj.made / patObj.att) * 100) : 0;
+                        htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${patObj.made}/${patObj.att} (${pct}%)</span></div>`;
+                        
+                        if (patObj.series && Array.isArray(patObj.series) && patObj.series.length > 0) {
+                            const shotsPerSeries = Math.max(1, Math.round(patObj.att / patObj.series.length));
+                            statsHtml += `<div class="grid grid-cols-${patObj.series.length} gap-1.5 pt-1">`;
+                            patObj.series.forEach((sVal, sIdx) => {
+                                const numVal = Number(sVal || 0);
+                                const sPct = Math.round((numVal / shotsPerSeries) * 100);
+                                statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
+                                    <span class="text-[9px] text-slate-400 font-mono block">Serie ${sIdx + 1}</span>
+                                    <span class="text-xs font-bold text-slate-900">${numVal}/${shotsPerSeries}</span>
+                                    <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
+                                </div>`;
+                            });
+                            statsHtml += `</div>`;
+                        }
                     }
-                } else if (['gomitoSX', 'gomitoDX'].includes(posKey)) {
-                    const posData = session.pat[posKey];
-                    const pct = posData.att > 0 ? Math.round((posData.made / posData.att) * 100) : 0;
-                    htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${posData.made}/${posData.att} (${pct}%)</span></div>`;
-
-                    if (posData.series && posData.series.length > 0) {
-                        const shotsPerSeries = Math.round(posData.att / posData.series.length);
-                        const numSeries = posData.series.length;
-                        statsHtml += `<div class="pt-1">
-                            <span class="text-[11px] font-bold text-slate-600 block mb-1.5">${numSeries} Serie da ${shotsPerSeries} tiri:</span>
-                            <div class="grid grid-cols-${numSeries > 5 ? 5 : numSeries} gap-1.5">`;
-                        posData.series.forEach((sVal, sIdx) => {
-                            const sPct = shotsPerSeries > 0 ? Math.round((sVal / shotsPerSeries) * 100) : 0;
-                            statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
-                                <span class="text-[9px] text-slate-400 font-mono block">S${sIdx + 1}</span>
-                                <span class="text-xs font-bold text-slate-900">${sVal}/${shotsPerSeries}</span>
-                                <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
-                            </div>`;
-                        });
-                        statsHtml += `</div></div>`;
+                } else {
+                    const triObj = session.tri ? session.tri[posKey] : null;
+                    if (triObj) {
+                        const pct = triObj.att > 0 ? Math.round((triObj.made / triObj.att) * 100) : 0;
+                        htmlHeader += `<span class="text-[10px] font-mono px-2 py-0.5 rounded ${getPercentBadgeClass(pct)}">${triObj.made}/${triObj.att} (${pct}%)</span></div>`;
+                        
+                        if (triObj.series && Array.isArray(triObj.series) && triObj.series.length > 0) {
+                            const shotsPerSeries = Math.max(1, Math.round(triObj.att / triObj.series.length));
+                            statsHtml += `<div class="grid grid-cols-${triObj.series.length} gap-1.5 pt-1">`;
+                            triObj.series.forEach((sVal, sIdx) => {
+                                const numVal = Number(sVal || 0);
+                                const sPct = Math.round((numVal / shotsPerSeries) * 100);
+                                statsHtml += `<div class="bg-white border border-slate-200 rounded-lg p-1.5 text-center">
+                                    <span class="text-[9px] text-slate-400 font-mono block">Serie ${sIdx + 1}</span>
+                                    <span class="text-xs font-bold text-slate-900">${numVal}/${shotsPerSeries}</span>
+                                    <span class="text-[9px] font-mono block text-slate-500">${sPct}%</span>
+                                </div>`;
+                            });
+                            statsHtml += `</div>`;
+                        }
                     }
                 }
 
                 sessionCard.innerHTML = htmlHeader + statsHtml;
-                bodyEl.appendChild(sessionCard);
+                if (bodyEl) bodyEl.appendChild(sessionCard);
             });
 
-            modal.classList.remove('hidden');
+            if (modal) modal.classList.remove('hidden');
         }
 
         function closePositionModal() {
-            document.getElementById('position-modal').classList.add('hidden');
+            const modal = document.getElementById('position-modal');
+            if (modal) modal.classList.add('hidden');
         }
 
         function renderReportBreakdown(sessionId) {
@@ -3928,82 +3966,87 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                 
                 let html = `<div class="font-bold text-slate-900 border-b border-slate-200 pb-1 flex justify-between items-center">
                     <span>Sessione del ${formatDate(session.date)}</span>
-                    <span class="text-[10px] font-mono text-slate-500">${session.duration} min</span>
+                    <span class="text-[10px] font-mono text-slate-500">${session.duration || 60} min</span>
                 </div>`;
 
                 // 3PT Breakdown
-                html += `<div class="space-y-1">
-                    <span class="font-mono text-indigo-700 uppercase text-[9px] font-bold tracking-wider block">3PT (Serie per Spot)</span>
-                    <div class="space-y-1">`;
-                
-                const pos3ptMap = {
-                    angoloSX: 'Angolo SX',
-                    guardiaSX: 'Guardia SX',
-                    punta: 'Punta',
-                    guardiaDX: 'Guardia DX',
-                    angoloDX: 'Angolo DX'
-                };
+                if (session.tri) {
+                    html += `<div class="space-y-1">
+                        <span class="font-mono text-indigo-700 uppercase text-[9px] font-bold tracking-wider block">3PT (Serie per Spot)</span>
+                        <div class="space-y-1">`;
+                    
+                    const pos3ptMap = {
+                        angoloSX: 'Angolo SX',
+                        guardiaSX: 'Guardia SX',
+                        punta: 'Punta',
+                        guardiaDX: 'Guardia DX',
+                        angoloDX: 'Angolo DX'
+                    };
 
-                for (const [k, name] of Object.entries(pos3ptMap)) {
-                    const data = session.tri[k];
-                    if (data && data.series) {
-                        const shotsPerSeries = Math.round(data.att / data.series.length);
-                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
-                        const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
-                        html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
-                            <span class="font-semibold text-slate-800">${name}:</span>
-                            <div class="flex items-center gap-1">
-                                ${sStr}
-                                <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
-                            </div>
-                        </div>`;
+                    for (const [k, name] of Object.entries(pos3ptMap)) {
+                        const data = session.tri[k];
+                        if (data && data.series && Array.isArray(data.series) && data.series.length > 0) {
+                            const shotsPerSeries = Math.max(1, Math.round(Number(data.att || 0) / data.series.length));
+                            const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
+                            const pct = Number(data.att || 0) > 0 ? Math.round((Number(data.made || 0) / Number(data.att)) * 100) : 0;
+                            html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
+                                <span class="font-semibold text-slate-800">${name}:</span>
+                                <div class="flex items-center gap-1">
+                                    ${sStr}
+                                    <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
+                                </div>
+                            </div>`;
+                        }
                     }
+                    html += `</div></div>`;
                 }
-                html += `</div></div>`;
 
                 // PAT Breakdown
-                html += `<div class="space-y-1 pt-1">
-                    <span class="font-mono text-amber-700 uppercase text-[9px] font-bold tracking-wider block">P.A.T. (Serie per Spot)</span>
-                    <div class="space-y-1">`;
-                
-                const posPatMap = {
-                    gomitoSX: 'Gomito SX',
-                    gomitoDX: 'Gomito DX'
-                };
+                if (session.pat) {
+                    html += `<div class="space-y-1 pt-1">
+                        <span class="font-mono text-amber-700 uppercase text-[9px] font-bold tracking-wider block">P.A.T. (Serie per Spot)</span>
+                        <div class="space-y-1">`;
+                    
+                    const posPatMap = {
+                        gomitoSX: 'Gomito SX',
+                        gomitoDX: 'Gomito DX'
+                    };
 
-                for (const [k, name] of Object.entries(posPatMap)) {
-                    const data = session.pat[k];
-                    if (data && data.series) {
-                        const shotsPerSeries = Math.round(data.att / data.series.length);
-                        const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
-                        const pct = data.att > 0 ? Math.round((data.made / data.att) * 100) : 0;
-                        html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
-                            <span class="font-semibold text-slate-800">${name}:</span>
-                            <div class="flex items-center gap-1">
-                                ${sStr}
-                                <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
-                            </div>
-                        </div>`;
+                    for (const [k, name] of Object.entries(posPatMap)) {
+                        const data = session.pat[k];
+                        if (data && data.series && Array.isArray(data.series) && data.series.length > 0) {
+                            const shotsPerSeries = Math.max(1, Math.round(Number(data.att || 0) / data.series.length));
+                            const sStr = data.series.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSeries}</span>`).join(' ');
+                            const pct = Number(data.att || 0) > 0 ? Math.round((Number(data.made || 0) / Number(data.att)) * 100) : 0;
+                            html += `<div class="flex flex-wrap justify-between items-center bg-white px-2 py-1.5 rounded border border-slate-200 gap-1 text-[11px]">
+                                <span class="font-semibold text-slate-800">${name}:</span>
+                                <div class="flex items-center gap-1">
+                                    ${sStr}
+                                    <span class="font-mono font-bold text-slate-900 ml-1">${data.made}/${data.att} (${pct}%)</span>
+                                </div>
+                            </div>`;
+                        }
                     }
+                    html += `</div></div>`;
                 }
-                html += `</div></div>`;
 
                 // Tiri Liberi Breakdown
-                html += `<div class="space-y-1 pt-1">
-                    <span class="font-mono text-emerald-700 uppercase text-[9px] font-bold tracking-wider block">Tiri Liberi</span>
-                    <div class="space-y-1">`;
-                
-                if (session.liberi && session.liberi.blocks) {
+                if (session.liberi && session.liberi.blocks && Array.isArray(session.liberi.blocks)) {
+                    html += `<div class="space-y-1 pt-1">
+                        <span class="font-mono text-emerald-700 uppercase text-[9px] font-bold tracking-wider block">Tiri Liberi</span>
+                        <div class="space-y-1">`;
+                    
                     session.liberi.blocks.forEach((block, bIdx) => {
-                        const bMade = block.reduce((a, b) => a + b, 0);
-                        let blockAtt = (block.length > 0) ? block.length * 3 : 15;
+                        if (!Array.isArray(block) || block.length === 0) return;
+                        const bMade = block.reduce((a, b) => a + Number(b || 0), 0);
+                        let blockAtt = block.length * 3;
                         if (session.liberi.att === 30 && session.liberi.blocks.length === 2) {
                             blockAtt = (bIdx === 0) ? 10 : 20;
                         } else if (session.liberi.att === 40 && session.liberi.blocks.length === 3) {
                             blockAtt = (bIdx === 0) ? 10 : 15;
                         }
                         const bPct = blockAtt > 0 ? Math.round((bMade / blockAtt) * 100) : 0;
-                        const shotsPerSub = block.length > 0 ? Math.max(1, Math.round(blockAtt / block.length)) : 2;
+                        const shotsPerSub = Math.max(1, Math.round(blockAtt / block.length));
 
                         const blockLabel = (bIdx === 0) ? "Attivazione" : `Sotto Sforzo B${bIdx}`;
                         const sStr = block.map((v, i) => `<span class="font-mono bg-slate-100 border border-slate-200 px-1 py-0.2 rounded text-[10px]">S${i+1}:${v}/${shotsPerSub}</span>`).join(' ');
@@ -4015,8 +4058,8 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
                             </div>
                         </div>`;
                     });
+                    html += `</div></div>`;
                 }
-                html += `</div></div>`;
 
                 sItem.innerHTML = html;
                 container.appendChild(sItem);
@@ -4050,102 +4093,114 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             const container = document.getElementById('technical-insight');
             if (!container) return;
 
-            if (isAverage) {
-                let total3Made = 0, total3Att = 0;
-                let totalFTMade = 0, totalFTAtt = 0;
-                let totalPATMade = 0, totalPATAtt = 0;
-                let s3pt = { angoloSX: 0, guardiaSX: 0, punta: 0, guardiaDX: 0, angoloDX: 0, att3: {} };
-                ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => s3pt.att3[k] = 0);
+            try {
+                if (isAverage) {
+                    let total3Made = 0, total3Att = 0;
+                    let totalFTMade = 0, totalFTAtt = 0;
+                    let totalPATMade = 0, totalPATAtt = 0;
+                    let s3pt = { angoloSX: 0, guardiaSX: 0, punta: 0, guardiaDX: 0, angoloDX: 0, att3: {} };
+                    ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => s3pt.att3[k] = 0);
 
-                sessions.forEach(sess => {
-                    totalFTMade += sess.liberi.made;
-                    totalFTAtt += sess.liberi.att;
-                    totalPATMade += sess.pat.gomitoSX.made + sess.pat.gomitoDX.made;
-                    totalPATAtt += sess.pat.gomitoSX.att + sess.pat.gomitoDX.att;
-                    ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
-                        s3pt[k] += sess.tri[k].made;
-                        s3pt.att3[k] += sess.tri[k].att;
-                        total3Made += sess.tri[k].made;
-                        total3Att += sess.tri[k].att;
+                    sessions.forEach(sess => {
+                        if (sess.liberi) {
+                            totalFTMade += Number(sess.liberi.made || 0);
+                            totalFTAtt += Number(sess.liberi.att || 0);
+                        }
+                        if (sess.pat) {
+                            totalPATMade += Number(sess.pat.gomitoSX?.made || 0) + Number(sess.pat.gomitoDX?.made || 0);
+                            totalPATAtt += Number(sess.pat.gomitoSX?.att || 0) + Number(sess.pat.gomitoDX?.att || 0);
+                        }
+                        if (sess.tri) {
+                            ['angoloSX', 'guardiaSX', 'punta', 'guardiaDX', 'angoloDX'].forEach(k => {
+                                const m = Number(sess.tri[k]?.made || 0);
+                                const a = Number(sess.tri[k]?.att || 0);
+                                s3pt[k] += m;
+                                s3pt.att3[k] += a;
+                                total3Made += m;
+                                total3Att += a;
+                            });
+                        }
                     });
-                });
 
-                const sxMade = s3pt.angoloSX + s3pt.guardiaSX;
-                const sxAtt = s3pt.att3.angoloSX + s3pt.att3.guardiaSX;
-                const sxPct = sxAtt > 0 ? ((sxMade / sxAtt) * 100).toFixed(1) : 0;
+                    const sxMade = s3pt.angoloSX + s3pt.guardiaSX;
+                    const sxAtt = s3pt.att3.angoloSX + s3pt.att3.guardiaSX;
+                    const sxPct = sxAtt > 0 ? ((sxMade / sxAtt) * 100).toFixed(1) : '0.0';
 
-                const dxMade = s3pt.guardiaDX + s3pt.angoloDX;
-                const dxAtt = s3pt.att3.guardiaDX + s3pt.att3.angoloDX;
-                const dxPct = dxAtt > 0 ? ((dxMade / dxAtt) * 100).toFixed(1) : 0;
+                    const dxMade = s3pt.guardiaDX + s3pt.angoloDX;
+                    const dxAtt = s3pt.att3.guardiaDX + s3pt.att3.angoloDX;
+                    const dxPct = dxAtt > 0 ? ((dxMade / dxAtt) * 100).toFixed(1) : '0.0';
 
-                const global3Pct = total3Att > 0 ? ((total3Made / total3Att) * 100).toFixed(1) : 0;
-                const globalFTPct = totalFTAtt > 0 ? ((totalFTMade / totalFTAtt) * 100).toFixed(1) : 0;
-                const globalPATPct = totalPATAtt > 0 ? ((totalPATMade / totalPATAtt) * 100).toFixed(1) : 0;
-
-                container.innerHTML = `
-                    <div class="space-y-3">
-                        <div class="bg-orange-50/80 border border-orange-200 rounded-xl p-3.5 shadow-xs">
-                            <div class="flex items-center justify-between mb-1.5">
-                                <h5 class="font-athletic font-extrabold text-orange-950 text-xs uppercase tracking-wider flex items-center gap-1.5">
-                                    <span class="w-2 h-2 rounded-full bg-orange-600"></span> Resoconto Globale & Analisi Incrociata (${sessions.length} Sessioni)
-                                </h5>
-                                <span class="font-mono text-[10px] bg-orange-200/60 text-orange-900 font-bold px-2 py-0.5 rounded">Media ${global3Pct}% 3PT</span>
-                            </div>
-                            <p class="text-xs text-orange-950 leading-relaxed font-medium">
-                                L'analisi aggregata su ${sessions.length} sessioni mostra un'evoluzione balistica costante con una media totale del <strong>${global3Pct}% da 3</strong>, <strong>${globalFTPct}% ai liberi</strong> e <strong>${globalPATPct}% nel P.A.T.</strong>
-                            </p>
-                        </div>
-
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
-                            <div class="flex items-center justify-between">
-                                <h6 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
-                                    🎯 Bilanciamento Perimetro da 3 Punti
-                                </h6>
-                                <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">SX ${sxPct}% vs DX ${dxPct}%</span>
-                            </div>
-                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Distribuzione perimetrale: Lato Sinistro al <strong>${sxPct}%</strong> su ${sxAtt} tiri vs Lato Destro al <strong>${dxPct}%</strong> su ${dxAtt} tiri.
-                            </p>
-                        </div>
-                    </div>
-                `;
-            } else {
-                if (session.insight) {
-                    const ins = session.insight;
-                    let sectionsHtml = '';
-                    if (ins.sections && ins.sections.length > 0) {
-                        sectionsHtml = ins.sections.map(sec => `
-                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
-                                <h6 class="font-bold text-slate-900 text-[11.5px]">${sec.heading}</h6>
-                                <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">${sec.content}</p>
-                            </div>
-                        `).join('');
-                    }
+                    const global3Pct = total3Att > 0 ? ((total3Made / total3Att) * 100).toFixed(1) : '0.0';
+                    const globalFTPct = totalFTAtt > 0 ? ((totalFTMade / totalFTAtt) * 100).toFixed(1) : '0.0';
+                    const globalPATPct = totalPATAtt > 0 ? ((totalPATMade / totalPATAtt) * 100).toFixed(1) : '0.0';
 
                     container.innerHTML = `
                         <div class="space-y-3">
-                            <div class="bg-indigo-50/80 border border-indigo-200 rounded-xl p-3.5 shadow-xs">
-                                <div class="flex items-center justify-between mb-1">
-                                    <h5 class="font-athletic font-extrabold text-indigo-950 text-xs uppercase tracking-wider">${ins.title || 'Analisi Puntuale Sessione'}</h5>
-                                    <span class="font-mono text-[10px] font-bold bg-indigo-200/70 text-indigo-900 px-2 py-0.5 rounded">${formatDate(session.date)}</span>
+                            <div class="bg-orange-50/80 border border-orange-200 rounded-xl p-3.5 shadow-xs">
+                                <div class="flex items-center justify-between mb-1.5">
+                                    <h5 class="font-athletic font-extrabold text-orange-950 text-xs uppercase tracking-wider flex items-center gap-1.5">
+                                        <span class="w-2 h-2 rounded-full bg-orange-600"></span> Resoconto Globale & Analisi Incrociata (${sessions.length} Sessioni)
+                                    </h5>
+                                    <span class="font-mono text-[10px] bg-orange-200/60 text-orange-900 font-bold px-2 py-0.5 rounded">Media ${global3Pct}% 3PT</span>
                                 </div>
-                                <p class="text-xs text-indigo-950 leading-relaxed font-medium">${ins.summary || ''}</p>
+                                <p class="text-xs text-orange-950 leading-relaxed font-medium">
+                                    L'analisi aggregata su ${sessions.length} sessioni mostra un'evoluzione balistica costante con una media totale del <strong>${global3Pct}% da 3</strong>, <strong>${globalFTPct}% ai liberi</strong> e <strong>${globalPATPct}% nel P.A.T.</strong>
+                                </p>
                             </div>
-                            <div class="space-y-2">
-                                ${sectionsHtml}
+
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <h6 class="font-bold text-slate-900 text-xs flex items-center gap-1.5">
+                                        🎯 Bilanciamento Perimetro da 3 Punti
+                                    </h6>
+                                    <span class="font-mono text-[10px] font-bold text-indigo-700 bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded">SX ${sxPct}% vs DX ${dxPct}%</span>
+                                </div>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                                    Distribuzione perimetrale: Lato Sinistro al <strong>${sxPct}%</strong> su ${sxAtt} tiri vs Lato Destro al <strong>${dxPct}%</strong> su ${dxAtt} tiri.
+                                </p>
                             </div>
                         </div>
                     `;
-                } else {
-                    container.innerHTML = `
-                        <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
-                            <h5 class="font-athletic font-extrabold text-slate-900 text-xs uppercase tracking-wider">Resoconto Allenamento del ${formatDate(session.date)}</h5>
-                            <p class="text-xs text-slate-600 leading-relaxed font-medium">
-                                Realizzazioni da 3 Punti: <strong>${t3P}%</strong>. Rendimento ai Liberi: <strong>${fP}%</strong>. Rendimento nel P.A.T.: <strong>${patP}%</strong>.
-                            </p>
-                        </div>
-                    `;
+                } else if (session) {
+                    if (session.insight && (session.insight.summary || session.insight.title)) {
+                        const ins = session.insight;
+                        let sectionsHtml = '';
+                        if (ins.sections && Array.isArray(ins.sections) && ins.sections.length > 0) {
+                            sectionsHtml = ins.sections.map(sec => `
+                                <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1">
+                                    <h6 class="font-bold text-slate-900 text-[11.5px]">${sec.heading || ''}</h6>
+                                    <p class="text-[11.5px] text-slate-600 leading-relaxed font-medium">${sec.content || ''}</p>
+                                </div>
+                            `).join('');
+                        }
+
+                        container.innerHTML = `
+                            <div class="space-y-3">
+                                <div class="bg-indigo-50/80 border border-indigo-200 rounded-xl p-3.5 shadow-xs">
+                                    <div class="flex items-center justify-between mb-1">
+                                        <h5 class="font-athletic font-extrabold text-indigo-950 text-xs uppercase tracking-wider">${ins.title || 'Analisi Puntuale Sessione'}</h5>
+                                        <span class="font-mono text-[10px] font-bold bg-indigo-200/70 text-indigo-900 px-2 py-0.5 rounded">${formatDate(session.date)}</span>
+                                    </div>
+                                    <p class="text-xs text-indigo-950 leading-relaxed font-medium">${ins.summary || ''}</p>
+                                </div>
+                                <div class="space-y-2">
+                                    ${sectionsHtml}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        container.innerHTML = `
+                            <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2">
+                                <h5 class="font-athletic font-extrabold text-slate-900 text-xs uppercase tracking-wider">Resoconto Allenamento del ${formatDate(session.date)}</h5>
+                                <p class="text-xs text-slate-600 leading-relaxed font-medium">
+                                    Realizzazioni da 3 Punti: <strong>${t3P}%</strong>. Rendimento ai Liberi: <strong>${fP}%</strong>. Rendimento nel P.A.T.: <strong>${patP}%</strong>.
+                                </p>
+                            </div>
+                        `;
+                    }
                 }
+            } catch (err) {
+                console.error('[Technical Insight Error]:', err);
             }
         }
 
