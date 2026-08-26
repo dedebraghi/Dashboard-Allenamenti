@@ -736,21 +736,45 @@
                         </p>
                     </div>
 
-                    <!-- Configurazione Rapida Data & Scheda -->
-                    <div class="grid grid-cols-2 sm:grid-cols-12 gap-3 w-full lg:w-auto bg-slate-900/90 border border-slate-800 p-3.5 rounded-xl">
-                        <div class="col-span-1 sm:col-span-3">
+                    <!-- Configurazione Rapida Data, Scheda & Timer -->
+                    <div class="grid grid-cols-1 sm:grid-cols-12 gap-3 w-full lg:w-auto bg-slate-900/90 border border-slate-800 p-3 rounded-xl items-center">
+                        <div class="sm:col-span-3">
                             <label for="workout-date" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Data</label>
                             <input type="date" id="workout-date" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold focus:outline-none focus:ring-2 focus:ring-orange-500">
                         </div>
-                        <div class="col-span-1 sm:col-span-3">
-                            <label for="workout-duration" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Durata (Min)</label>
-                            <input type="number" id="workout-duration" value="60" min="15" max="180" step="5" class="w-full bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-mono font-bold text-center focus:outline-none focus:ring-2 focus:ring-orange-500">
-                        </div>
-                        <div class="col-span-2 sm:col-span-6 min-w-0">
+                        <div class="sm:col-span-4 min-w-0">
                             <label for="workout-plan-ref" class="block text-[10px] font-mono uppercase text-slate-400 font-bold mb-1">Scheda Seguito</label>
                             <select id="workout-plan-ref" onchange="onWorkoutPlanChange(this.value)" class="w-full max-w-full truncate bg-slate-950 border border-slate-700 text-white rounded-lg px-2.5 py-1.5 text-xs font-bold focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer">
                                 <!-- Popolato dinamicamente -->
                             </select>
+                        </div>
+                        <div class="sm:col-span-5 bg-slate-950/80 border border-slate-700/80 rounded-lg p-2 flex flex-col justify-between gap-1.5 shadow-inner">
+                            <div class="flex items-center justify-between gap-1">
+                                <div class="flex items-center gap-1.5 min-w-0">
+                                    <span id="workout-timer-status-dot" class="w-2 h-2 rounded-full bg-slate-500 flex-shrink-0"></span>
+                                    <span id="workout-timer-status-text" class="text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 truncate">Auto-Start</span>
+                                </div>
+                                <div class="flex items-center gap-1 text-[9px] font-mono text-slate-400">
+                                    <span>Durata:</span>
+                                    <input type="number" id="workout-duration" value="60" min="1" max="240" step="1" oninput="workoutDurationManuallyEdited = true; currentWorkout.duration = parseInt(this.value, 10) || 60; saveWorkoutTimerState();" title="Durata sessione in minuti (calcolata in automatico, modificabile)" class="w-11 bg-slate-900 border border-slate-700 text-amber-400 rounded px-1 py-0.5 text-center font-bold font-mono text-[10px] focus:outline-none focus:ring-1 focus:ring-orange-500">
+                                    <span>min</span>
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-between gap-2">
+                                <div class="flex items-center gap-1.5">
+                                    <span class="text-xs">⏱️</span>
+                                    <span id="workout-timer-display" class="font-mono text-sm sm:text-base font-black text-white tracking-wider">00:00:00</span>
+                                </div>
+                                <div id="workout-timer-actions" class="flex items-center gap-1.5">
+                                    <button type="button" id="workout-timer-toggle-btn" onclick="toggleWorkoutTimer()" title="Avvia o metti in pausa il cronometro" class="px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 rounded text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer">
+                                        <span id="workout-timer-toggle-icon">▶</span>
+                                        <span id="workout-timer-toggle-text">Avvia</span>
+                                    </button>
+                                    <button type="button" id="workout-timer-reset-btn" onclick="resetWorkoutTimer()" title="Azzera il cronometro" class="p-1 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-400 hover:text-white rounded text-[10px] transition-all cursor-pointer">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1250,10 +1274,238 @@
             firebaseConfig: DEFAULT_CONFIG.firebaseConfig
         };
 
-        // Timer Piano Allenamento
+        // Timer Piano Allenamento (Scheda Piano)
         let planTimerInterval = null;
         let planTimerSeconds = 0;
         let planTimerRunning = false;
+
+        // Timer Intelligente Sessione di Tiro (Live Workout Tracker)
+        const WORKOUT_TIMER_STORAGE_KEY = 'shottracker_workout_timer_state';
+        let workoutTimer = {
+            intervalId: null,
+            isRunning: false,
+            startTime: null,
+            accumulatedMs: 0,
+            planId: ''
+        };
+        let workoutDurationManuallyEdited = false;
+
+        function getWorkoutTimerElapsedMs() {
+            if (!workoutTimer.isRunning || !workoutTimer.startTime) {
+                return workoutTimer.accumulatedMs;
+            }
+            return workoutTimer.accumulatedMs + (Date.now() - workoutTimer.startTime);
+        }
+
+        function formatTimerDisplay(totalMs) {
+            const totalSec = Math.floor(Math.max(0, totalMs) / 1000);
+            const hrs = Math.floor(totalSec / 3600);
+            const mins = Math.floor((totalSec % 3600) / 60);
+            const secs = totalSec % 60;
+            return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+        }
+
+        function updateWorkoutTimerUI() {
+            const displayEl = document.getElementById('workout-timer-display');
+            const dotEl = document.getElementById('workout-timer-status-dot');
+            const statusTextEl = document.getElementById('workout-timer-status-text');
+            const toggleIcon = document.getElementById('workout-timer-toggle-icon');
+            const toggleText = document.getElementById('workout-timer-toggle-text');
+            const toggleBtn = document.getElementById('workout-timer-toggle-btn');
+            const durInput = document.getElementById('workout-duration');
+
+            const elapsedMs = getWorkoutTimerElapsedMs();
+
+            if (displayEl) {
+                displayEl.textContent = formatTimerDisplay(elapsedMs);
+            }
+
+            if (isWorkoutReadOnly) {
+                if (dotEl) dotEl.className = "w-2 h-2 rounded-full bg-slate-500 flex-shrink-0";
+                if (statusTextEl) {
+                    statusTextEl.textContent = "Archiviato";
+                    statusTextEl.className = "text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 truncate";
+                }
+                const actionsEl = document.getElementById('workout-timer-actions');
+                if (actionsEl) actionsEl.classList.add('hidden');
+                return;
+            } else {
+                const actionsEl = document.getElementById('workout-timer-actions');
+                if (actionsEl) actionsEl.classList.remove('hidden');
+            }
+
+            if (workoutTimer.isRunning) {
+                if (dotEl) dotEl.className = "w-2 h-2 rounded-full bg-emerald-500 animate-ping flex-shrink-0";
+                if (statusTextEl) {
+                    statusTextEl.textContent = "In Corso";
+                    statusTextEl.className = "text-[9px] font-mono font-bold uppercase tracking-wider text-emerald-400 truncate";
+                }
+                if (toggleIcon) toggleIcon.textContent = "⏸";
+                if (toggleText) toggleText.textContent = "Pausa";
+                if (toggleBtn) toggleBtn.className = "px-2 py-0.5 bg-amber-600 hover:bg-amber-500 border border-amber-500 text-white rounded text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer";
+            } else if (elapsedMs > 0) {
+                if (dotEl) dotEl.className = "w-2 h-2 rounded-full bg-amber-500 flex-shrink-0";
+                if (statusTextEl) {
+                    statusTextEl.textContent = "In Pausa";
+                    statusTextEl.className = "text-[9px] font-mono font-bold uppercase tracking-wider text-amber-400 truncate";
+                }
+                if (toggleIcon) toggleIcon.textContent = "▶";
+                if (toggleText) toggleText.textContent = "Riprendi";
+                if (toggleBtn) toggleBtn.className = "px-2 py-0.5 bg-emerald-600 hover:bg-emerald-500 border border-emerald-500 text-white rounded text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer";
+            } else {
+                if (dotEl) dotEl.className = "w-2 h-2 rounded-full bg-slate-500 flex-shrink-0";
+                if (statusTextEl) {
+                    statusTextEl.textContent = "Auto-Start";
+                    statusTextEl.className = "text-[9px] font-mono font-bold uppercase tracking-wider text-slate-400 truncate";
+                }
+                if (toggleIcon) toggleIcon.textContent = "▶";
+                if (toggleText) toggleText.textContent = "Avvia";
+                if (toggleBtn) toggleBtn.className = "px-2 py-0.5 bg-slate-800 hover:bg-slate-700 border border-slate-600 text-slate-200 rounded text-[10px] font-bold transition-all flex items-center gap-1 cursor-pointer";
+            }
+
+            // Aggiorna stima minuti se non sovrascritta manualmente dall'utente
+            if (!workoutDurationManuallyEdited && durInput && !durInput.disabled) {
+                if (elapsedMs > 0) {
+                    const calculatedMins = Math.max(1, Math.round(elapsedMs / 60000));
+                    durInput.value = calculatedMins;
+                    currentWorkout.duration = calculatedMins;
+                }
+            }
+        }
+
+        function startWorkoutTimer() {
+            if (isWorkoutReadOnly || workoutTimer.isRunning) return;
+            workoutTimer.isRunning = true;
+            workoutTimer.startTime = Date.now();
+            workoutTimer.planId = currentWorkout.planId;
+            saveWorkoutTimerState();
+
+            if (workoutTimer.intervalId) clearInterval(workoutTimer.intervalId);
+            workoutTimer.intervalId = setInterval(() => {
+                updateWorkoutTimerUI();
+            }, 1000);
+            updateWorkoutTimerUI();
+        }
+
+        function pauseWorkoutTimer() {
+            if (!workoutTimer.isRunning) return;
+            if (workoutTimer.startTime) {
+                workoutTimer.accumulatedMs += (Date.now() - workoutTimer.startTime);
+            }
+            workoutTimer.startTime = null;
+            workoutTimer.isRunning = false;
+            if (workoutTimer.intervalId) {
+                clearInterval(workoutTimer.intervalId);
+                workoutTimer.intervalId = null;
+            }
+            saveWorkoutTimerState();
+            updateWorkoutTimerUI();
+        }
+
+        function toggleWorkoutTimer() {
+            if (isWorkoutReadOnly) return;
+            if (workoutTimer.isRunning) {
+                pauseWorkoutTimer();
+            } else {
+                startWorkoutTimer();
+            }
+        }
+
+        function resetWorkoutTimer() {
+            if (isWorkoutReadOnly) return;
+            if (workoutTimer.intervalId) {
+                clearInterval(workoutTimer.intervalId);
+                workoutTimer.intervalId = null;
+            }
+            workoutTimer.isRunning = false;
+            workoutTimer.startTime = null;
+            workoutTimer.accumulatedMs = 0;
+            workoutDurationManuallyEdited = false;
+            clearWorkoutTimerState();
+
+            const durInput = document.getElementById('workout-duration');
+            if (durInput) {
+                durInput.value = 60;
+                currentWorkout.duration = 60;
+            }
+            updateWorkoutTimerUI();
+            showToast("Cronometro sessione azzerato", "info");
+        }
+
+        function stopWorkoutTimer(clearSaved = true) {
+            if (workoutTimer.intervalId) {
+                clearInterval(workoutTimer.intervalId);
+                workoutTimer.intervalId = null;
+            }
+            if (workoutTimer.isRunning && workoutTimer.startTime) {
+                workoutTimer.accumulatedMs += (Date.now() - workoutTimer.startTime);
+            }
+            workoutTimer.isRunning = false;
+            workoutTimer.startTime = null;
+            if (clearSaved) {
+                clearWorkoutTimerState();
+            }
+            updateWorkoutTimerUI();
+        }
+
+        function triggerWorkoutTimerAutoStart() {
+            if (isWorkoutReadOnly) return;
+            if (!workoutTimer.isRunning && workoutTimer.accumulatedMs === 0 && !workoutTimer.startTime) {
+                startWorkoutTimer();
+                showToast("⏱️ Cronometro sessione avviato automaticamente!", "info");
+            }
+        }
+
+        function saveWorkoutTimerState() {
+            try {
+                const state = {
+                    planId: currentWorkout.planId,
+                    isRunning: workoutTimer.isRunning,
+                    startTime: workoutTimer.startTime,
+                    accumulatedMs: workoutTimer.accumulatedMs,
+                    manuallyEdited: workoutDurationManuallyEdited
+                };
+                localStorage.setItem(WORKOUT_TIMER_STORAGE_KEY, JSON.stringify(state));
+            } catch (e) {
+                console.warn('Errore salvataggio timer su localStorage:', e);
+            }
+        }
+
+        function loadWorkoutTimerState(currentPlanId) {
+            try {
+                const saved = localStorage.getItem(WORKOUT_TIMER_STORAGE_KEY);
+                if (!saved) return false;
+                const state = JSON.parse(saved);
+                if (state.planId && state.planId === currentPlanId) {
+                    workoutTimer.planId = state.planId;
+                    workoutTimer.accumulatedMs = state.accumulatedMs || 0;
+                    workoutDurationManuallyEdited = !!state.manuallyEdited;
+
+                    if (state.isRunning && state.startTime) {
+                        workoutTimer.startTime = state.startTime;
+                        workoutTimer.isRunning = true;
+                        if (workoutTimer.intervalId) clearInterval(workoutTimer.intervalId);
+                        workoutTimer.intervalId = setInterval(() => {
+                            updateWorkoutTimerUI();
+                        }, 1000);
+                    } else {
+                        workoutTimer.isRunning = false;
+                        workoutTimer.startTime = null;
+                    }
+                    updateWorkoutTimerUI();
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Errore recupero timer da localStorage:', e);
+            }
+            return false;
+        }
+
+        function clearWorkoutTimerState() {
+            try {
+                localStorage.removeItem(WORKOUT_TIMER_STORAGE_KEY);
+            } catch (e) {}
+        }
 
         // Stato Scheda Workout Attiva
         let currentWorkout = {
@@ -2007,6 +2259,13 @@
                 currentWorkout.date = pastSession.date;
                 currentWorkout.duration = pastSession.duration || 60;
 
+                // Stop e disattivazione timer per sessione passata
+                stopWorkoutTimer(false);
+                workoutTimer.accumulatedMs = 0;
+                workoutTimer.startTime = null;
+                workoutTimer.isRunning = false;
+                updateWorkoutTimerUI();
+
                 // Form shooting
                 if (pastSession.formShooting) {
                     if (pastSession.formShooting.series && Array.isArray(pastSession.formShooting.series)) {
@@ -2079,9 +2338,22 @@
                     currentWorkout.date = dateInput.value;
                 }
                 if (durInput) {
-                    durInput.value = 60;
                     durInput.disabled = false;
-                    currentWorkout.duration = 60;
+                }
+
+                // Ripristina o prepara il timer per questa scheda attiva
+                const timerRestored = loadWorkoutTimerState(planId);
+                if (!timerRestored) {
+                    stopWorkoutTimer(true);
+                    workoutTimer.accumulatedMs = 0;
+                    workoutTimer.startTime = null;
+                    workoutTimer.isRunning = false;
+                    workoutDurationManuallyEdited = false;
+                    if (durInput) {
+                        durInput.value = 60;
+                        currentWorkout.duration = 60;
+                    }
+                    updateWorkoutTimerUI();
                 }
 
                 // Inizializza i canestri fatti a 0 e i tentativi estratti dal piano
@@ -2587,6 +2859,7 @@
         // Metodi di Modifica Serie
         function adjustWorkoutSerie(cat, spot, idx, field, delta) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
             else if (cat === 'attivazioneLiberi') targetObj = currentWorkout.attivazioneLiberi[idx];
@@ -2610,6 +2883,7 @@
 
         function setWorkoutSerieVal(cat, spot, idx, field, val) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             let targetObj;
             if (cat === 'formshooting') targetObj = currentWorkout.formShooting[idx];
             else if (cat === 'attivazioneLiberi') targetObj = currentWorkout.attivazioneLiberi[idx];
@@ -2634,6 +2908,7 @@
 
         function addWorkoutSerie(cat, spot) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             if (cat === 'formshooting') {
                 currentWorkout.formShooting.push({ made: 0, att: 10 });
                 renderWorkoutFormShooting();
@@ -2651,6 +2926,7 @@
 
         function removeWorkoutSerie(cat, spot, idx) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             if (cat === 'formshooting' && currentWorkout.formShooting.length > 1) {
                 currentWorkout.formShooting.splice(idx, 1);
                 renderWorkoutFormShooting();
@@ -2672,6 +2948,7 @@
 
         function addWorkoutSpotSerie(spotKey) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             if (!currentWorkout.tri[spotKey]) currentWorkout.tri[spotKey] = [];
             currentWorkout.tri[spotKey].push({ made: 0, att: 5 });
             renderWorkout3ptSpots();
@@ -2680,6 +2957,7 @@
 
         function addWorkoutPatSerie(spotKey) {
             if (isWorkoutReadOnly) return;
+            triggerWorkoutTimerAutoStart();
             if (!currentWorkout.pat[spotKey]) currentWorkout.pat[spotKey] = [];
             currentWorkout.pat[spotKey].push({ made: 0, att: 5 });
             renderWorkoutPatSpots();
@@ -2692,7 +2970,13 @@
 
         function buildSessionObjectFromWorkout() {
             const dateVal = document.getElementById('workout-date')?.value || currentWorkout.date;
-            const durVal = parseInt(document.getElementById('workout-duration')?.value, 10) || currentWorkout.duration;
+            
+            // Calcolo durata sessione: usa il timer effettivo trascorso se presente e non sovrascritto a mano
+            let durVal = parseInt(document.getElementById('workout-duration')?.value, 10) || currentWorkout.duration || 60;
+            const elapsedMs = getWorkoutTimerElapsedMs();
+            if (!workoutDurationManuallyEdited && elapsedMs > 0) {
+                durVal = Math.max(1, Math.round(elapsedMs / 60000));
+            }
             const sessionId = `sessione-${dateVal}`;
 
             // Form shooting aggregato
@@ -2757,6 +3041,9 @@
         async function saveWorkoutSessionOnly() {
             const sessionData = buildSessionObjectFromWorkout();
             
+            // Ferma e pulisce il cronometro di sessione
+            stopWorkoutTimer(true);
+
             // Genera insight base
             sessionData.insight = {
                 title: `Analisi Sessione del ${formatDate(sessionData.date)}`,
@@ -2798,6 +3085,9 @@
         async function saveWorkoutWithAICoach() {
             const sessionData = buildSessionObjectFromWorkout();
             const playerNotes = document.getElementById('workout-player-notes')?.value.trim() || '';
+
+            // Ferma e pulisce il cronometro di sessione
+            stopWorkoutTimer(true);
 
             // 1. Assegna stato pending e insight provvisorio
             sessionData.aiStatus = 'pending';
@@ -3446,6 +3736,7 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             }
             if (tabId === 'workout') {
                 updateWorkoutLiveKpis();
+                updateWorkoutTimerUI();
             }
         }
 
