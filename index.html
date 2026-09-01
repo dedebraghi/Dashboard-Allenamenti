@@ -3974,10 +3974,13 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             if (sessions.length === 0) {
                 document.getElementById('stat-global-3pt').textContent = "0%";
                 document.getElementById('stat-count-3pt').textContent = "0/0";
+                document.getElementById('progress-global-3pt').style.width = "0%";
                 document.getElementById('stat-global-ft').textContent = "0%";
                 document.getElementById('stat-count-ft').textContent = "0/0";
+                document.getElementById('progress-global-ft').style.width = "0%";
                 document.getElementById('stat-global-pat').textContent = "0%";
                 document.getElementById('stat-count-pat').textContent = "0/0";
+                document.getElementById('progress-global-pat').style.width = "0%";
                 document.getElementById('stat-total-time').textContent = "0 min";
                 document.getElementById('stat-total-sessions').textContent = "Su 0 sessioni registrate";
                 return;
@@ -4007,6 +4010,9 @@ Rispondi ESCLUSIVAMENTE con un oggetto JSON valido (senza markdown aggiuntivo) c
             document.getElementById('progress-global-3pt').style.width = `${pt3Percent}%`;
 
             document.getElementById('stat-global-ft').textContent = `${ftPercent}%`;
+            document.getElementById('stat-count-ft').textContent = `${totalFTMade}/${totalFTAtt}`;
+            document.getElementById('progress-global-ft').style.width = `${ftPercent}%`;
+
             document.getElementById('stat-global-pat').textContent = `${patPercent}%`;
             document.getElementById('stat-count-pat').textContent = `${totalPATMade}/${totalPATAtt}`;
             document.getElementById('progress-global-pat').style.width = `${patPercent}%`;
