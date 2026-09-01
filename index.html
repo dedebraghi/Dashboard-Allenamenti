@@ -2095,25 +2095,11 @@
                 }
             } catch (e) {}
 
-            // Unisci tutti i piani garantendo nessun duplicato e sanitizzando piano-6 errato -> piano-5
+            // Unisci tutti i piani garantendo nessun duplicato
             const planMap = new Map();
             basePlans.forEach(p => planMap.set(p.id, p));
-            localPlans.forEach(p => {
-                if (p.id === 'piano-6' && !planMap.has('piano-5')) {
-                    p.id = 'piano-5';
-                    p.number = 5;
-                    if (p.title) p.title = p.title.replace(/#?6/g, '#5');
-                }
-                if (p.id !== 'piano-6') planMap.set(p.id, p);
-            });
-            cloudPlans.forEach(p => {
-                if (p.id === 'piano-6' && !planMap.has('piano-5')) {
-                    p.id = 'piano-5';
-                    p.number = 5;
-                    if (p.title) p.title = p.title.replace(/#?6/g, '#5');
-                }
-                if (p.id !== 'piano-6') planMap.set(p.id, p);
-            });
+            localPlans.forEach(p => planMap.set(p.id, p));
+            cloudPlans.forEach(p => planMap.set(p.id, p));
 
             plans = Array.from(planMap.values()).sort((a, b) => (a.number || 0) - (b.number || 0));
             localStorage.setItem(`${appId}-plans`, JSON.stringify(plans));
